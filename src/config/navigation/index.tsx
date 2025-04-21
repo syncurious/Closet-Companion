@@ -1,17 +1,12 @@
 import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import Login from '../../screen/Auth/login';
-import Signup from '../../screen/Auth/signup';
-
-const stack = createNativeStackNavigator();
+import AuthNavigation from './Auth';
+import UserNavigation from './User';
 
 const Navigation = () => {
+  const isAuth = false;
   return (
     <NavigationContainer>
-      <stack.Navigator screenOptions={{headerShown: false}}>
-        <stack.Screen name="login" component={Login} />
-        <stack.Screen name="signup" component={Signup} />
-      </stack.Navigator>
+      {isAuth ? <AuthNavigation /> : <UserNavigation />}
     </NavigationContainer>
   );
 };
