@@ -232,4 +232,4 @@ const inputVariants = {
   }),
 };
 
-export default forwardRef(Input);
+export default Input;
