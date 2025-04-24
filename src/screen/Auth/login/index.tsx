@@ -1,4 +1,11 @@
-import {StyleSheet, View, KeyboardAvoidingView, ScrollView, Platform} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  TouchableOpacity,
+} from 'react-native';
 import Container from '../../../components/container';
 import Heading from '../../../components/heading';
 import Input from '../../../components/input';
@@ -7,9 +14,12 @@ import {useState} from 'react';
 import Button from '../../../components/button';
 import {useDispatch} from 'react-redux';
 import {setIsLogin} from '../../../config/redux/reducer';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {Colors} from '../../../utitlity/colors';
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigation<NavigationProp<any>>();
   const [isPassword, setIsPassword] = useState<boolean>(false);
   const [payload, setPayload] = useState({
     email: '',
@@ -21,11 +31,16 @@ const Login = () => {
   const handleLogin = async () => {
     dispatch(setIsLogin(true));
   };
+  const handleSignup = () => {
+    navigation.navigate('signup');
+  };
   return (
     <KeyboardAvoidingView
       style={{flex: 1}}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1}}
+        keyboardShouldPersistTaps="handled">
         <Container scrollEnabled={false} fullScreen style={styles.Container}>
           <View style={styles.HeadingBox}>
             <Heading children={'Welcome Back'} level={2} />
@@ -64,7 +79,7 @@ const Login = () => {
               <Heading
                 level={6}
                 children={'Forget Password'}
-                style={{textAlign: 'right'}}
+                style={{...styles.higlightText, textAlign: 'right'}}
               />
               <Button
                 variant="contained"
@@ -75,8 +90,18 @@ const Login = () => {
           </View>
           <View style={styles.ParagraphBox}>
             <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-              <Heading level={6} children={"Don't have an account? "} style={{}} />
-              <Heading level={6} children={'Sign Up'} style={{}} />
+              <Heading
+                level={6}
+                children={"Don't have an account? "}
+                style={{}}
+              />
+              <TouchableOpacity onPress={handleSignup}>
+                <Heading
+                  level={6}
+                  children={'Sign Up'}
+                  style={styles.higlightText}
+                />
+              </TouchableOpacity>
             </View>
           </View>
         </Container>
@@ -104,6 +129,10 @@ const styles = StyleSheet.create({
   },
   RowGap: {
     rowGap: 5,
+  },
+  higlightText: {
+    color: Colors.primary,
+    textDecorationLine: 'underline',
   },
 });
 
