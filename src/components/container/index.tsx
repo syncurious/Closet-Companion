@@ -1,15 +1,18 @@
 import React from 'react';
+
 import {
   View,
   StyleSheet,
   ViewProps,
+  Text,
+  Button,
   ScrollView,
   RefreshControl,
   StatusBar,
 } from 'react-native';
 import {ReactNode} from 'react';
 import Dimension from '../../utitlity/Dimension';
-import ThemeColors from '../../utitlity/colors';
+import {Colors} from '../../utitlity/colors';
 
 const width = Dimension.width;
 interface ContainerProps {
@@ -55,7 +58,7 @@ const Container = ({
   ];
 
   return (
-    <>
+    <React.Fragment>
       {scrollEnabled ? (
         <ScrollView
           contentContainerStyle={contentContainerStyle}
@@ -68,30 +71,38 @@ const Container = ({
               <RefreshControl
                 refreshing={refreshing}
                 onRefresh={onRefresh}
-                tintColor={ThemeColors.primaryColors.mainColor}
-                colors={[ThemeColors.primaryColors.mainColor]}
-                progressBackgroundColor={ThemeColors.backgroundShades.surface1}
+                tintColor={Colors.primary}
+                colors={[Colors.primary]}
+                progressBackgroundColor={Colors.lightBackground}
                 progressViewOffset={0}
               />
             ) : undefined
           }>
-          <StatusBar barStyle={'light-content'} />
+          <StatusBar barStyle={'dark-content'} />
           {children}
         </ScrollView>
       ) : (
         <View style={containerStyles}>
-          <StatusBar barStyle={'light-content'} />
+          <StatusBar barStyle={'dark-content'} />
           {children}
         </View>
       )}
-    </>
+    </React.Fragment>
   );
 };
+
+const ErrorFallback = ({error, resetError}: any) => (
+  <View>
+    <Text>Oops! Something went wrong:</Text>
+    <Text>{error.toString()}</Text>
+    <Button title="Try again" onPress={resetError} />
+  </View>
+);
 
 const styles = StyleSheet.create({
   container: {
     position: 'relative',
-    backgroundColor: ThemeColors.primaryColors.bgColor, // default background color
+    backgroundColor: Colors.white,
   },
   mobilePadding: {
     paddingHorizontal: 16,
