@@ -1,4 +1,4 @@
-import {View} from 'react-native';
+import {StyleSheet, View, KeyboardAvoidingView, ScrollView, Platform} from 'react-native';
 import Container from '../../../components/container';
 import Heading from '../../../components/heading';
 import Input from '../../../components/input';
@@ -11,66 +11,100 @@ import {setIsLogin} from '../../../config/redux/reducer';
 const Login = () => {
   const dispatch = useDispatch();
   const [isPassword, setIsPassword] = useState<boolean>(false);
+  const [payload, setPayload] = useState({
+    email: '',
+    password: '',
+  });
+  const handleValueChange = (name: string, value: string) => {
+    setPayload((prev: any) => ({...prev, [name]: value}));
+  };
   const handleLogin = async () => {
     dispatch(setIsLogin(true));
   };
   return (
-    <Container
-      scrollEnabled={false}
-      fullScreen
-      style={{
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-      <View
-        style={{
-          alignItems: 'center',
-          width: '100%',
-        }}>
-        <Heading children={'Wellcome Back'} level={2} />
-        <Heading children={'Hi Welcome back'} level={6} />
-        <View style={{marginTop: 50, width: '100%', rowGap: 20}}>
-          <View style={{rowGap: 5}}>
-            <Heading level={6} children={'Email'} />
-            <Input />
+    <KeyboardAvoidingView
+      style={{flex: 1}}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView contentContainerStyle={{flexGrow: 1}} keyboardShouldPersistTaps="handled">
+        <Container scrollEnabled={false} fullScreen style={styles.Container}>
+          <View style={styles.HeadingBox}>
+            <Heading children={'Welcome Back'} level={2} />
+            <Heading children={'Find your best matching clothes'} level={6} />
           </View>
-          <View style={{rowGap: 5}}>
-            <Heading level={6} children={'Password'} />
-            <Input
-              type={isPassword ? 'password' : 'default'}
-              iconPosition="right"
-              prefixIcon={isPassword ? eyeIcon : eyeFilledIcon}
-              onPress={() => {
-                setIsPassword(!isPassword);
-              }}
-            />
-          </View>
-          <View style={{rowGap: 30}}>
-            <Heading
-              level={6}
-              children={'Forget Password'}
-              style={{textAlign: 'right'}}
-            />
-            <Button
-              variant="contained"
-              children={'Login'}
-              onPress={handleLogin}
-            />
-          </View>
-          <View style={{rowGap: 30}}>
-            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+          <View style={styles.InputBox}>
+            <View style={styles.RowGap}>
+              <View style={styles.RowGap}>
+                <Heading level={6} children={'Email'} />
+                <Input
+                  type="email-address"
+                  value={payload?.email}
+                  onChangeText={e => {
+                    handleValueChange('email', e);
+                  }}
+                />
+              </View>
+              <View style={styles.RowGap}>
+                <Heading level={6} children={'Password'} />
+                <Input
+                  value={payload?.password}
+                  onChangeText={e => {
+                    handleValueChange('password', e);
+                  }}
+                  type={isPassword ? 'password' : 'default'}
+                  iconPosition="right"
+                  prefixIcon={isPassword ? eyeIcon : eyeFilledIcon}
+                  onPress={() => {
+                    setIsPassword(!isPassword);
+                  }}
+                />
+              </View>
+            </View>
+
+            <View style={{flex: 1, justifyContent: 'space-around'}}>
               <Heading
                 level={6}
-                children={"Don't have an account? "}
-                style={{}}
+                children={'Forget Password'}
+                style={{textAlign: 'right'}}
               />
+              <Button
+                variant="contained"
+                children={'Login'}
+                onPress={handleLogin}
+              />
+            </View>
+          </View>
+          <View style={styles.ParagraphBox}>
+            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <Heading level={6} children={"Don't have an account? "} style={{}} />
               <Heading level={6} children={'Sign Up'} style={{}} />
             </View>
           </View>
-        </View>
-      </View>
-    </Container>
+        </Container>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
+
+const styles = StyleSheet.create({
+  Container: {
+    flex: 1,
+  },
+  HeadingBox: {
+    flex: 0.25,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingBottom: 50,
+  },
+  InputBox: {
+    flex: 0.35,
+    justifyContent: 'space-between',
+  },
+  ParagraphBox: {
+    flex: 0.2,
+  },
+  RowGap: {
+    rowGap: 5,
+  },
+});
 
 export default Login;

@@ -44,18 +44,12 @@ interface Props {
   color?: ColorTypes;
   maxLength?: number;
 }
-interface ImperativeHandle {
-  validate: () => boolean;
-}
 
-const Input = (props: Props, ref: React.Ref<ImperativeHandle>) => {
+const Input = (props: Props) => {
   const {
     label,
     prefixIcon,
-    required,
-    regex,
     type,
-    regexError,
     initialValue,
     value,
     onChangeText,
@@ -91,26 +85,6 @@ const Input = (props: Props, ref: React.Ref<ImperativeHandle>) => {
     setInputValue(text);
     onChangeText?.(text);
   };
-
-  const validate = () => {
-    if ((required && !inputValue) || inputValue === '') {
-      setError('Required *');
-      return false;
-    }
-    if (regex && !regex.test(inputValue || '')) {
-      setError(regexError || 'Invalid format');
-      return false;
-    }
-    setError(null);
-    return true;
-  };
-
-  useImperativeHandle(
-    ref,
-    (): ImperativeHandle => ({
-      validate,
-    }),
-  );
 
   return (
     <View style={styles.container}>
@@ -175,7 +149,6 @@ const Input = (props: Props, ref: React.Ref<ImperativeHandle>) => {
           onBlur={() => {
             onBlur?.();
             setFocus(false);
-            validate();
           }}
         />
         {iconElement && iconPosition == 'right' ? iconElement : null}
