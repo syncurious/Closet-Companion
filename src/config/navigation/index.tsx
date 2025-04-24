@@ -7,7 +7,7 @@ const Navigation = () => {
   const isAuth = useSelector((state: any) => state.user?.isLogin);
   return (
     <NavigationContainer>
-      {isAuth ? <AuthNavigation /> : <UserNavigation />}
+      {!isAuth ? <AuthNavigation /> : <UserNavigation />}
     </NavigationContainer>
   );
 };

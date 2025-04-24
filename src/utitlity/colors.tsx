@@ -1,120 +1,23 @@
-export interface Gradient {
-  colors: string[];
-}
-
-export interface ThemeColorsType {
-  primaryColors: {
-    mainColor: string;
-    bgColor: string;
-    black1: string;
-  };
-  grays: {
-    grey1: string;
-    grey2: string;
-    grey3: string;
-    grey4: string;
-    grey5: string;
-    darkGrey: string;
-  };
-  accentColors: {
-    yellow: string;
-    red: string;
-    mainDark: string;
-    fillColor: string;
-  };
-  primaryAccents: {
-    accent1: string;
-    accent2: string;
-    accent3: string;
-    accent4: string;
-  };
-  backgroundShades: {
-    surface1: string;
-    surface2: string;
-    surface3: string;
-  };
-  textColors: {
-    textPrimary: string;
-    textSecondary: string;
-    textDisabled: string;
-  };
-  statusColors: {
-    success: string;
-    warning: string;
-    error: string;
-    info: string;
-  };
-  gradients: {
-    accentGradient: Gradient;
-    darkGradient: Gradient;
-  };
-  palette1: {
-    [key: string]: string;
-  };
-}
-
-const ThemeColors: ThemeColorsType = {
-  primaryColors: {
-    mainColor: '#F0A215',
-    bgColor: '#121212',
-    black1: '#000000',
-  },
-  grays: {
-    grey1: '#999999',
-    grey2: '#85898C',
-    grey3: '#2A2A2A',
-    grey4: '#393640',
-    grey5: '#1E1E1E',
-    darkGrey: '#1A1A1A',
-  },
-  accentColors: {
-    yellow: '#F0A215',
-    red: '#EA0000',
-    mainDark: '#121212',
-    fillColor: '#2A2A2A',
-  },
-  primaryAccents: {
-    accent1: '#F0A215',
-    accent2: '#4ECDC4',
-    accent3: '#FF6B6B',
-    accent4: '#7E57C2',
-  },
-  backgroundShades: {
-    surface1: '#1E1E1E',
-    surface2: '#252525',
-    surface3: '#2A2A2A',
-  },
-  textColors: {
-    textPrimary: '#FFFFFF',
-    textSecondary: '#BBBBBB',
-    textDisabled: '#666666',
-  },
-  statusColors: {
-    success: '#4CAF50',
-    warning: '#FFCA28',
-    error: '#EF5350',
-    info: '#2196F3',
-  },
-  gradients: {
-    accentGradient: {
-      colors: ['#F0A215', '#FF9800'],
-    },
-    darkGradient: {
-      colors: ['#1A1A1A', '#212121'],
-    },
-  },
-  palette1: {
-    '50': '#FFF8E1',
-    '100': '#FFECB3',
-    '200': '#FFE082',
-    '300': '#FFD54F',
-    '400': '#FFCA28',
-    '500': '#F0A215',
-    '600': '#FFB300',
-    '700': '#FFA000',
-    '800': '#FF8F00',
-    '900': '#FF6F00',
-  },
+export const Colors = {
+  primary: '#F0A215', // from primaryColors.mainColor
+  secondary: '#121212', // from primaryColors.bgColor or accentColors.mainDark
+  lightBackground: '#1E1E1E', // closest from backgroundShades.surface1
+  darkBackground: '#121212', // same as secondary
+  lightCard: '#2A2A2A', // from grays.grey3 / accentColors.fillColor
+  darkCard: '#1A1A1A', // from grays.darkGrey
+  textSub: '#BBBBBB', // from textColors.textSecondary
+  actionRed: '#EA0000', // from accentColors.red
+  actionBlue: '#2196F3', // from statusColors.info
+  actionyellow: '#F0A215', // same as primary, reused
+  accent: '#4ECDC4', // from primaryAccents.accent2
+  white: '#FFFFFF', // from textColors.textPrimary
+  black: '#000000', // from primaryColors.black1
+  border: '#2A2A2A', // reused from grey3 / fillColor
+  darkGreen: '#121212', // reused for consistency with darkBackground
+  textSubOne: '#85898C', // from grays.grey2
+  textButtonColor: '#666666', // from textColors.textDisabled
+  tabColor: '#393640', // from grays.grey4
+  subHeading: '#999999', // from grays.grey1
 };
 
-export default ThemeColors;
+export type ColorTypes = keyof typeof Colors;
