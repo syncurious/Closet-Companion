@@ -16,6 +16,8 @@ import {
 } from '../../../../assets';
 import {Image} from 'react-native';
 import {Colors} from '../../../../utitlity/colors';
+import Collection from '../../../../screen/User/Collection';
+import Add from '../../../../screen/User/Add';
 
 const Tab = createBottomTabNavigator();
 
@@ -58,7 +60,7 @@ const TabNavigation = () => {
           ),
         }}
         name="Collection"
-        component={Home}
+        component={Collection}
       />
       <Tab.Screen
         options={{
@@ -71,7 +73,7 @@ const TabNavigation = () => {
           ),
         }}
         name="Add"
-        component={Home}
+        component={Add}
       />
       <Tab.Screen
         options={{
