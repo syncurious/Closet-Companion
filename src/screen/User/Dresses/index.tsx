@@ -1,10 +1,20 @@
-import {Text, View} from 'react-native';
+import React from 'react';
+import {View} from 'react-native';
+import Header from '../../../components/header';
+import Container from '../../../components/container';
+import {Colors} from '../../../utitlity/colors';
 
-const Dresses = () => {
+const Dresses = ({route}: any) => {
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Dresses</Text>
-    </View>
+    <React.Fragment>
+      <Header route={route} />
+      <Container
+        fullScreen
+        scrollEnabled
+        style={{backgroundColor: Colors.black}}>
+        <View></View>
+      </Container>
+    </React.Fragment>
   );
 };
 

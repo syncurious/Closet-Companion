@@ -31,9 +31,9 @@ const TabNavigation = () => {
         headerShadowVisible: false,
         headerShown: false,
         tabBarStyle: {
-          borderRadius: 20,
           height: 60,
           elevation: 0,
+          backgroundColor: Colors.black,
         },
       }}>
       <Tab.Screen

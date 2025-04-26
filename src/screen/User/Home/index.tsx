@@ -1,10 +1,20 @@
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
+import Container from '../../../components/container';
+import React from 'react';
+import {Colors} from '../../../utitlity/colors';
+import Header from '../../../components/header';
 
-const Home = () => {
+const Home = ({route}: any) => {
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Home</Text>
-    </View>
+    <React.Fragment>
+      <Header route={route} isLogout />
+      <Container
+        fullScreen
+        scrollEnabled
+        style={{backgroundColor: Colors.black}}>
+        <View></View>
+      </Container>
+    </React.Fragment>
   );
 };
 

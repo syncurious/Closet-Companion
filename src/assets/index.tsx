@@ -11,10 +11,12 @@ const galleryIcon = require('./icons/gallery.png');
 const galleryFilledIcon = require('./icons/gallery-filled.png');
 const addIcon = require('./icons/add.png');
 const addFilledIcon = require('./icons/add-filled.png');
+const logoutIcon = require('./icons/logout.png');
 
 // Images
 
 export {
+  // icons
   eyeIcon,
   eyeFilledIcon,
   homeIcon,
@@ -27,4 +29,6 @@ export {
   galleryFilledIcon,
   addIcon,
   addFilledIcon,
+  logoutIcon,
+  // images
 };

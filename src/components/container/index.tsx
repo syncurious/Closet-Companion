@@ -1,11 +1,8 @@
 import React from 'react';
-
 import {
   View,
   StyleSheet,
   ViewProps,
-  Text,
-  Button,
   ScrollView,
   RefreshControl,
   StatusBar,
@@ -78,26 +75,24 @@ const Container = ({
               />
             ) : undefined
           }>
-          <StatusBar barStyle={'dark-content'} />
+          <StatusBar
+            backgroundColor={Colors.primary}
+            barStyle={'dark-content'}
+          />
           {children}
         </ScrollView>
       ) : (
         <View style={containerStyles}>
-          <StatusBar barStyle={'dark-content'} />
+          <StatusBar
+            backgroundColor={Colors.primary}
+            barStyle={'dark-content'}
+          />
           {children}
         </View>
       )}
     </React.Fragment>
   );
 };
-
-const ErrorFallback = ({error, resetError}: any) => (
-  <View>
-    <Text>Oops! Something went wrong:</Text>
-    <Text>{error.toString()}</Text>
-    <Button title="Try again" onPress={resetError} />
-  </View>
-);
 
 const styles = StyleSheet.create({
   container: {
