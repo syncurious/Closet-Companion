@@ -12,8 +12,15 @@ const galleryFilledIcon = require('./icons/gallery-filled.png');
 const addIcon = require('./icons/add.png');
 const addFilledIcon = require('./icons/add-filled.png');
 const logoutIcon = require('./icons/logout.png');
+const analyticsIcon = require('./icons/analytics.png');
+const planningIcon = require('./icons/planning.png');
+const virtualIcon = require('./icons/virtual.png');
+const AiIcon = require('./icons/ai.png');
 
 // Images
+const banner = require('./images/banner.jpg');
+const dress = require('./images/dress.jpg');
+const dressOne = require('./images/dress.webp');
 
 export {
   // icons
@@ -30,5 +37,12 @@ export {
   addIcon,
   addFilledIcon,
   logoutIcon,
+  analyticsIcon,
+  planningIcon,
+  virtualIcon,
+  AiIcon,
   // images
+  banner,
+  dress,
+  dressOne,
 };
