@@ -34,6 +34,7 @@ const ProfileField = ({
 
 const Profile = ({route}: any) => {
   const dispatch = useDispatch();
+  const [isEdit, setIsEdit] = useState<boolean>(false);
   const [payload, setPayload] = useState({
     fullName: 'Aqib',
     email: 'aaqib@gmail.com',
@@ -47,8 +48,8 @@ const Profile = ({route}: any) => {
     setPayload(prev => ({...prev, [key]: value}));
   };
 
-  const handleLogout = async () => {
-    dispatch(setIsLogin(false));
+  const handleUpdate = async () => {
+    setIsEdit(!isEdit);
   };
 
   return (
@@ -120,8 +121,8 @@ const Profile = ({route}: any) => {
           <View style={styles.buttonWrapper}>
             <Button
               variant="contained"
-              children={'Update Profile'}
-              onPress={handleLogout}
+              children={isEdit ? 'Save Profile' : 'Edit Profile'}
+              onPress={handleUpdate}
             />
           </View>
         </View>
