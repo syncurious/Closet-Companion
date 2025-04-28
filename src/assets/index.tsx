@@ -11,10 +11,23 @@ const galleryIcon = require('./icons/gallery.png');
 const galleryFilledIcon = require('./icons/gallery-filled.png');
 const addIcon = require('./icons/add.png');
 const addFilledIcon = require('./icons/add-filled.png');
+const logoutIcon = require('./icons/logout.png');
+const analyticsIcon = require('./icons/analytics.png');
+const planningIcon = require('./icons/planning.png');
+const virtualIcon = require('./icons/virtual.png');
+const AiIcon = require('./icons/ai.png');
+const AiFilledIcon = require('./icons/ai-filled.png');
+const EditProfileIcon = require('./icons/edit.png');
+const ChatBotIcon = require('./icons/chatbot.png');
+const ChatBotFilledIcon = require('./icons/chatbot-filled.png');
 
 // Images
+const banner = require('./images/banner.jpg');
+const dress = require('./images/dress.jpg');
+const dressOne = require('./images/dress.webp');
 
 export {
+  // icons
   eyeIcon,
   eyeFilledIcon,
   homeIcon,
@@ -27,4 +40,17 @@ export {
   galleryFilledIcon,
   addIcon,
   addFilledIcon,
+  logoutIcon,
+  analyticsIcon,
+  planningIcon,
+  virtualIcon,
+  AiIcon,
+  AiFilledIcon,
+  EditProfileIcon,
+  ChatBotIcon,
+  ChatBotFilledIcon,
+  // images
+  banner,
+  dress,
+  dressOne,
 };

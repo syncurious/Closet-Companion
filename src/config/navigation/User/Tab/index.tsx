@@ -3,12 +3,12 @@ import Home from '../../../../screen/User/Home';
 import Profile from '../../../../screen/User/Profile';
 import Dresses from '../../../../screen/User/Dresses';
 import {
-  addFilledIcon,
-  addIcon,
+  AiFilledIcon,
+  AiIcon,
+  ChatBotFilledIcon,
+  ChatBotIcon,
   dressFilledIcon,
   dressIcon,
-  galleryFilledIcon,
-  galleryIcon,
   homeFilledIcon,
   homeIcon,
   userFilledIcon,
@@ -16,8 +16,8 @@ import {
 } from '../../../../assets';
 import {Image} from 'react-native';
 import {Colors} from '../../../../utitlity/colors';
-import Collection from '../../../../screen/User/Collection';
-import Add from '../../../../screen/User/Add';
+import Ai from '../../../../screen/User/Ai';
+import ChatBot from '../../../../screen/User/ChatBot';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,9 +31,9 @@ const TabNavigation = () => {
         headerShadowVisible: false,
         headerShown: false,
         tabBarStyle: {
-          borderRadius: 20,
           height: 60,
           elevation: 0,
+          backgroundColor: Colors.black,
         },
       }}>
       <Tab.Screen
@@ -55,38 +55,38 @@ const TabNavigation = () => {
             <Image
               style={{height: size, width: size}}
               tintColor={color}
-              source={focused ? galleryFilledIcon : galleryIcon}
-            />
-          ),
-        }}
-        name="Collection"
-        component={Collection}
-      />
-      <Tab.Screen
-        options={{
-          tabBarIcon: ({color, size, focused}) => (
-            <Image
-              style={{height: size, width: size}}
-              tintColor={color}
-              source={focused ? addFilledIcon : addIcon}
-            />
-          ),
-        }}
-        name="Add"
-        component={Add}
-      />
-      <Tab.Screen
-        options={{
-          tabBarIcon: ({color, size, focused}) => (
-            <Image
-              style={{height: size, width: size}}
-              tintColor={color}
               source={focused ? dressFilledIcon : dressIcon}
             />
           ),
         }}
         name="Dresses"
         component={Dresses}
+      />
+      <Tab.Screen
+        options={{
+          tabBarIcon: ({color, size, focused}) => (
+            <Image
+              style={{height: size, width: size}}
+              tintColor={color}
+              source={focused ? AiFilledIcon : AiIcon}
+            />
+          ),
+        }}
+        name="Ai"
+        component={Ai}
+      />
+      <Tab.Screen
+        options={{
+          tabBarIcon: ({color, size, focused}) => (
+            <Image
+              style={{height: size, width: size}}
+              tintColor={color}
+              source={focused ? ChatBotFilledIcon : ChatBotIcon}
+            />
+          ),
+        }}
+        name="ChatBot"
+        component={ChatBot}
       />
       <Tab.Screen
         options={{

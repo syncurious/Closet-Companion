@@ -1,10 +1,10 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 import Header from '../../../components/header';
 import Container from '../../../components/container';
 import {Colors} from '../../../utitlity/colors';
 
-const Collection = ({route}: any) => {
+const ChatBot = ({route}: any) => {
   return (
     <React.Fragment>
       <Header route={route} />
@@ -18,4 +18,4 @@ const Collection = ({route}: any) => {
   );
 };
 
-export default Collection;
+export default ChatBot;
