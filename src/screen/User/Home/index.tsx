@@ -1,11 +1,11 @@
 import {Image, StyleSheet, View} from 'react-native';
-import Container from '../../../components/container';
 import React from 'react';
-import {Colors} from '../../../utitlity/colors';
-import Header from '../../../components/header';
-import Heading from '../../../components/heading';
-import HomeCard from '../../../components/card';
-import {dress} from '../../../assets';
+import Header from '@/components/header';
+import Container from '@/components/container';
+import {Colors} from '@/utitlity/colors';
+import Heading from '@/components/heading';
+import HomeCard from '@/components/card';
+import { dress } from '@/assets';
 
 const Home = ({route}: any) => {
   return (
