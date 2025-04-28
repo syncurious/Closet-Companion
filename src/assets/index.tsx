@@ -16,7 +16,10 @@ const analyticsIcon = require('./icons/analytics.png');
 const planningIcon = require('./icons/planning.png');
 const virtualIcon = require('./icons/virtual.png');
 const AiIcon = require('./icons/ai.png');
-const EditProfileIcon = require('./icons/ai.png');
+const AiFilledIcon = require('./icons/ai-filled.png');
+const EditProfileIcon = require('./icons/edit.png');
+const ChatBotIcon = require('./icons/chatbot.png');
+const ChatBotFilledIcon = require('./icons/chatbot-filled.png');
 
 // Images
 const banner = require('./images/banner.jpg');
@@ -42,7 +45,10 @@ export {
   planningIcon,
   virtualIcon,
   AiIcon,
+  AiFilledIcon,
   EditProfileIcon,
+  ChatBotIcon,
+  ChatBotFilledIcon,
   // images
   banner,
   dress,
