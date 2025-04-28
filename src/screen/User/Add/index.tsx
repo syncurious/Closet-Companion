@@ -7,7 +7,7 @@ import {Colors} from '../../../utitlity/colors';
 const Add = ({route}: any) => {
   return (
     <React.Fragment>
-      <Header route={route} />
+      <Header route={{name: 'Add Dress'}} />
       <Container
         fullScreen
         scrollEnabled
