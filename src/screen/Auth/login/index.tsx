@@ -1,3 +1,12 @@
+import { eyeFilledIcon, eyeIcon } from '@/assets';
+import Button from '@/components/button';
+import Container from '@/components/container';
+import Heading from '@/components/heading';
+import Input from '@/components/input';
+import { setIsLogin } from '@/config/redux/reducer';
+import { Colors } from '@/utitlity/colors';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -6,16 +15,7 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import Container from '../../../components/container';
-import Heading from '../../../components/heading';
-import Input from '../../../components/input';
-import {eyeFilledIcon, eyeIcon} from '../../../assets';
-import {useState} from 'react';
-import Button from '../../../components/button';
-import {useDispatch} from 'react-redux';
-import {setIsLogin} from '../../../config/redux/reducer';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {Colors} from '../../../utitlity/colors';
+import { useDispatch } from 'react-redux';
 
 const Login = () => {
   const dispatch = useDispatch();
