@@ -1,5 +1,6 @@
 import React, {JSX} from 'react';
 import {Text, StyleSheet, ViewStyle, TextStyle} from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 // const ColorsTyped: Record<ColorTypes, string> = Colors;
 
@@ -39,6 +40,7 @@ export default function Heading({
   numberOfLines,
 }: PropsType) {
   const headingStyle = [
+    {color : Colors.white},
     styles[`h${level}` as keyof typeof styles],
     // color && {color: Colors[color as ColorTypes]},
     style,
