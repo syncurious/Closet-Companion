@@ -1,14 +1,13 @@
+import {dress, EditProfileIcon} from '@/assets';
+import Button from '@/components/button';
+import Container from '@/components/container';
+import Header from '@/components/header';
+import Heading from '@/components/heading';
+import Input from '@/components/input';
+import {Colors} from '@/utitlity/colors';
+import React, {useState} from 'react';
 import {Image, TouchableOpacity, View, StyleSheet} from 'react-native';
 import {useDispatch} from 'react-redux';
-import {setIsLogin} from '../../../config/redux/reducer';
-import Button from '../../../components/button';
-import React, {useState} from 'react';
-import Header from '../../../components/header';
-import Container from '../../../components/container';
-import {Colors} from '../../../utitlity/colors';
-import Input from '../../../components/input';
-import Heading from '../../../components/heading';
-import {dress, EditProfileIcon} from '../../../assets';
 
 const ProfileField = ({
   label,

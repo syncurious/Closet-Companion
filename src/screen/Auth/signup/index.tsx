@@ -6,16 +6,16 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import Container from '../../../components/container';
-import Heading from '../../../components/heading';
-import Input from '../../../components/input';
-import {eyeFilledIcon, eyeIcon} from '../../../assets';
-import {useState} from 'react';
-import Button from '../../../components/button';
-import {useDispatch} from 'react-redux';
-import {setIsLogin} from '../../../config/redux/reducer';
-import {Colors} from '../../../utitlity/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { useState } from 'react';
+import { setIsLogin } from '@/config/redux/reducer';
+import Container from '@/components/container';
+import Heading from '@/components/heading';
+import { eyeFilledIcon, eyeIcon } from '@/assets';
+import Input from '@/components/input';
+import Button from '@/components/button';
+import { Colors } from '@/utitlity/colors';
 
 const Signup = () => {
   const dispatch = useDispatch();

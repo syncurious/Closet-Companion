@@ -1,16 +1,9 @@
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
-import Heading from '../heading';
-import Dimension from '../../utitlity/Dimension';
-import {Colors} from '../../utitlity/colors';
-import {
-  addIcon,
-  AiIcon,
-  analyticsIcon,
-  planningIcon,
-  userIcon,
-  virtualIcon,
-} from '../../assets';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+import { addIcon, AiIcon, analyticsIcon, planningIcon, userIcon, virtualIcon } from '@/assets';
+import { Colors } from '@/utitlity/colors';
+import Dimension from '@/utitlity/Dimension';
+import Heading from '../heading';
 
 const data = [
   {name: 'Add Dresss', uri: addIcon, route: 'Add'},
