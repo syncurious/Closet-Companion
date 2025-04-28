@@ -1,4 +1,4 @@
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Heading from '../heading';
 import Dimension from '../../utitlity/Dimension';
 import {Colors} from '../../utitlity/colors';
@@ -10,31 +10,41 @@ import {
   userIcon,
   virtualIcon,
 } from '../../assets';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 
 const data = [
-  {name: 'Add Dresss', uri: addIcon},
-  {name: 'Profile', uri: userIcon},
-  {name: 'Wardrobe Analytics', uri: analyticsIcon},
-  {name: 'Outfit Planning', uri: planningIcon},
-  {name: 'Virtual Styling', uri: virtualIcon},
-  {name: 'Ai Recommendation', uri: AiIcon},
+  {name: 'Add Dresss', uri: addIcon, route: 'Add'},
+  {name: 'Ai Recommendation', uri: AiIcon, route: 'Ai'},
+  {name: 'Wardrobe Analytics', uri: analyticsIcon, route: 'Analytics'},
+  {name: 'Outfit Planning', uri: planningIcon, route: 'Outfit'},
+  {name: 'Virtual Styling', uri: virtualIcon, route: 'Virtual'},
+  {name: 'Profile', uri: userIcon, route: 'Profile'},
 ];
 
 const HomeCard = () => {
+  const navigation = useNavigation<NavigationProp<any>>();
+  const handleNavigate = (val: string) => {
+    navigation.navigate(val);
+  };
   return (
     <View style={{marginBottom: 20}}>
       <Heading level={4} style={styles.Heading} children={'Quick Action'} />
       <View style={styles.container}>
         {data?.map((val: any, index: number) => {
           return (
-            <View key={index} style={styles.card}>
+            <TouchableOpacity
+              key={index}
+              style={styles.card}
+              onPress={() => {
+                handleNavigate(val?.route);
+              }}>
               <Image
                 source={val?.uri}
                 tintColor={Colors.primary}
                 style={styles.icon}
               />
               <Heading level={6} style={styles.Heading} children={val?.name} />
-            </View>
+            </TouchableOpacity>
           );
         })}
       </View>
