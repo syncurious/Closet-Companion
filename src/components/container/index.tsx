@@ -97,7 +97,7 @@ const Container = ({
 const styles = StyleSheet.create({
   container: {
     position: 'relative',
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.black,
   },
   mobilePadding: {
     paddingHorizontal: 16,
