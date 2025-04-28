@@ -128,6 +128,7 @@ const Input = (props: Props) => {
             errorMessage ? styles.inputError : null,
             inputStyle,
           ]}
+          placeholderTextColor={Colors.subHeading + '60'}
           value={inputValue}
           onChangeText={handleChange}
           onChange={onChange}
@@ -193,9 +194,8 @@ const styles = StyleSheet.create({
     height: 24,
   },
   input: {
-    backgroundColor: Colors.white,
     width: '100%',
-    paddingVertical: 10,
+    paddingVertical: 15,
     paddingHorizontal: 18,
     borderRadius: 15,
   },
@@ -222,8 +222,8 @@ const inputVariants = {
     borderColor: color,
   }),
   contained: (bgColor: string) => ({
-    backgroundColor: bgColor,
-    color: Colors.secondary,
+    backgroundColor: Colors.border,
+    color: Colors.subHeading,
   }),
   underline: (color: string) => ({
     backgroundColor: 'transparent',

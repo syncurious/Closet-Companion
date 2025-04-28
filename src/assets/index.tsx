@@ -16,6 +16,7 @@ const analyticsIcon = require('./icons/analytics.png');
 const planningIcon = require('./icons/planning.png');
 const virtualIcon = require('./icons/virtual.png');
 const AiIcon = require('./icons/ai.png');
+const EditProfileIcon = require('./icons/ai.png');
 
 // Images
 const banner = require('./images/banner.jpg');
@@ -41,6 +42,7 @@ export {
   planningIcon,
   virtualIcon,
   AiIcon,
+  EditProfileIcon,
   // images
   banner,
   dress,
