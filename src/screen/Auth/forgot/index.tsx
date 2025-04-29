@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 
-const Login = () => {
+const Forgot = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProp<any>>();
   const [isPassword, setIsPassword] = useState<boolean>(false);
@@ -34,10 +34,6 @@ const Login = () => {
   const handleSignup = () => {
     navigation.navigate('signup');
   };
-  const handleForgot = () => {
-    console.log('Hello');
-    navigation.navigate('forgot');
-  };
   return (
     <KeyboardAvoidingView
       style={{flex: 1}}
@@ -49,8 +45,11 @@ const Login = () => {
         showsHorizontalScrollIndicator={false}>
         <Container scrollEnabled={false} fullScreen style={styles.Container}>
           <View style={styles.HeadingBox}>
-            <Heading children={'Welcome Back'} level={2} />
-            <Heading children={'Find your best matching clothes'} level={6} />
+            <Heading children={'Forgot Password'} level={2} />
+            <Heading
+              children={'Enter the email associated with your account'}
+              level={6}
+            />
           </View>
           <View style={styles.InputBox}>
             <View style={styles.RowGap}>
@@ -64,52 +63,14 @@ const Login = () => {
                   }}
                 />
               </View>
-              <View style={styles.RowGap}>
-                <Heading level={6} children={'Password'} />
-                <Input
-                  value={payload?.password}
-                  onChangeText={e => {
-                    handleValueChange('password', e);
-                  }}
-                  type={isPassword ? 'password' : 'default'}
-                  iconPosition="right"
-                  prefixIcon={isPassword ? eyeIcon : eyeFilledIcon}
-                  onPress={() => {
-                    setIsPassword(!isPassword);
-                  }}
-                />
-              </View>
             </View>
 
             <View style={{flex: 1, justifyContent: 'space-around'}}>
-              <TouchableOpacity onPress={handleForgot}>
-                <Heading
-                  level={6}
-                  children={'Forget Password'}
-                  style={{...styles.higlightText, textAlign: 'right'}}
-                />
-              </TouchableOpacity>
               <Button
                 variant="contained"
-                children={'Login'}
+                children={'Forgot Password'}
                 onPress={handleLogin}
               />
-            </View>
-          </View>
-          <View style={styles.ParagraphBox}>
-            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-              <Heading
-                level={6}
-                children={"Don't have an account? "}
-                style={{}}
-              />
-              <TouchableOpacity onPress={handleSignup}>
-                <Heading
-                  level={6}
-                  children={'Sign Up'}
-                  style={styles.higlightText}
-                />
-              </TouchableOpacity>
             </View>
           </View>
         </Container>
@@ -129,7 +90,7 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
   },
   InputBox: {
-    flex: 0.35,
+    flex: 0.25,
     justifyContent: 'space-between',
   },
   ParagraphBox: {
@@ -144,4 +105,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default Forgot;
