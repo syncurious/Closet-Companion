@@ -42,13 +42,13 @@ function BottomModal(props: Props) {
         onPress={onClose}
         style={{
           flex: 1,
-          backgroundColor: '#00000080',
+          backgroundColor: '#00000090',
           justifyContent: 'flex-end',
         }}>
         <View style={styles.modal}>
           <View style={styles.modalHeading}>
             <Heading
-              style={{textAlign: 'center', color: Colors.black}}
+              style={{textAlign: 'center', color: Colors.white}}
               level={2}>
               Create Plan by
             </Heading>
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     height: 350,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.darkCard,
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   modalHeading: {
-    color: Colors.black,
+    color: Colors.white,
     width: '80%',
     alignItems: 'center',
     marginTop: 20,
@@ -159,10 +159,10 @@ const styles = StyleSheet.create({
     gap: 10,
     justifyContent: 'flex-start',
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: Colors.white + '30',
   },
   liText: {
-    color: Colors.black,
+    color: Colors.white,
   },
   imageContainer: {
     width: 50,
