@@ -18,12 +18,14 @@ import {Image} from 'react-native';
 import {Colors} from '../../../../utitlity/colors';
 import Ai from '../../../../screen/User/Ai';
 import ChatBot from '../../../../screen/User/ChatBot';
+import BottomNavBar from '@/components/section/bottomBar';
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
   return (
     <Tab.Navigator
+    tabBar={(props)=><BottomNavBar {...props} />}
       screenOptions={{
         tabBarActiveTintColor: Colors.primary,
         tabBarInactiveTintColor: Colors.subHeading,
