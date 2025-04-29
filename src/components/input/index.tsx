@@ -15,6 +15,7 @@ import {
   ViewStyle,
   ImageSourcePropType,
   TouchableOpacity,
+  ImageStyle,
 } from 'react-native';
 import {Colors, ColorTypes} from '../../utitlity/colors';
 
@@ -37,7 +38,7 @@ interface Props {
   style?: TextStyle | ViewStyle;
   iconPosition?: 'left' | 'right';
   inputStyle?: TextInput['props']['style'];
-  iconStyle?: Image['props']['style'];
+  iconStyle?: ImageStyle;
   iconClick?: () => void;
   iconElement?: JSX.Element;
   multiline?: boolean;
@@ -100,10 +101,10 @@ const Input = (props: Props) => {
           <TouchableOpacity
             onPress={() => iconClick?.()}
             disabled={!iconClick}
-            style={[styles.icon, iconStyle]}>
+            style={[styles.icon]}>
             <Image
               source={prefixIcon as ImageSourcePropType}
-              style={{height: 24, width: 24}}
+              style={{height: 24, width: 24 ,...iconStyle}}
             />
           </TouchableOpacity>
         ) : null}
@@ -162,7 +163,7 @@ const Input = (props: Props) => {
             style={[styles.iconRigth]}>
             <Image
               source={prefixIcon as ImageSourcePropType}
-              style={{height: 24, width: 24}}
+              style={{height: 24, width: 24,...iconStyle}}
             />
           </TouchableOpacity>
         ) : null}

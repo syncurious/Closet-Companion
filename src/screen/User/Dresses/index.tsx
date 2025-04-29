@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, ScrollView, Text, View} from 'react-native';
+import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import Header from '../../../components/header';
 import Container from '../../../components/container';
 import {Colors} from '../../../utitlity/colors';
@@ -165,12 +165,28 @@ const Dresses = ({route}: any) => {
               <Heading level={6}> All </Heading>
             </View>
           </ScrollView>
+          <TouchableOpacity
+            style={{
+              marginTop: 30,
+              padding: 20,
+              borderWidth: 2,
+              borderColor: Colors.white + '40',
+              borderStyle : "dashed",
+              borderRadius : 10
+            }}>
+            <Heading level={4} style={{textAlign : "center", color : Colors.white + '90'}}>Add New Dress</Heading>
+          </TouchableOpacity>
         </View>
 
         {/* Dresses Cards renders */}
-        <View
-          style={{
-            flex: 1,
+        <ScrollView
+
+        style={{
+          flex : 1,
+        }}
+        contentContainerStyle={{
+          flex: 1,
+          height :5000,
             gap: 5,
             rowGap: 15,
             marginVertical: 10,
@@ -188,7 +204,7 @@ const Dresses = ({route}: any) => {
               }}
             />
           ))}
-        </View>
+        </ScrollView>
       </Container>
     </React.Fragment>
   );
