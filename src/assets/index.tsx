@@ -20,6 +20,7 @@ const AiFilledIcon = require('./icons/ai-filled.png');
 const EditProfileIcon = require('./icons/edit.png');
 const ChatBotIcon = require('./icons/chatbot.png');
 const ChatBotFilledIcon = require('./icons/chatbot-filled.png');
+const SendFilledIcon = require('./icons/send-filled.png');
 
 // Images
 const banner = require('./images/banner.jpg');
@@ -49,6 +50,7 @@ export {
   EditProfileIcon,
   ChatBotIcon,
   ChatBotFilledIcon,
+  SendFilledIcon,
   // images
   banner,
   dress,
