@@ -1,9 +1,7 @@
-import {eyeFilledIcon, eyeIcon} from '@/assets';
 import Button from '@/components/button';
 import Container from '@/components/container';
 import Heading from '@/components/heading';
 import Input from '@/components/input';
-import {setIsLogin} from '@/config/redux/reducer';
 import {Colors} from '@/utitlity/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
@@ -13,26 +11,18 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
-  TouchableOpacity,
 } from 'react-native';
-import {useDispatch} from 'react-redux';
 
 const Forgot = () => {
-  const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProp<any>>();
-  const [isPassword, setIsPassword] = useState<boolean>(false);
   const [payload, setPayload] = useState({
     email: '',
-    password: '',
   });
   const handleValueChange = (name: string, value: string) => {
     setPayload((prev: any) => ({...prev, [name]: value}));
   };
-  const handleLogin = async () => {
-    dispatch(setIsLogin(true));
-  };
-  const handleSignup = () => {
-    navigation.navigate('signup');
+  const handleForgot = () => {
+    console.log('Click to forgot');
   };
   return (
     <KeyboardAvoidingView
@@ -69,7 +59,7 @@ const Forgot = () => {
               <Button
                 variant="contained"
                 children={'Forgot Password'}
-                onPress={handleLogin}
+                onPress={handleForgot}
               />
             </View>
           </View>
@@ -93,15 +83,8 @@ const styles = StyleSheet.create({
     flex: 0.25,
     justifyContent: 'space-between',
   },
-  ParagraphBox: {
-    flex: 0.2,
-  },
   RowGap: {
     rowGap: 5,
-  },
-  higlightText: {
-    color: Colors.primary,
-    textDecorationLine: 'underline',
   },
 });
 
