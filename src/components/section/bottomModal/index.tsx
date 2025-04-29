@@ -1,4 +1,4 @@
-import {AiFilledIcon} from '@/assets';
+import {AiFilledIcon, crossIcon, selfIcon} from '@/assets';
 import Heading from '@/components/heading';
 import Ai from '@/screen/User/Ai';
 import {Colors} from '@/utitlity/colors';
@@ -49,7 +49,7 @@ function BottomModal(props:Props) {
               <View style={styles.imageContainer}>
                 <Image
                   style={{width: 30, height: 30, resizeMode: 'contain' , tintColor : Colors.white}}
-                  source={AiFilledIcon}
+                  source={selfIcon}
                 />
               </View>
               <View>
@@ -74,7 +74,7 @@ function BottomModal(props:Props) {
               </View>
               <View>
                 <Heading level={4} style={styles.liText}>
-                  Your Self
+                  By Help of AI
                 </Heading>
                 <Heading level={6} style={styles.liText}>
                     Create a plan by yourself
@@ -88,7 +88,7 @@ function BottomModal(props:Props) {
                 onPress={onClose}
               activeOpacity={0.9}
               style={styles.closeButton}>
-              <Image style={styles.closeButtonIcon} source={AiFilledIcon} />
+              <Image style={styles.closeButtonIcon} source={crossIcon} />
             </TouchableOpacity>
           </View>
         </View>
@@ -168,6 +168,5 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     tintColor: Colors.white,
-    transform: [{rotate: '45deg'}],
   },
 });

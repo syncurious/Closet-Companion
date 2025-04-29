@@ -49,8 +49,7 @@ const BottomNavBar: any = ({state, navigation}: any) => {
   return (
     <View>
       <View style={styles.bottomNav}>
-        <BottomModal isOpen={modal} onClose={modalhandler}
-          />
+        <BottomModal isOpen={modal} onClose={modalhandler} />
         <TouchableOpacity
           style={styles.navItem}
           onPress={() => onPressHandler(0)}>
@@ -85,7 +84,7 @@ const BottomNavBar: any = ({state, navigation}: any) => {
         </TouchableOpacity>
         <TouchableOpacity style={[styles.centerIcon]} onPress={modalhandler}>
           <Image
-            source={active == 3 ? AiFilledIcon : AiIcon}
+            source={AiFilledIcon}
             style={[
               styles.icon,
               {tintColor: Colors.white, width: 20, height: 20},
