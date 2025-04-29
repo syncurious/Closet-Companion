@@ -37,6 +37,7 @@ interface Props {
   style?: TextStyle | ViewStyle;
   iconPosition?: 'left' | 'right';
   inputStyle?: TextInput['props']['style'];
+  iconStyle?: Image['props']['style'];
   iconClick?: () => void;
   iconElement?: JSX.Element;
   multiline?: boolean;
@@ -67,6 +68,7 @@ const Input = (props: Props) => {
     multiline,
     variant = 'contained',
     color = 'white',
+    iconStyle,
     maxLength,
   } = props;
   const [inputValue, setInputValue] = useState(initialValue);
@@ -98,7 +100,7 @@ const Input = (props: Props) => {
           <TouchableOpacity
             onPress={() => iconClick?.()}
             disabled={!iconClick}
-            style={[styles.icon]}>
+            style={[styles.icon, iconStyle]}>
             <Image
               source={prefixIcon as ImageSourcePropType}
               style={{height: 24, width: 24}}
