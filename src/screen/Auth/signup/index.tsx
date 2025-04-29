@@ -7,15 +7,15 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
-import { useState } from 'react';
-import { setIsLogin } from '@/config/redux/reducer';
+import {useDispatch} from 'react-redux';
+import {useState} from 'react';
+import {setIsLogin} from '@/config/redux/reducer';
 import Container from '@/components/container';
 import Heading from '@/components/heading';
-import { eyeFilledIcon, eyeIcon } from '@/assets';
+import {eyeFilledIcon, eyeIcon} from '@/assets';
 import Input from '@/components/input';
 import Button from '@/components/button';
-import { Colors } from '@/utitlity/colors';
+import {Colors} from '@/utitlity/colors';
 
 const Signup = () => {
   const dispatch = useDispatch();
@@ -41,7 +41,9 @@ const Signup = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView
         contentContainerStyle={{flexGrow: 1}}
-        keyboardShouldPersistTaps="handled">
+        keyboardShouldPersistTaps="handled"
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}>
         <Container scrollEnabled={false} fullScreen style={styles.Container}>
           <View style={styles.HeadingBox}>
             <Heading children={'Create Account'} level={2} />

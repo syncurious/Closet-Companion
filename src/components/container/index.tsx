@@ -61,8 +61,8 @@ const Container = ({
           contentContainerStyle={contentContainerStyle}
           horizontal={horizontal ?? false}
           style={containerStyles}
-          showsVerticalScrollIndicator={showsVerticalScrollIndicator}
-          showsHorizontalScrollIndicator={showsHorizontalScrollIndicator}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
           refreshControl={
             refreshControl ? (
               <RefreshControl
