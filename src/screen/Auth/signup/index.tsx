@@ -35,15 +35,17 @@ const Signup = () => {
   };
   const handleSignup = async () => {
     try {
-      const {user, error} = await signUpWithEmail(payload);
-      console.log('Reponse ', user, error);
-      error
-        ? Alert.alert(`${error}`)
-        : (Alert.alert('User Create Succesfully'),
-          dispatch(setIsLogin(true)),
-          setPayload(inititalPayload));
+      const response = await signUpWithEmail(payload);
+      if (response.success) {
+        dispatch(setIsLogin(true)), setPayload(inititalPayload);
+        console.log('✅ Signup success:', response.user);
+      } else {
+        Alert.alert(`${response?.message}`);
+        console.warn('❌ Signup error:', response.message);
+      }
     } catch (error) {
-      console.log('Error', error);
+      console.error('⚠️ Unexpected error:', error);
+      // Show fallback error message to user
     }
   };
   const handleLogin = async () => {

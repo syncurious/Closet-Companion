@@ -24,11 +24,16 @@ const Forgot = () => {
   };
   const handleForgot = async () => {
     try {
-      const {success, error} = await resetPassword(payload?.email);
-      error ? Alert.alert(`${error?.message}`) : navigation.navigate('login');
-      console.log('Succes', error, success);
+      const response = await resetPassword(payload?.email);
+      if (response.success) {
+        console.log('✅ Email sent:', response.message);
+        navigation.navigate('login');
+      } else {
+        Alert.alert(`${response?.message}`);
+        console.warn('❌ Failed to send reset email:', response.message);
+      }
     } catch (error) {
-      console.log('Error', error);
+      console.error('⚠️ Unexpected error during password reset:', error);
     }
   };
   return (

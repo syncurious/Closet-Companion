@@ -34,19 +34,23 @@ const Login = () => {
   };
   const handleLogin = async () => {
     try {
-      const {user, error} = await loginWithEmail(payload);
-      console.log('Response', user);
-      error ? Alert.alert(`${error?.message}`) : dispatch(setIsLogin(true)),
-        setPayload(initialPayload);
+      const response = await loginWithEmail(payload);
+      if (response.success) {
+        console.log('✅ Login success:', response.user);
+        console.log('👤 User profile data:', response.userData);
+        dispatch(setIsLogin(true)), setPayload(initialPayload);
+      } else {
+        console.warn('❌ Login failed:', response.message);
+        Alert.alert(`${response?.message}`);
+      }
     } catch (error) {
-      console.log('Error', error);
+      console.error('⚠️ Unexpected error during login:', error);
     }
   };
   const handleSignup = () => {
     navigation.navigate('signup');
   };
   const handleForgot = () => {
-    console.log('Hello');
     navigation.navigate('forgot');
   };
   return (

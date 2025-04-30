@@ -4,6 +4,7 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
 } from '@react-native-firebase/auth';
+
 import {
   getFirestore,
   doc,
@@ -28,17 +29,24 @@ export const signUpWithEmail = async (body: {
       password,
     );
     const user = userCredential.user;
-    // Save user profile to Firestore
+
     await setDoc(doc(firestore, 'users', user.uid), {
-      name: name,
-      email: user.email,
+      name,
+      email,
       createdAt: serverTimestamp(),
     });
 
-    return {user: userCredential.user, error: null};
+    return {
+      success: true,
+      user,
+      message: 'Signup successful',
+    };
   } catch (error: any) {
-    console.log('Error', error?.message);
-    return {user: null, error: error.message};
+    return {
+      success: false,
+      user: null,
+      message: error.message || 'Signup failed',
+    };
   }
 };
 
@@ -54,21 +62,41 @@ export const loginWithEmail = async (body: {
       password,
     );
     const user = userCredential.user;
+
     const userDoc = await getDoc(doc(firestore, 'users', user.uid));
     if (!userDoc.exists()) {
-      return {user: null, error: 'User data not found in database'};
+      return {
+        success: false,
+        user: null,
+        message: 'User data not found in Firestore',
+      };
     }
-    return {user: user, error: null};
+    return {
+      success: true,
+      user,
+      userData: userDoc.data(),
+      message: 'Login successful',
+    };
   } catch (error: any) {
-    return {user: null, error: error.message};
+    return {
+      success: false,
+      user: null,
+      message: error.message || 'Login failed',
+    };
   }
 };
 
 export const resetPassword = async (email: string) => {
   try {
     await sendPasswordResetEmail(auth, email);
-    return {success: true, error: null};
+    return {
+      success: true,
+      message: 'Password reset email sent',
+    };
   } catch (error: any) {
-    return {success: false, error: error.message};
+    return {
+      success: false,
+      message: error.message || 'Failed to send password reset email',
+    };
   }
 };
