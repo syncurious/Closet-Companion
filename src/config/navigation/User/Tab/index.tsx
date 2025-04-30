@@ -16,7 +16,7 @@ import {
 } from '../../../../assets';
 import {Image} from 'react-native';
 import {Colors} from '../../../../utitlity/colors';
-import Ai from '../../../../screen/User/Ai';
+import AIOutfitPlanaing from '../../../../screen/User/Ai';
 import ChatBot from '../../../../screen/User/ChatBot';
 import BottomNavBar from '@/components/section/bottomBar';
 
@@ -38,10 +38,6 @@ const TabNavigation = () => {
       <Tab.Screen
         name="Dresses"
         component={Dresses}
-      />
-      <Tab.Screen
-        name="Ai"
-        component={Ai}
       />
       <Tab.Screen
         name="ChatBot"

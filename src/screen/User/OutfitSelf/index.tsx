@@ -3,26 +3,19 @@ import {View} from 'react-native';
 import Header from '../../../components/header';
 import Container from '../../../components/container';
 import {Colors} from '../../../utitlity/colors';
-import Heading from '@/components/heading';
 
-const AIOutfitPlanaing = ({route}: any) => {
+const SelfOutfitPlaning = ({route}: any) => {
   return (
     <React.Fragment>
-      <Header route={{name:  "Outfit Planing"}} />
+      <Header route={{name: 'Outfit Planing'}} />
       <Container
         fullScreen
         scrollEnabled
         style={{backgroundColor: Colors.black}}>
-        <View>
-          <View>
-            <Heading level={3} >
-              Keah
-            </Heading>
-          </View>
-        </View>
+        <View></View>
       </Container>
     </React.Fragment>
   );
 };
 
-export default AIOutfitPlanaing;
+export default SelfOutfitPlaning;
