@@ -46,7 +46,7 @@ const SelfOutfitPlaning = ({route}: any) => {
             <View style={{gap: 10}}>
               <Heading level={6} children={'Where will you wear this?'} />
               <Input
-                label="A Party Dress Casual, Work, Party, Date, Wedding, Vacation, Gym"
+                label="A Party Dress Casual, Work, Party, Wedding"
                 iconStyle={{
                   tintColor: Colors.white,
                   width: 20,
