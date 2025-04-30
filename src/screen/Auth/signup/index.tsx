@@ -5,6 +5,7 @@ import {
   ScrollView,
   Platform,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
@@ -16,21 +17,34 @@ import {eyeFilledIcon, eyeIcon} from '@/assets';
 import Input from '@/components/input';
 import Button from '@/components/button';
 import {Colors} from '@/utitlity/colors';
+import {signUpWithEmail} from '@/service/firebaseAuth';
+
+const inititalPayload = {
+  name: '',
+  email: '',
+  password: '',
+};
 
 const Signup = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProp<any>>();
   const [isPassword, setIsPassword] = useState<boolean>(false);
-  const [payload, setPayload] = useState({
-    name: '',
-    email: '',
-    password: '',
-  });
+  const [payload, setPayload] = useState(inititalPayload);
   const handleValueChange = (name: string, value: string) => {
     setPayload((prev: any) => ({...prev, [name]: value}));
   };
   const handleSignup = async () => {
-    dispatch(setIsLogin(true));
+    try {
+      const {user, error} = await signUpWithEmail(payload);
+      console.log('Reponse ', user, error);
+      error
+        ? Alert.alert(`${error}`)
+        : (Alert.alert('User Create Succesfully'),
+          dispatch(setIsLogin(true)),
+          setPayload(inititalPayload));
+    } catch (error) {
+      console.log('Error', error);
+    }
   };
   const handleLogin = async () => {
     navigation.navigate('login');
@@ -55,7 +69,7 @@ const Signup = () => {
                 <Heading level={6} children={'Name'} />
                 <Input
                   type="default"
-                  value={payload?.email}
+                  value={payload?.name}
                   onChangeText={e => {
                     handleValueChange('name', e);
                   }}

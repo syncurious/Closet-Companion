@@ -4,6 +4,7 @@ import Container from '@/components/container';
 import Heading from '@/components/heading';
 import Input from '@/components/input';
 import {setIsLogin} from '@/config/redux/reducer';
+import {loginWithEmail} from '@/service/firebaseAuth';
 import {Colors} from '@/utitlity/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
@@ -14,22 +15,32 @@ import {
   ScrollView,
   Platform,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {useDispatch} from 'react-redux';
+
+const initialPayload = {
+  email: '',
+  password: '',
+};
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProp<any>>();
   const [isPassword, setIsPassword] = useState<boolean>(false);
-  const [payload, setPayload] = useState({
-    email: '',
-    password: '',
-  });
+  const [payload, setPayload] = useState(initialPayload);
   const handleValueChange = (name: string, value: string) => {
     setPayload((prev: any) => ({...prev, [name]: value}));
   };
   const handleLogin = async () => {
-    dispatch(setIsLogin(true));
+    try {
+      const {user, error} = await loginWithEmail(payload);
+      console.log('Response', user);
+      error ? Alert.alert(`${error?.message}`) : dispatch(setIsLogin(true)),
+        setPayload(initialPayload);
+    } catch (error) {
+      console.log('Error', error);
+    }
   };
   const handleSignup = () => {
     navigation.navigate('signup');

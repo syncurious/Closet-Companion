@@ -2,7 +2,7 @@ import Button from '@/components/button';
 import Container from '@/components/container';
 import Heading from '@/components/heading';
 import Input from '@/components/input';
-import {Colors} from '@/utitlity/colors';
+import {resetPassword} from '@/service/firebaseAuth';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
 import {
@@ -11,6 +11,7 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
+  Alert,
 } from 'react-native';
 
 const Forgot = () => {
@@ -21,8 +22,14 @@ const Forgot = () => {
   const handleValueChange = (name: string, value: string) => {
     setPayload((prev: any) => ({...prev, [name]: value}));
   };
-  const handleForgot = () => {
-    console.log('Click to forgot');
+  const handleForgot = async () => {
+    try {
+      const {success, error} = await resetPassword(payload?.email);
+      error ? Alert.alert(`${error?.message}`) : navigation.navigate('login');
+      console.log('Succes', error, success);
+    } catch (error) {
+      console.log('Error', error);
+    }
   };
   return (
     <KeyboardAvoidingView
