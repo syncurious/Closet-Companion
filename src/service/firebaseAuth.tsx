@@ -5,17 +5,9 @@ import {
   sendPasswordResetEmail,
   signOut,
 } from '@react-native-firebase/auth';
-
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  serverTimestamp,
-  getDoc,
-} from '@react-native-firebase/firestore';
+import {createDataByKey, getDataByKey} from './firestoreHelper';
 
 const auth = getAuth();
-const firestore = getFirestore();
 
 export const signUpWithEmail = async (body: {
   email: string;
@@ -30,13 +22,10 @@ export const signUpWithEmail = async (body: {
       password,
     );
     const user = userCredential.user;
-
-    await setDoc(doc(firestore, 'users', user.uid), {
+    await createDataByKey('users', user.uid, {
       name,
       email,
-      createdAt: serverTimestamp(),
     });
-
     return {
       success: true,
       user,
@@ -64,18 +53,19 @@ export const loginWithEmail = async (body: {
     );
     const user = userCredential.user;
 
-    const userDoc = await getDoc(doc(firestore, 'users', user.uid));
-    if (!userDoc.exists()) {
+    const userDoc = await getDataByKey('users', user.uid);
+
+    if (!userDoc?.success) {
       return {
         success: false,
         user: null,
-        message: 'User data not found in Firestore',
+        message: userDoc?.message,
       };
     }
     return {
       success: true,
       user,
-      userData: userDoc.data(),
+      userData: userDoc.data,
       message: 'Login successful',
     };
   } catch (error: any) {
