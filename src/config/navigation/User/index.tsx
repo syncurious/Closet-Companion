@@ -16,7 +16,6 @@ const UserNavigation = () => {
       <stack.Screen name="Bottom" component={TabNavigation} />
       <stack.Screen name="Analytics" component={Analytics} />
       <stack.Screen name="Virtual" component={Virtual} />
-      <stack.Screen name="Ai" component={Ai} />
       <stack.Screen name="Add" component={Add} />
       <stack.Screen name="Outfit" component={Outfit} />
     </stack.Navigator>
