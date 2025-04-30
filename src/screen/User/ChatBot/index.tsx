@@ -87,11 +87,13 @@ const ChatBot = ({route}: any) => {
             alignItems: 'center',
             paddingTop: 20,
             borderTopWidth: 1,
+            // marginBottom : 30,
             borderColor: Colors.white + '20',
           }}>
           <TextInput
           placeholder='Message'
             style={{
+              color :Colors.white,
               padding: 20,
               height: 40,
               backgroundColor: Colors.white + '20',

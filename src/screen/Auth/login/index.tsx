@@ -85,14 +85,14 @@ const Login = () => {
                 <Heading level={6} children={'Password'} />
                 <Input
                   value={payload?.password}
-                  iconStyle={{tintColor: Colors.white}}
+                  iconStyle={{tintColor: Colors.white , width : 20 , height :20 , top:3}}
                   onChangeText={e => {
                     handleValueChange('password', e);
                   }}
                   type={isPassword ? 'password' : 'default'}
                   iconPosition="right"
                   prefixIcon={isPassword ? eyeIcon : eyeFilledIcon}
-                  onPress={() => {
+                  iconClick={() => {
                     setIsPassword(!isPassword);
                   }}
                 />

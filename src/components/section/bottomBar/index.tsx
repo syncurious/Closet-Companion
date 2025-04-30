@@ -78,7 +78,7 @@ const BottomNavBar: any = ({state, navigation}: any) => {
           />
           <Heading level={6} style={styles.label}>
             <Text style={{color: active == 1 ? Colors.primary : Colors.white}}>
-              Marketplace
+              Dresses
             </Text>
           </Heading>
         </TouchableOpacity>

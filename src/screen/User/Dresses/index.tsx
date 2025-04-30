@@ -1,15 +1,56 @@
-import React from 'react';
-import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import React, {useState} from 'react';
+import {
+  Image,
+  ScrollView,
+  Text,
+  Touchable,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import Header from '../../../components/header';
 import Container from '../../../components/container';
 import {Colors} from '../../../utitlity/colors';
-import {dress, EditProfileIcon, homeFilledIcon} from '../../../assets';
+import {
+  checkIcon,
+  dress,
+  EditProfileIcon,
+  homeFilledIcon,
+  SearchIcon,
+} from '../../../assets';
 import Heading from '../../../components/heading';
 import Dimension from '../../../utitlity/Dimension';
 import DressCard from '../../../components/card/dressCard';
 import Input from '../../../components/input';
 
+const chipsData = ['All', 'westen', 'Eesten', 'Nothern', 'Asian', 'Southern'];
+export function Chip({label, isActive}: {label: string; isActive: boolean}) {
+  return (
+    <View
+      style={{
+        padding: 8,
+        backgroundColor: isActive ? Colors.primary : Colors.white + '20',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 3,
+        borderRadius: 8,
+        // borderWidth: 1,
+        borderColor: '#fff',
+      }}>
+      {isActive ? (
+        <Image
+          source={checkIcon}
+          style={{tintColor: Colors.white, width: 10, height: 10}}
+        />
+      ) : null}
+      <Heading level={6}> {label} </Heading>
+    </View>
+  );
+}
+
 const Dresses = ({route}: any) => {
+  const [activeChip, setActiveChip] = useState('All');
+
   return (
     <React.Fragment>
       <Header route={route} />
@@ -19,8 +60,9 @@ const Dresses = ({route}: any) => {
         <View style={{marginVertical: 10}}>
           <View style={{marginVertical: 10}}>
             <Input
+              label="Search Dresses"
               iconStyle={{tintColor: Colors.white}}
-              prefixIcon={homeFilledIcon}
+              prefixIcon={SearchIcon}
               style={{borderRadius: 100}}
             />
           </View>
@@ -28,142 +70,11 @@ const Dresses = ({route}: any) => {
             contentContainerStyle={{flexDirection: 'row', gap: 10}}
             horizontal
             showsHorizontalScrollIndicator={false}>
-            <View
-              style={{
-                padding: 8,
-                backgroundColor: Colors.white + '20',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 3,
-                borderRadius: 8,
-                // borderWidth: 1,
-                borderColor: '#fff',
-              }}>
-              <Image
-                source={homeFilledIcon}
-                style={{tintColor: Colors.white, width: 10, height: 10}}
-              />
-              <Heading level={6}> All </Heading>
-            </View>
-            <View
-              style={{
-                padding: 8,
-                backgroundColor: Colors.white + '20',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 3,
-                borderRadius: 8,
-                // borderWidth: 1,
-                borderColor: '#fff',
-              }}>
-              <Image
-                source={homeFilledIcon}
-                style={{tintColor: Colors.white, width: 10, height: 10}}
-              />
-              <Heading level={6}> All </Heading>
-            </View>
-            <View
-              style={{
-                padding: 8,
-                backgroundColor: Colors.white + '20',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 3,
-                borderRadius: 8,
-                // borderWidth: 1,
-                borderColor: '#fff',
-              }}>
-              <Image
-                source={homeFilledIcon}
-                style={{tintColor: Colors.white, width: 10, height: 10}}
-              />
-              <Heading level={6}> All </Heading>
-            </View>
-            <View
-              style={{
-                padding: 8,
-                backgroundColor: Colors.white + '20',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 3,
-                borderRadius: 8,
-                // borderWidth: 1,
-                borderColor: '#fff',
-              }}>
-              <Image
-                source={homeFilledIcon}
-                style={{tintColor: Colors.white, width: 10, height: 10}}
-              />
-              <Heading level={6}> All </Heading>
-            </View>
-            <View
-              style={{
-                padding: 8,
-                backgroundColor: Colors.white + '20',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 3,
-                borderRadius: 8,
-                // borderWidth: 1,
-                borderColor: '#fff',
-              }}>
-              <Image
-                source={homeFilledIcon}
-                style={{tintColor: Colors.white, width: 10, height: 10}}
-              />
-              <Heading level={6}> All </Heading>
-            </View>
-            <View
-              style={{
-                padding: 8,
-                backgroundColor: Colors.white + '20',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 3,
-                borderRadius: 8,
-                // borderWidth: 1,
-                borderColor: '#fff',
-              }}>
-              <Image
-                source={homeFilledIcon}
-                style={{tintColor: Colors.white, width: 10, height: 10}}
-              />
-              <Heading level={6}> All </Heading>
-            </View>
-            <View
-              style={{
-                padding: 8,
-                backgroundColor: Colors.white + '20',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 3,
-                borderRadius: 8,
-                // borderWidth: 1,
-                borderColor: '#fff',
-              }}>
-              <Image
-                source={homeFilledIcon}
-                style={{tintColor: Colors.white, width: 10, height: 10}}
-              />
-              <Heading level={6}> All </Heading>
-            </View>
-            <View
-              style={{
-                padding: 8,
-                backgroundColor: Colors.white + '20',
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 3,
-                borderRadius: 8,
-                // borderWidth: 1,
-                borderColor: '#fff',
-              }}>
-              <Image
-                source={homeFilledIcon}
-                style={{tintColor: Colors.white, width: 10, height: 10}}
-              />
-              <Heading level={6}> All </Heading>
-            </View>
+            {chipsData.map((item: string, index) => (
+              <TouchableOpacity onPress={() => setActiveChip(item)}>
+                <Chip label={item} isActive={activeChip == item} key={index} />
+              </TouchableOpacity>
+            ))}
           </ScrollView>
           <TouchableOpacity
             style={{
@@ -171,22 +82,25 @@ const Dresses = ({route}: any) => {
               padding: 20,
               borderWidth: 2,
               borderColor: Colors.white + '40',
-              borderStyle : "dashed",
-              borderRadius : 10
+              borderStyle: 'dashed',
+              borderRadius: 10,
             }}>
-            <Heading level={4} style={{textAlign : "center", color : Colors.white + '90'}}>Add New Dress</Heading>
+            <Heading
+              level={4}
+              style={{textAlign: 'center', color: Colors.white + '90'}}>
+              Add New Dress
+            </Heading>
           </TouchableOpacity>
         </View>
 
         {/* Dresses Cards renders */}
         <ScrollView
-
-        style={{
-          flex : 1,
-        }}
-        contentContainerStyle={{
-          flex: 1,
-          height :5000,
+          style={{
+            flex: 1,
+          }}
+          contentContainerStyle={{
+            flex: 1,
+            height: 5000,
             gap: 5,
             rowGap: 15,
             marginVertical: 10,

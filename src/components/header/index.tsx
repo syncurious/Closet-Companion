@@ -31,7 +31,11 @@ const Header = (props: any) => {
           marginHorizontal: 20,
           flexDirection: 'row',
         }}>
-        <Heading level={4} style={{fontWeight: 700}} children={route?.name} />
+        <Heading
+          level={4}
+          style={{fontWeight: 700}}
+          children={route?.name}
+        />
         {isLogout && (
           <TouchableOpacity onPress={handleLogout}>
             <Image

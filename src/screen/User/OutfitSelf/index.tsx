@@ -1,16 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View} from 'react-native';
 import Header from '../../../components/header';
 import Container from '../../../components/container';
 import {Colors} from '../../../utitlity/colors';
 import Heading from '@/components/heading';
-import SelectDressCard from '@/components/card/selectDressCard';
 import Input from '@/components/input';
+import DressCard from '@/components/card/dressCard';
+import SelectDressCard from '@/components/card/selectDressCard';
 
-const AIOutfitPlanaing = ({route}: any) => {
+const SelfOutfitPlaning = ({route}: any) => {
+  const [dressOne, setDressOne] = useState('');
+  const [dressTwo, setDressTwo] = useState('');
   return (
     <React.Fragment>
-      <Header route={{name: 'Outfit Planing With AI'}} />
+      <Header route={{name: 'Outfit Planing'}} />
       <Container
         fullScreen
         scrollEnabled
@@ -22,7 +25,7 @@ const AIOutfitPlanaing = ({route}: any) => {
               alignItems: 'center',
               height: 150,
             }}>
-            <Heading level={1}>Let AI Style You Instantly </Heading>
+            <Heading level={2}>Plan Your Perfect Outfit, Your Way </Heading>
           </View>
           <View style={{gap: 20}}>
             <View style={{gap: 10}}>
@@ -40,22 +43,10 @@ const AIOutfitPlanaing = ({route}: any) => {
                 }}
               />
             </View>
-            <View style={{gap: 10, alignItems: 'center', marginTop: 40}}>
-              <Heading
-                style={{textAlign: 'center'}}
-                level={2}
-                children={'Style is a way to say who you are.'}
-              />
-              <Heading
-                style={{textAlign: 'center', color: Colors.white + '60'}}
-                level={6}
-                children={
-                  'Tell us about the occasion, mood, or preferences and your AI stylist will build a look just for you.'
-                }
-              />
+            <View style={{gap: 10}}>
+              <Heading level={6} children={'Where will you wear this?'} />
               <Input
-                multiline
-                label="I'm looking for a stylish yet relaxed outfit for a weekend brunch with friends. It should feel casual but still look thoughtfully styled. I like soft pastel tones and comfortable, airy fabrics. Since it's spring, I'd love something light and season-appropriate. Ideally, the look should pair nicely with classic white sneakers."
+                label="A Party Dress Casual, Work, Party, Wedding"
                 iconStyle={{
                   tintColor: Colors.white,
                   width: 20,
@@ -65,10 +56,31 @@ const AIOutfitPlanaing = ({route}: any) => {
               />
             </View>
           </View>
+          <View style={{marginVertical: 30, gap: 20}}>
+            <Heading
+              level={6}
+              children={"Let's Pick a Dresses for your plan."}
+            />
+            <View
+              style={{
+                flex: 1,
+                height: 5000,
+                gap: 5,
+                rowGap: 15,
+                marginVertical: 10,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+              }}>
+              {/* <DressCard /> */}
+              <SelectDressCard />
+              <SelectDressCard />
+            </View>
+          </View>
         </View>
       </Container>
     </React.Fragment>
   );
 };
 
-export default AIOutfitPlanaing;
+export default SelfOutfitPlaning;

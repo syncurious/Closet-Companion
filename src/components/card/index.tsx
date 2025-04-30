@@ -1,17 +1,22 @@
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import { addIcon, AiIcon, analyticsIcon, planningIcon, userIcon, virtualIcon } from '@/assets';
-import { Colors } from '@/utitlity/colors';
+import {
+  addIcon,
+  AiIcon,
+  analyticsIcon,
+  planningIcon,
+  userIcon,
+  virtualIcon,
+} from '@/assets';
+import {Colors} from '@/utitlity/colors';
 import Dimension from '@/utitlity/Dimension';
 import Heading from '../heading';
 
 const data = [
   {name: 'Add Dresss', uri: addIcon, route: 'Add'},
-  {name: 'Ai Recommendation', uri: AiIcon, route: 'Ai'},
-  {name: 'Wardrobe Analytics', uri: analyticsIcon, route: 'Analytics'},
   {name: 'Outfit Planning', uri: planningIcon, route: 'Outfit'},
   {name: 'Virtual Styling', uri: virtualIcon, route: 'Virtual'},
-  {name: 'Profile', uri: userIcon, route: 'Profile'},
+  {name: 'Wardrobe Analytics', uri: analyticsIcon, route: 'Analytics'},
 ];
 
 const HomeCard = () => {
@@ -21,7 +26,11 @@ const HomeCard = () => {
   };
   return (
     <View style={{marginBottom: 20}}>
-      <Heading level={4} style={styles.Heading} children={'Quick Action'} />
+      <Heading
+        level={4}
+        style={{...styles.Heading, marginTop: 15, marginBottom: 8}}
+        children={'Quick Action'}
+      />
       <View style={styles.container}>
         {data?.map((val: any, index: number) => {
           return (
@@ -63,7 +72,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexWrap: 'wrap',
     gap: 10,
-    marginTop: 8,
+    marginTop: 10,
+    // marginTop: 8,
   },
   icon: {height: 25, width: 25},
 });
