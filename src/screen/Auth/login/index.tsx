@@ -79,6 +79,7 @@ const Login = () => {
                 <Heading level={6} children={'Password'} />
                 <Input
                   value={payload?.password}
+                  iconStyle={{tintColor: Colors.white}}
                   onChangeText={e => {
                     handleValueChange('password', e);
                   }}

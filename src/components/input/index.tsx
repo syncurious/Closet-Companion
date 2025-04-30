@@ -15,6 +15,7 @@ import {
   ViewStyle,
   ImageSourcePropType,
   TouchableOpacity,
+  ImageStyle,
 } from 'react-native';
 import {Colors, ColorTypes} from '../../utitlity/colors';
 
@@ -37,6 +38,7 @@ interface Props {
   style?: TextStyle | ViewStyle;
   iconPosition?: 'left' | 'right';
   inputStyle?: TextInput['props']['style'];
+  iconStyle?: ImageStyle;
   iconClick?: () => void;
   iconElement?: JSX.Element;
   multiline?: boolean;
@@ -67,6 +69,7 @@ const Input = (props: Props) => {
     multiline,
     variant = 'contained',
     color = 'white',
+    iconStyle,
     maxLength,
   } = props;
   const [inputValue, setInputValue] = useState(initialValue);
@@ -101,7 +104,7 @@ const Input = (props: Props) => {
             style={[styles.icon]}>
             <Image
               source={prefixIcon as ImageSourcePropType}
-              style={{height: 24, width: 24}}
+              style={{height: 24, width: 24 ,...iconStyle}}
             />
           </TouchableOpacity>
         ) : null}
@@ -160,7 +163,7 @@ const Input = (props: Props) => {
             style={[styles.iconRigth]}>
             <Image
               source={prefixIcon as ImageSourcePropType}
-              style={{height: 24, width: 24}}
+              style={{height: 24, width: 24,...iconStyle}}
             />
           </TouchableOpacity>
         ) : null}
