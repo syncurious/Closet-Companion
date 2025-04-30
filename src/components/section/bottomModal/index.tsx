@@ -1,6 +1,6 @@
 import {AiFilledIcon, crossIcon, selfIcon} from '@/assets';
 import Heading from '@/components/heading';
-import Ai from '@/screen/User/Ai';
+import AIOutfitPlanaing from '@/screen/User/Ai';
 import {Colors} from '@/utitlity/colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React from 'react';
@@ -23,12 +23,12 @@ function BottomModal(props: Props) {
 
   const handleSelfCreate = () => {
     onClose();
-    navigation.navigate('createPlans');
+    navigation.navigate('/Plan/Outfit/Self');
   };
-
+  
   const handleAICreate = () => {
     onClose();
-    navigation.navigate('createPlansbyAi');
+    navigation.navigate('/Plan/Outfit/Ai');
   };
 
   return (
