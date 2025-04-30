@@ -3,6 +3,7 @@ import Container from '@/components/container';
 import Heading from '@/components/heading';
 import Input from '@/components/input';
 import {resetPassword} from '@/service/firebaseAuth';
+import {showNotification} from '@/utitlity/toast';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
 import {
@@ -27,9 +28,10 @@ const Forgot = () => {
       const response = await resetPassword(payload?.email);
       if (response.success) {
         console.log('✅ Email sent:', response.message);
+        showNotification('success', `${response.message}`);
         navigation.navigate('login');
       } else {
-        Alert.alert(`${response?.message}`);
+        showNotification('error', `${response?.message}`);
         console.warn('❌ Failed to send reset email:', response.message);
       }
     } catch (error) {

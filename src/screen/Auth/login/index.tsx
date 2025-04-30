@@ -6,6 +6,7 @@ import Input from '@/components/input';
 import {setIsLogin} from '@/config/redux/reducer';
 import {loginWithEmail} from '@/service/firebaseAuth';
 import {Colors} from '@/utitlity/colors';
+import {showNotification} from '@/utitlity/toast';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
 import {
@@ -36,12 +37,13 @@ const Login = () => {
     try {
       const response = await loginWithEmail(payload);
       if (response.success) {
+        showNotification('success', 'Login success');
         console.log('✅ Login success:', response.user);
         console.log('👤 User profile data:', response.userData);
         dispatch(setIsLogin(true)), setPayload(initialPayload);
       } else {
+        showNotification('error', `${response?.message}`);
         console.warn('❌ Login failed:', response.message);
-        Alert.alert(`${response?.message}`);
       }
     } catch (error) {
       console.error('⚠️ Unexpected error during login:', error);

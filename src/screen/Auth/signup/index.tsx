@@ -18,6 +18,7 @@ import Input from '@/components/input';
 import Button from '@/components/button';
 import {Colors} from '@/utitlity/colors';
 import {signUpWithEmail} from '@/service/firebaseAuth';
+import {showNotification} from '@/utitlity/toast';
 
 const inititalPayload = {
   name: '',
@@ -37,10 +38,11 @@ const Signup = () => {
     try {
       const response = await signUpWithEmail(payload);
       if (response.success) {
+        showNotification('success', 'Signup success');
         dispatch(setIsLogin(true)), setPayload(inititalPayload);
         console.log('✅ Signup success:', response.user);
       } else {
-        Alert.alert(`${response?.message}`);
+        showNotification('error', `${response?.message}`);
         console.warn('❌ Signup error:', response.message);
       }
     } catch (error) {
