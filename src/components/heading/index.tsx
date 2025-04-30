@@ -7,7 +7,7 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 interface PropsType {
   level: 1 | 2 | 3 | 4 | 5 | 6;
   style?: ViewStyle | TextStyle;
-  children: JSX.Element | string;
+  children: React.ReactNode;
   //   color?: ColorTypes;
   numberOfLines?: number;
 }

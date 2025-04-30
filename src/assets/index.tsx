@@ -24,6 +24,8 @@ const EditProfileIcon = require('./icons/edit.png');
 const ChatBotIcon = require('./icons/chatbot.png');
 const ChatBotFilledIcon = require('./icons/chatbot-filled.png');
 const SendFilledIcon = require('./icons/send-filled.png');
+const SearchIcon = require('./icons/search.png');
+const checkIcon = require('./icons/check.png');
 
 // Images
 const banner = require('./images/banner.jpg');
@@ -57,6 +59,8 @@ export {
   AiColoredIcon,
   selfIcon,
   crossIcon,
+  checkIcon,
+  SearchIcon,
   // images
   banner,
   dress,
