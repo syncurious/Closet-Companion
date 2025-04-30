@@ -56,19 +56,23 @@ const Profile = ({route}: any) => {
       <Header route={route} />
       <Container fullScreen scrollEnabled style={styles.container}>
         <View style={styles.profileSection}>
-          <View style={styles.imageWrapper}>
-            <Image
-              source={dress}
-              style={styles.profileImage}
-              resizeMode="contain"
-            />
-            <TouchableOpacity style={styles.editIcon}>
-              <Image
-                source={EditProfileIcon}
-                style={styles.editIconImage}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
+          <View style={styles.imageContainer}>
+            <View>
+              <View style={styles.imageWrapper}>
+                <Image
+                  source={dress}
+                  style={styles.profileImage}
+                  resizeMode="contain"
+                />
+              </View>
+              <TouchableOpacity style={styles.editIcon}>
+                <Image
+                  source={EditProfileIcon}
+                  style={styles.editIconImage}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+            </View>
             <Heading
               level={6}
               style={styles.heading}
@@ -137,17 +141,22 @@ const styles = StyleSheet.create({
   profileSection: {
     paddingVertical: 20,
   },
-  imageWrapper: {
+  imageContainer: {
+    position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
     rowGap: 5,
   },
-  profileImage: {
-    height: 100,
-    width: 100,
+  imageWrapper: {
+    overflow: 'hidden',
     borderWidth: 2,
     borderColor: Colors.primary,
     borderRadius: 100,
+  },
+  profileImage: {
+    height: 100,
+    width: 100,
+
     position: 'relative',
   },
   editIcon: {
@@ -155,6 +164,7 @@ const styles = StyleSheet.create({
     padding: 3,
     position: 'absolute',
     top: 0,
+    right: 0,
     borderRadius: 50,
     borderWidth: 1,
     borderColor: Colors.black,
