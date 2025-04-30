@@ -40,6 +40,10 @@ const TabNavigation = () => {
         component={Dresses}
       />
       <Tab.Screen
+        name="Extra"
+        component={ChatBot}
+      />
+      <Tab.Screen
         name="ChatBot"
         component={ChatBot}
       />
