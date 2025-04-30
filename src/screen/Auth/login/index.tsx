@@ -34,6 +34,10 @@ const Login = () => {
   const handleSignup = () => {
     navigation.navigate('signup');
   };
+  const handleForgot = () => {
+    console.log('Hello');
+    navigation.navigate('forgot');
+  };
   return (
     <KeyboardAvoidingView
       style={{flex: 1}}
@@ -79,11 +83,13 @@ const Login = () => {
             </View>
 
             <View style={{flex: 1, justifyContent: 'space-around'}}>
-              <Heading
-                level={6}
-                children={'Forget Password'}
-                style={{...styles.higlightText, textAlign: 'right'}}
-              />
+              <TouchableOpacity onPress={handleForgot}>
+                <Heading
+                  level={6}
+                  children={'Forget Password'}
+                  style={{...styles.higlightText, textAlign: 'right'}}
+                />
+              </TouchableOpacity>
               <Button
                 variant="contained"
                 children={'Login'}
