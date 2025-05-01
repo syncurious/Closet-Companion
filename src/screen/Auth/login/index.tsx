@@ -3,7 +3,7 @@ import Button from '@/components/button';
 import Container from '@/components/container';
 import Heading from '@/components/heading';
 import Input from '@/components/input';
-import {setIsLogin} from '@/config/redux/reducer';
+import {setIsLogin, setUserData} from '@/config/redux/reducer';
 import {loginWithEmail} from '@/service/firebaseAuth';
 import {Colors} from '@/utitlity/colors';
 import {showNotification} from '@/utitlity/toast';
@@ -43,6 +43,7 @@ const Login = () => {
         console.log('✅ Login success:', response.user);
         console.log('👤 User profile data:', data);
         dispatch(setIsLogin(true));
+        dispatch(setUserData({id: data?.id}));
         setPayload(initialPayload);
       } else {
         showNotification('error', `${response?.message}`);

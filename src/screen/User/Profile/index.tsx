@@ -4,10 +4,21 @@ import Container from '@/components/container';
 import Header from '@/components/header';
 import Heading from '@/components/heading';
 import Input from '@/components/input';
+import {getDataByKey, updateDataByKey} from '@/service/firestoreHelper';
 import {Colors} from '@/utitlity/colors';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, TouchableOpacity, View, StyleSheet} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
+
+const initialPayload = {
+  name: '',
+  email: '',
+  height: '',
+  weight: '',
+  age: '',
+  gender: '',
+  skinColor: '',
+};
 
 const ProfileField = ({
   label,
@@ -32,16 +43,8 @@ const ProfileField = ({
 );
 
 const Profile = ({route}: any) => {
-  const dispatch = useDispatch();
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [payload, setPayload] = useState({
-    fullName: 'Aqib',
-    email: 'aaqib@gmail.com',
-    height: '5.8',
-    weight: '62',
-    age: '10',
-    skinColor: 'Natural',
-  });
+  const [payload, setPayload] = useState(initialPayload);
 
   const handleFieldChange = (key: string, value: string) => {
     setPayload(prev => ({...prev, [key]: value}));
@@ -50,10 +53,35 @@ const Profile = ({route}: any) => {
   const handleUpdate = async () => {
     setIsEdit(!isEdit);
   };
-  const userData = useSelector((state: any) => {
-    state?.user;
-  });
-  console.log('User Data', userData);
+  const user = useSelector((state: any) => state.user.user);
+
+  const handleUpdateProfile = async () => {
+    try {
+      const response = await updateDataByKey('users', user.id, payload);
+      handleUpdate();
+      console.log('Update Profile Response', response);
+    } catch (error) {
+      console.log('Error', error);
+    }
+  };
+
+  const handleGetProfile = async () => {
+    const userDoc = await getDataByKey('users', user?.id);
+    if (!userDoc?.success) {
+      console.log({
+        success: false,
+        user: null,
+        message: userDoc?.message,
+      });
+    }
+    if (userDoc?.success) {
+      setPayload((prev: any) => ({...prev, ...userDoc?.data}));
+    }
+  };
+
+  useEffect(() => {
+    handleGetProfile();
+  }, [user]);
 
   return (
     <React.Fragment>
@@ -86,9 +114,10 @@ const Profile = ({route}: any) => {
           <View style={styles.formSection}>
             <ProfileField
               label="Full Name"
-              fieldKey="fullName"
-              value={payload.fullName}
+              fieldKey="name"
+              value={payload.name}
               onChange={handleFieldChange}
+              editable={isEdit}
             />
             <ProfileField
               label="Email"
@@ -103,6 +132,7 @@ const Profile = ({route}: any) => {
               value={payload.height}
               type="numeric"
               onChange={handleFieldChange}
+              editable={isEdit}
             />
             <ProfileField
               label="Weight (kg)"
@@ -110,6 +140,7 @@ const Profile = ({route}: any) => {
               value={payload.weight}
               type="numeric"
               onChange={handleFieldChange}
+              editable={isEdit}
             />
             <ProfileField
               label="Age"
@@ -117,19 +148,21 @@ const Profile = ({route}: any) => {
               value={payload.age}
               type="numeric"
               onChange={handleFieldChange}
+              editable={isEdit}
             />
             <ProfileField
               label="Skin Color"
               fieldKey="skinColor"
               value={payload.skinColor}
               onChange={handleFieldChange}
+              editable={isEdit}
             />
           </View>
           <View style={styles.buttonWrapper}>
             <Button
               variant="contained"
               children={isEdit ? 'Save Profile' : 'Edit Profile'}
-              onPress={handleUpdate}
+              onPress={isEdit ? handleUpdateProfile : handleUpdate}
             />
           </View>
         </View>
