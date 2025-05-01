@@ -23,6 +23,7 @@ export const signUpWithEmail = async (body: {
     );
     const user = userCredential.user;
     await createDataByKey('users', user.uid, {
+      ...{id: user.uid},
       name,
       email,
     });

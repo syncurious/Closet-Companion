@@ -17,6 +17,7 @@ import {
 
 const Forgot = () => {
   const navigation = useNavigation<NavigationProp<any>>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [payload, setPayload] = useState({
     email: '',
   });
@@ -24,6 +25,7 @@ const Forgot = () => {
     setPayload((prev: any) => ({...prev, [name]: value}));
   };
   const handleForgot = async () => {
+    setIsLoading(true);
     try {
       const response = await resetPassword(payload?.email);
       if (response.success) {
@@ -36,6 +38,8 @@ const Forgot = () => {
       }
     } catch (error) {
       console.error('⚠️ Unexpected error during password reset:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -71,6 +75,7 @@ const Forgot = () => {
 
             <View style={{flex: 1, justifyContent: 'space-around'}}>
               <Button
+                isLoading={isLoading}
                 variant="contained"
                 children={'Forgot Password'}
                 onPress={handleForgot}

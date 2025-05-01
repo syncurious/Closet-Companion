@@ -7,7 +7,7 @@ import Input from '@/components/input';
 import {Colors} from '@/utitlity/colors';
 import React, {useState} from 'react';
 import {Image, TouchableOpacity, View, StyleSheet} from 'react-native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 const ProfileField = ({
   label,
@@ -50,6 +50,10 @@ const Profile = ({route}: any) => {
   const handleUpdate = async () => {
     setIsEdit(!isEdit);
   };
+  const userData = useSelector((state: any) => {
+    state?.user;
+  });
+  console.log('User Data', userData);
 
   return (
     <React.Fragment>

@@ -30,11 +30,13 @@ const Signup = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProp<any>>();
   const [isPassword, setIsPassword] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [payload, setPayload] = useState(inititalPayload);
   const handleValueChange = (name: string, value: string) => {
     setPayload((prev: any) => ({...prev, [name]: value}));
   };
   const handleSignup = async () => {
+    setIsLoading(true);
     try {
       const response = await signUpWithEmail(payload);
       if (response.success) {
@@ -47,7 +49,8 @@ const Signup = () => {
       }
     } catch (error) {
       console.error('⚠️ Unexpected error:', error);
-      // Show fallback error message to user
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleLogin = async () => {
@@ -122,6 +125,7 @@ const Signup = () => {
                 />
               </View>
               <Button
+                isLoading={isLoading}
                 variant="contained"
                 children={'Signup'}
                 onPress={handleSignup}

@@ -16,7 +16,6 @@ import {
   ScrollView,
   Platform,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 
@@ -29,24 +28,30 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProp<any>>();
   const [isPassword, setIsPassword] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [payload, setPayload] = useState(initialPayload);
   const handleValueChange = (name: string, value: string) => {
     setPayload((prev: any) => ({...prev, [name]: value}));
   };
   const handleLogin = async () => {
+    setIsLoading(true);
     try {
       const response = await loginWithEmail(payload);
       if (response.success) {
         showNotification('success', 'Login success');
+        const data = response?.userData;
         console.log('✅ Login success:', response.user);
-        console.log('👤 User profile data:', response.userData);
-        dispatch(setIsLogin(true)), setPayload(initialPayload);
+        console.log('👤 User profile data:', data);
+        dispatch(setIsLogin(true));
+        setPayload(initialPayload);
       } else {
         showNotification('error', `${response?.message}`);
         console.warn('❌ Login failed:', response.message);
       }
     } catch (error) {
       console.error('⚠️ Unexpected error during login:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleSignup = () => {
@@ -85,7 +90,12 @@ const Login = () => {
                 <Heading level={6} children={'Password'} />
                 <Input
                   value={payload?.password}
-                  iconStyle={{tintColor: Colors.white , width : 20 , height :20 , top:3}}
+                  iconStyle={{
+                    tintColor: Colors.white,
+                    width: 20,
+                    height: 20,
+                    top: 3,
+                  }}
                   onChangeText={e => {
                     handleValueChange('password', e);
                   }}
@@ -108,6 +118,7 @@ const Login = () => {
                 />
               </TouchableOpacity>
               <Button
+                isLoading={isLoading}
                 variant="contained"
                 children={'Login'}
                 onPress={handleLogin}
