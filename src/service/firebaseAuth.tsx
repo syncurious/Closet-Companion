@@ -9,6 +9,38 @@ import {createDataByKey, getDataByKey} from './firestoreHelper';
 
 const auth = getAuth();
 
+const getFirebaseAuthErrorMessage = (code: string): string => {
+  switch (code) {
+    case 'auth/invalid-email':
+      return 'The email address is not valid.';
+    case 'auth/user-disabled':
+      return 'This user account has been disabled.';
+    case 'auth/user-not-found':
+      return 'No account found with this email.';
+    case 'auth/wrong-password':
+      return 'Incorrect password. Please try again.';
+    case 'auth/invalid-credential':
+      return 'The credential provided is invalid.';
+    default:
+      return 'Login failed. Please try again.';
+  }
+};
+
+const getFirebaseSignupErrorMessage = (code: string): string => {
+  switch (code) {
+    case 'auth/email-already-in-use':
+      return 'This email is already registered.';
+    case 'auth/invalid-email':
+      return 'Please enter a valid email address.';
+    case 'auth/operation-not-allowed':
+      return 'Email/password sign-up is not enabled.';
+    case 'auth/weak-password':
+      return 'Password should be at least 6 characters.';
+    default:
+      return 'Sign-up failed. Please try again.';
+  }
+};
+
 export const signUpWithEmail = async (body: {
   email: string;
   password: string;
@@ -33,10 +65,12 @@ export const signUpWithEmail = async (body: {
       message: 'Signup successful',
     };
   } catch (error: any) {
+    const errorCode = error.code || '';
+    const dynamicMessage = getFirebaseSignupErrorMessage(errorCode);
     return {
       success: false,
       user: null,
-      message: error.message || 'Signup failed',
+      message: dynamicMessage,
     };
   }
 };
@@ -63,6 +97,7 @@ export const loginWithEmail = async (body: {
         message: userDoc?.message,
       };
     }
+
     return {
       success: true,
       user,
@@ -70,10 +105,12 @@ export const loginWithEmail = async (body: {
       message: 'Login successful',
     };
   } catch (error: any) {
+    const errorCode = error.code || '';
+    const dynamicMessage = getFirebaseAuthErrorMessage(errorCode);
     return {
       success: false,
       user: null,
-      message: error.message || 'Login failed',
+      message: dynamicMessage,
     };
   }
 };
