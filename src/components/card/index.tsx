@@ -11,9 +11,10 @@ import {
 import {Colors} from '@/utitlity/colors';
 import Dimension from '@/utitlity/Dimension';
 import Heading from '../heading';
+import { useState } from 'react';
+import AddDressModal from '../section/addDressModal';
 
 const data = [
-  {name: 'Add Dresss', uri: addIcon, route: 'Add'},
   {name: 'Outfit Planning', uri: planningIcon, route: 'Outfit'},
   {name: 'Virtual Styling', uri: virtualIcon, route: 'Virtual'},
   {name: 'Wardrobe Analytics', uri: analyticsIcon, route: 'Analytics'},
@@ -21,6 +22,7 @@ const data = [
 
 const HomeCard = () => {
   const navigation = useNavigation<NavigationProp<any>>();
+  const [DressModal, setDressModal] = useState(false)
   const handleNavigate = (val: string) => {
     navigation.navigate(val);
   };
@@ -32,6 +34,19 @@ const HomeCard = () => {
         children={'Quick Action'}
       />
       <View style={styles.container}>
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => {
+            setDressModal(true)
+            // handleNavigate(val?.route);
+          }}>
+          <Image
+            source={addIcon}
+            tintColor={Colors.primary}
+            style={styles.icon}
+          />
+          <Heading level={6} style={styles.Heading} children={"Add Dress"} />
+        </TouchableOpacity>
         {data?.map((val: any, index: number) => {
           return (
             <TouchableOpacity
@@ -49,6 +64,7 @@ const HomeCard = () => {
             </TouchableOpacity>
           );
         })}
+        <AddDressModal isOpen={DressModal} onClose={()=>{setDressModal(false)}} />
       </View>
     </View>
   );
