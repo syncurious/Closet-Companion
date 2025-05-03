@@ -22,6 +22,7 @@ import Heading from '../../../components/heading';
 import Dimension from '../../../utitlity/Dimension';
 import DressCard from '../../../components/card/dressCard';
 import Input from '../../../components/input';
+import AddDressModal from '@/components/section/addDressModal';
 
 const chipsData = ['All', 'westen', 'Eesten', 'Nothern', 'Asian', 'Southern'];
 export function Chip({label, isActive}: {label: string; isActive: boolean}) {
@@ -50,6 +51,7 @@ export function Chip({label, isActive}: {label: string; isActive: boolean}) {
 
 const Dresses = ({route}: any) => {
   const [activeChip, setActiveChip] = useState('All');
+  const [DressModal, setDressModal] = useState(false);
 
   return (
     <React.Fragment>
@@ -77,6 +79,9 @@ const Dresses = ({route}: any) => {
             ))}
           </ScrollView>
           <TouchableOpacity
+            onPress={() => {
+              setDressModal(true);
+            }}
             style={{
               marginTop: 30,
               padding: 20,
@@ -120,6 +125,7 @@ const Dresses = ({route}: any) => {
           ))}
         </ScrollView>
       </Container>
+      <AddDressModal isOpen={DressModal} onClose={()=>{setDressModal(false)}} />
     </React.Fragment>
   );
 };
