@@ -94,16 +94,18 @@ const Profile = ({route}: any) => {
   };
 
   const handleGetProfile = async () => {
-    const userDoc = await getDataByKey('users', userId ?? '');
-    if (!userDoc?.success) {
-      console.log({
-        success: false,
-        user: null,
-        message: userDoc?.message,
-      });
-    }
-    if (userDoc?.success) {
-      setPayload((prev: any) => ({...prev, ...userDoc?.data}));
+    if (userId) {
+      const userDoc = await getDataByKey('users', userId);
+      if (!userDoc?.success) {
+        console.log({
+          success: false,
+          user: null,
+          message: userDoc?.message,
+        });
+      }
+      if (userDoc?.success) {
+        setPayload((prev: any) => ({...prev, ...userDoc?.data}));
+      }
     }
   };
 
