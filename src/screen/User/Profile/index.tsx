@@ -1,11 +1,13 @@
-import {dress, EditProfileIcon} from '@/assets';
+import {dress, EditProfileIcon, userFilledIcon} from '@/assets';
 import Button from '@/components/button';
 import Container from '@/components/container';
 import Header from '@/components/header';
 import Heading from '@/components/heading';
 import Input from '@/components/input';
 import {getDataByKey, updateDataByKey} from '@/service/firestoreHelper';
+import {S3Helper} from '@/service/aws';
 import {Colors} from '@/utitlity/colors';
+import {pickImageFromGallery} from '@/utitlity/imagePicker';
 import React, {useEffect, useState} from 'react';
 import {Image, TouchableOpacity, View, StyleSheet} from 'react-native';
 import {useSelector} from 'react-redux';
@@ -18,6 +20,7 @@ const initialPayload = {
   age: '',
   gender: '',
   skinColor: '',
+  profileImage: '',
 };
 
 const ProfileField = ({
@@ -45,6 +48,7 @@ const ProfileField = ({
 const Profile = ({route}: any) => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [payload, setPayload] = useState(initialPayload);
+  const [profileImage, setProfileImage] = useState<any>(null);
 
   const handleFieldChange = (key: string, value: string) => {
     setPayload(prev => ({...prev, [key]: value}));
@@ -53,11 +57,31 @@ const Profile = ({route}: any) => {
   const handleUpdate = async () => {
     setIsEdit(!isEdit);
   };
+
+  const selectPhoto = async () => {
+    const image = await pickImageFromGallery();
+    console.log(image?.path);
+    setProfileImage(image);
+  };
+
   const user = useSelector((state: any) => state.user.user);
 
   const handleUpdateProfile = async () => {
+    const body = {...payload};
+    if (profileImage) {
+      try {
+        const uploadedUrl = await S3Helper.uploadFileToS3(
+          profileImage?.path,
+          profileImage?.filename,
+        );
+        console.log('Uploaded file URL:', uploadedUrl);
+        body.profileImage = uploadedUrl;
+      } catch (err) {
+        console.error('Upload failed:', err);
+      }
+    }
     try {
-      const response = await updateDataByKey('users', user.id, payload);
+      const response = await updateDataByKey('users', user.id, body);
       handleUpdate();
       console.log('Update Profile Response', response);
     } catch (error) {
@@ -91,13 +115,24 @@ const Profile = ({route}: any) => {
           <View style={styles.imageContainer}>
             <View>
               <View style={styles.imageWrapper}>
-                <Image
-                  source={dress}
-                  style={styles.profileImage}
-                  resizeMode="contain"
-                />
+                {profileImage && payload?.profileImage ? (
+                  <Image
+                    source={{uri: payload?.profileImage || profileImage?.path}}
+                    style={styles.profileImage}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <Image
+                    source={userFilledIcon}
+                    style={styles.profileImage}
+                    resizeMode="cover"
+                    tintColor="white"
+                  />
+                )}
               </View>
-              <TouchableOpacity style={styles.editIcon}>
+              <TouchableOpacity
+                style={styles.editIcon}
+                onPress={isEdit ? selectPhoto : () => {}}>
                 <Image
                   source={EditProfileIcon}
                   style={styles.editIconImage}
