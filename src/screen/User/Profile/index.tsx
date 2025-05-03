@@ -1,4 +1,4 @@
-import {dress, EditProfileIcon, userFilledIcon} from '@/assets';
+import {EditProfileIcon, userFilledIcon} from '@/assets';
 import Button from '@/components/button';
 import Container from '@/components/container';
 import Header from '@/components/header';
@@ -10,7 +10,7 @@ import {Colors} from '@/utitlity/colors';
 import {pickImageFromGallery} from '@/utitlity/imagePicker';
 import React, {useEffect, useState} from 'react';
 import {Image, TouchableOpacity, View, StyleSheet} from 'react-native';
-import {useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const initialPayload = {
   name: '',
@@ -48,6 +48,7 @@ const ProfileField = ({
 const Profile = ({route}: any) => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [payload, setPayload] = useState(initialPayload);
+  const [userId, setUserId] = useState<string>();
   const [profileImage, setProfileImage] = useState<any>(null);
 
   const handleFieldChange = (key: string, value: string) => {
@@ -64,7 +65,10 @@ const Profile = ({route}: any) => {
     setProfileImage(image);
   };
 
-  const user = useSelector((state: any) => state.user.user);
+  const handleGet = async () => {
+    const id = await AsyncStorage.getItem('userId');
+    if (id) setUserId(id);
+  };
 
   const handleUpdateProfile = async () => {
     const body = {...payload};
@@ -81,7 +85,7 @@ const Profile = ({route}: any) => {
       }
     }
     try {
-      const response = await updateDataByKey('users', user.id, body);
+      const response = await updateDataByKey('users', userId ?? '', body);
       handleUpdate();
       console.log('Update Profile Response', response);
     } catch (error) {
@@ -90,7 +94,7 @@ const Profile = ({route}: any) => {
   };
 
   const handleGetProfile = async () => {
-    const userDoc = await getDataByKey('users', user?.id);
+    const userDoc = await getDataByKey('users', userId ?? '');
     if (!userDoc?.success) {
       console.log({
         success: false,
@@ -105,7 +109,10 @@ const Profile = ({route}: any) => {
 
   useEffect(() => {
     handleGetProfile();
-  }, [user]);
+  }, [userId]);
+  useEffect(() => {
+    handleGet();
+  }, []);
 
   return (
     <React.Fragment>
@@ -115,9 +122,9 @@ const Profile = ({route}: any) => {
           <View style={styles.imageContainer}>
             <View>
               <View style={styles.imageWrapper}>
-                {profileImage && payload?.profileImage ? (
+                {profileImage || payload?.profileImage ? (
                   <Image
-                    source={{uri: payload?.profileImage || profileImage?.path}}
+                    source={{uri: profileImage?.path || payload?.profileImage}}
                     style={styles.profileImage}
                     resizeMode="cover"
                   />

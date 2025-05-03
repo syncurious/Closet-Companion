@@ -7,6 +7,7 @@ import {setIsLogin, setUserData} from '@/config/redux/reducer';
 import {loginWithEmail} from '@/service/firebaseAuth';
 import {Colors} from '@/utitlity/colors';
 import {showNotification} from '@/utitlity/toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
 import {
@@ -42,6 +43,7 @@ const Login = () => {
         const data = response?.userData;
         console.log('✅ Login success:', response.user);
         console.log('👤 User profile data:', data);
+        await AsyncStorage.setItem('userId', data?.id);
         dispatch(setIsLogin(true));
         dispatch(setUserData({id: data?.id}));
         setPayload(initialPayload);
