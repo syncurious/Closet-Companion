@@ -31,7 +31,7 @@ const checkIcon = require('./icons/check.png');
 const banner = require('./images/banner.jpg');
 const dress = require('./images/dress.jpg');
 const logo = require('./images/logo.png');
-const dressOne = require('./images/dress.webp');
+const dressOne = require('./images/dresses.webp');
 
 export {
   // icons
