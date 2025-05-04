@@ -15,10 +15,10 @@ interface Props {
 }
 
 function DressCard(props: Props) {
-  const {data} = props;
+  const {data , onPress} = props;
   return (
     <TouchableOpacity
-      onPress={props.onPress}
+      onPress={onPress}
       activeOpacity={0.8}
       style={styles.cardContainer}>
       <View style={styles.imageContainer}>

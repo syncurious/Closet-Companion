@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import Header from '../../../components/header';
 import Container from '../../../components/container';
@@ -6,8 +6,11 @@ import {Colors} from '../../../utitlity/colors';
 import PlansCard from '@/components/card/PlanCard';
 import Input from '@/components/input';
 import {SearchIcon} from '@/assets';
+import AddDressModal from '@/components/section/addDressModal';
+import PlanViewModal from '@/components/section/planViewModal';
 
 const Outfit = ({route}: any) => {
+  const [isPlanViewModalOpen, setIsPlanViewModalOpen] = useState(true);
   return (
     <React.Fragment>
       <Header route={route} />
@@ -43,6 +46,9 @@ const Outfit = ({route}: any) => {
               }}>
               {[1, 2, 3, 4, 5].map((item, index) => (
                 <PlansCard
+                  onPress={() => {
+                    setIsPlanViewModalOpen(true);
+                  }}
                   data={{
                     image: '',
                     name: "Emily's Brithday",
@@ -53,6 +59,17 @@ const Outfit = ({route}: any) => {
             </ScrollView>
           </View>
         </View>
+        <PlanViewModal
+          data={{
+            image: '',
+            name: "Emily's Brithday",
+            wearType: 'Party Wear',
+          }}
+          isOpen={isPlanViewModalOpen}
+          onClose={() => {
+            setIsPlanViewModalOpen(false);
+          }}
+        />
       </Container>
     </React.Fragment>
   );
