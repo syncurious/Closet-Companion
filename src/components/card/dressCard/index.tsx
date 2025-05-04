@@ -15,9 +15,10 @@ interface Props {
 }
 
 function DressCard(props: Props) {
-  const {data} = props;
+  const {data , onPress} = props;
   return (
     <TouchableOpacity
+      onPress={onPress}
       activeOpacity={0.8}
       style={styles.cardContainer}>
       <View style={styles.imageContainer}>
@@ -28,9 +29,9 @@ function DressCard(props: Props) {
         />
       </View>
       <View style={styles.contentContainer}>
-        <Heading level={3}>{data?.name || ""}</Heading>
+        <Heading level={3}>{data?.name || ''}</Heading>
         <Heading level={6} style={styles.categoryText}>
-          Category - {data?.category || ""}
+          Category - {data?.category || ''}
         </Heading>
       </View>
     </TouchableOpacity>
