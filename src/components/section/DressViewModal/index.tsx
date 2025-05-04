@@ -1,8 +1,7 @@
-import {crossIcon, dressOne, selfIcon} from '@/assets';
+import {crossIcon, dressOne} from '@/assets';
 import Heading from '@/components/heading';
 import {Colors} from '@/utitlity/colors';
 import Dimension from '@/utitlity/Dimension';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {Image, Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
 
@@ -14,7 +13,7 @@ interface Props {
     name: string;
     category: string;
   };
-  // onSubmit: () => void;
+  onSubmit?: () => void;
 }
 function DressViewModal(props: Props) {
   const {isOpen, onClose, data} = props;
