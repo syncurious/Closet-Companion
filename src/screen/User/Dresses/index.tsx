@@ -23,6 +23,7 @@ import Dimension from '../../../utitlity/Dimension';
 import DressCard from '../../../components/card/dressCard';
 import Input from '../../../components/input';
 import AddDressModal from '@/components/section/addDressModal';
+import DressViewModal from '@/components/section/DressViewModal';
 
 const chipsData = ['All', 'westen', 'Eesten', 'Nothern', 'Asian', 'Southern'];
 export function Chip({label, isActive}: {label: string; isActive: boolean}) {
@@ -52,6 +53,7 @@ export function Chip({label, isActive}: {label: string; isActive: boolean}) {
 const Dresses = ({route}: any) => {
   const [activeChip, setActiveChip] = useState('All');
   const [DressModal, setDressModal] = useState(false);
+  const [isDressViewModal, setIsDressViewModal] = useState<boolean>(false);
 
   return (
     <React.Fragment>
@@ -115,6 +117,7 @@ const Dresses = ({route}: any) => {
           }}>
           {[1, 2, 3, 4, 5, 6, 7, 8].map((item, index) => (
             <DressCard
+              onPress={()=>{setIsDressViewModal(true)}}
               data={{
                 image:
                   'https://images.unsplash.com/photo-1601758123927-4f2a1b0c3d8e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60',
@@ -126,6 +129,7 @@ const Dresses = ({route}: any) => {
         </ScrollView>
       </Container>
       <AddDressModal isOpen={DressModal} onClose={()=>{setDressModal(false)}} />
+      <DressViewModal isOpen={isDressViewModal} onClose={()=>{setIsDressViewModal(false)}} />
     </React.Fragment>
   );
 };
