@@ -30,6 +30,7 @@ const checkIcon = require('./icons/check.png');
 // Images
 const banner = require('./images/banner.jpg');
 const dress = require('./images/dress.jpg');
+const logo = require('./images/logo.png');
 const dressOne = require('./images/dress.webp');
 
 export {
@@ -65,4 +66,5 @@ export {
   banner,
   dress,
   dressOne,
+  logo,
 };

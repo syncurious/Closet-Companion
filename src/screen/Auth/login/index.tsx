@@ -3,8 +3,11 @@ import Button from '@/components/button';
 import Container from '@/components/container';
 import Heading from '@/components/heading';
 import Input from '@/components/input';
-import {setIsLogin} from '@/config/redux/reducer';
+import {setIsLogin, setUserData} from '@/config/redux/reducer';
+import {loginWithEmail} from '@/service/firebaseAuth';
 import {Colors} from '@/utitlity/colors';
+import {showNotification} from '@/utitlity/toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
 import {
@@ -17,25 +20,47 @@ import {
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 
+const initialPayload = {
+  email: '',
+  password: '',
+};
+
 const Login = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProp<any>>();
   const [isPassword, setIsPassword] = useState<boolean>(false);
-  const [payload, setPayload] = useState({
-    email: '',
-    password: '',
-  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [payload, setPayload] = useState(initialPayload);
   const handleValueChange = (name: string, value: string) => {
     setPayload((prev: any) => ({...prev, [name]: value}));
   };
   const handleLogin = async () => {
-    dispatch(setIsLogin(true));
+    setIsLoading(true);
+    try {
+      const response = await loginWithEmail(payload);
+      if (response.success) {
+        showNotification('success', 'Login success');
+        const data = response?.userData;
+        console.log('✅ Login success:', response.user);
+        console.log('👤 User profile data:', data);
+        await AsyncStorage.setItem('userId', data?.id);
+        dispatch(setIsLogin(true));
+        dispatch(setUserData({id: data?.id}));
+        setPayload(initialPayload);
+      } else {
+        showNotification('error', `${response?.message}`);
+        console.warn('❌ Login failed:', response.message);
+      }
+    } catch (error) {
+      console.error('⚠️ Unexpected error during login:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   const handleSignup = () => {
     navigation.navigate('signup');
   };
   const handleForgot = () => {
-    console.log('Hello');
     navigation.navigate('forgot');
   };
   return (
@@ -68,7 +93,12 @@ const Login = () => {
                 <Heading level={6} children={'Password'} />
                 <Input
                   value={payload?.password}
-                  iconStyle={{tintColor: Colors.white , width : 20 , height :20 , top:3}}
+                  iconStyle={{
+                    tintColor: Colors.white,
+                    width: 20,
+                    height: 20,
+                    top: 3,
+                  }}
                   onChangeText={e => {
                     handleValueChange('password', e);
                   }}
@@ -91,6 +121,7 @@ const Login = () => {
                 />
               </TouchableOpacity>
               <Button
+                isLoading={isLoading}
                 variant="contained"
                 children={'Login'}
                 onPress={handleLogin}

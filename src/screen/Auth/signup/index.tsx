@@ -5,6 +5,7 @@ import {
   ScrollView,
   Platform,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
@@ -16,21 +17,41 @@ import {eyeFilledIcon, eyeIcon} from '@/assets';
 import Input from '@/components/input';
 import Button from '@/components/button';
 import {Colors} from '@/utitlity/colors';
+import {signUpWithEmail} from '@/service/firebaseAuth';
+import {showNotification} from '@/utitlity/toast';
+
+const inititalPayload = {
+  name: '',
+  email: '',
+  password: '',
+};
 
 const Signup = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProp<any>>();
   const [isPassword, setIsPassword] = useState<boolean>(false);
-  const [payload, setPayload] = useState({
-    name: '',
-    email: '',
-    password: '',
-  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [payload, setPayload] = useState(inititalPayload);
   const handleValueChange = (name: string, value: string) => {
     setPayload((prev: any) => ({...prev, [name]: value}));
   };
   const handleSignup = async () => {
-    dispatch(setIsLogin(true));
+    setIsLoading(true);
+    try {
+      const response = await signUpWithEmail(payload);
+      if (response.success) {
+        showNotification('success', 'Signup success');
+        dispatch(setIsLogin(true)), setPayload(inititalPayload);
+        console.log('✅ Signup success:', response.user);
+      } else {
+        showNotification('error', `${response?.message}`);
+        console.warn('❌ Signup error:', response.message);
+      }
+    } catch (error) {
+      console.error('⚠️ Unexpected error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   const handleLogin = async () => {
     navigation.navigate('login');
@@ -55,7 +76,7 @@ const Signup = () => {
                 <Heading level={6} children={'Name'} />
                 <Input
                   type="default"
-                  value={payload?.email}
+                  value={payload?.name}
                   onChangeText={e => {
                     handleValueChange('name', e);
                   }}
@@ -104,6 +125,7 @@ const Signup = () => {
                 />
               </View>
               <Button
+                isLoading={isLoading}
                 variant="contained"
                 children={'Signup'}
                 onPress={handleSignup}

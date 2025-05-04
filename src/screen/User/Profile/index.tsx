@@ -1,13 +1,27 @@
-import {dress, EditProfileIcon} from '@/assets';
+import {EditProfileIcon, userFilledIcon} from '@/assets';
 import Button from '@/components/button';
 import Container from '@/components/container';
 import Header from '@/components/header';
 import Heading from '@/components/heading';
 import Input from '@/components/input';
+import {getDataByKey, updateDataByKey} from '@/service/firestoreHelper';
+import {S3Helper} from '@/service/aws';
 import {Colors} from '@/utitlity/colors';
-import React, {useState} from 'react';
+import {pickImageFromGallery} from '@/utitlity/imagePicker';
+import React, {useEffect, useState} from 'react';
 import {Image, TouchableOpacity, View, StyleSheet} from 'react-native';
-import {useDispatch} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const initialPayload = {
+  name: '',
+  email: '',
+  height: '',
+  weight: '',
+  age: '',
+  gender: '',
+  skinColor: '',
+  profileImage: '',
+};
 
 const ProfileField = ({
   label,
@@ -32,16 +46,10 @@ const ProfileField = ({
 );
 
 const Profile = ({route}: any) => {
-  const dispatch = useDispatch();
   const [isEdit, setIsEdit] = useState<boolean>(false);
-  const [payload, setPayload] = useState({
-    fullName: 'Aqib',
-    email: 'aaqib@gmail.com',
-    height: '5.8',
-    weight: '62',
-    age: '10',
-    skinColor: 'Natural',
-  });
+  const [payload, setPayload] = useState(initialPayload);
+  const [userId, setUserId] = useState<string>();
+  const [profileImage, setProfileImage] = useState<any>(null);
 
   const handleFieldChange = (key: string, value: string) => {
     setPayload(prev => ({...prev, [key]: value}));
@@ -51,6 +59,63 @@ const Profile = ({route}: any) => {
     setIsEdit(!isEdit);
   };
 
+  const selectPhoto = async () => {
+    const image = await pickImageFromGallery();
+    console.log(image?.path);
+    setProfileImage(image);
+  };
+
+  const handleGet = async () => {
+    const id = await AsyncStorage.getItem('userId');
+    if (id) setUserId(id);
+  };
+
+  const handleUpdateProfile = async () => {
+    const body = {...payload};
+    if (profileImage) {
+      try {
+        const uploadedUrl = await S3Helper.uploadFileToS3(
+          profileImage?.path,
+          profileImage?.filename,
+        );
+        console.log('Uploaded file URL:', uploadedUrl);
+        body.profileImage = uploadedUrl;
+      } catch (err) {
+        console.error('Upload failed:', err);
+      }
+    }
+    try {
+      const response = await updateDataByKey('users', userId ?? '', body);
+      handleUpdate();
+      console.log('Update Profile Response', response);
+    } catch (error) {
+      console.log('Error', error);
+    }
+  };
+
+  const handleGetProfile = async () => {
+    if (userId) {
+      const userDoc = await getDataByKey('users', userId);
+      if (!userDoc?.success) {
+        console.log({
+          success: false,
+          user: null,
+          message: userDoc?.message,
+        });
+      }
+      if (userDoc?.success) {
+        setPayload((prev: any) => ({...prev, ...userDoc?.data}));
+      }
+    }
+  };
+
+  useEffect(() => {
+    handleGetProfile();
+  }, [userId]);
+  useEffect(() => {
+    handleGet();
+  }, []);
+
   return (
     <React.Fragment>
       <Header route={route} />
@@ -59,13 +124,24 @@ const Profile = ({route}: any) => {
           <View style={styles.imageContainer}>
             <View>
               <View style={styles.imageWrapper}>
-                <Image
-                  source={dress}
-                  style={styles.profileImage}
-                  resizeMode="contain"
-                />
+                {profileImage || payload?.profileImage ? (
+                  <Image
+                    source={{uri: profileImage?.path || payload?.profileImage}}
+                    style={styles.profileImage}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <Image
+                    source={userFilledIcon}
+                    style={styles.profileImage}
+                    resizeMode="cover"
+                    tintColor="white"
+                  />
+                )}
               </View>
-              <TouchableOpacity style={styles.editIcon}>
+              <TouchableOpacity
+                style={styles.editIcon}
+                onPress={isEdit ? selectPhoto : () => {}}>
                 <Image
                   source={EditProfileIcon}
                   style={styles.editIconImage}
@@ -82,9 +158,10 @@ const Profile = ({route}: any) => {
           <View style={styles.formSection}>
             <ProfileField
               label="Full Name"
-              fieldKey="fullName"
-              value={payload.fullName}
+              fieldKey="name"
+              value={payload.name}
               onChange={handleFieldChange}
+              editable={isEdit}
             />
             <ProfileField
               label="Email"
@@ -99,6 +176,7 @@ const Profile = ({route}: any) => {
               value={payload.height}
               type="numeric"
               onChange={handleFieldChange}
+              editable={isEdit}
             />
             <ProfileField
               label="Weight (kg)"
@@ -106,6 +184,7 @@ const Profile = ({route}: any) => {
               value={payload.weight}
               type="numeric"
               onChange={handleFieldChange}
+              editable={isEdit}
             />
             <ProfileField
               label="Age"
@@ -113,19 +192,21 @@ const Profile = ({route}: any) => {
               value={payload.age}
               type="numeric"
               onChange={handleFieldChange}
+              editable={isEdit}
             />
             <ProfileField
               label="Skin Color"
               fieldKey="skinColor"
               value={payload.skinColor}
               onChange={handleFieldChange}
+              editable={isEdit}
             />
           </View>
           <View style={styles.buttonWrapper}>
             <Button
               variant="contained"
               children={isEdit ? 'Save Profile' : 'Edit Profile'}
-              onPress={handleUpdate}
+              onPress={isEdit ? handleUpdateProfile : handleUpdate}
             />
           </View>
         </View>

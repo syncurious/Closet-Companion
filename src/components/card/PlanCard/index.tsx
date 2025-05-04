@@ -15,9 +15,9 @@ interface Props {
 }
 
 function PlansCard(props: Props) {
-  const {data, onPress} = props;
+  const {data} = props;
   return (
-    <TouchableOpacity activeOpacity={0.8} style={styles.cardContainer} onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.8} style={styles.cardContainer}>
       <View style={[{flexDirection: 'row'}, styles.imageWrapper]}>
         <View style={styles.imageContainer}>
           <Image

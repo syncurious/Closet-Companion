@@ -4,12 +4,21 @@ import Heading from '../heading';
 import {logoutIcon} from '../../assets';
 import {useDispatch} from 'react-redux';
 import {setIsLogin} from '../../config/redux/reducer';
+import {signOutUser} from '@/service/firebaseAuth';
 
 const Header = (props: any) => {
   const {route, isLogout = true} = props;
   const dispatch = useDispatch();
-  const handleLogout = () => {
-    dispatch(setIsLogin(false));
+  const handleLogout = async () => {
+    const response = await signOutUser();
+    if (response.success) {
+      dispatch(setIsLogin(false));
+      console.log(response.message);
+
+    } else {
+      console.warn('Error signing out:', response.message);
+      // Show error toast/snackbar
+    }
   };
   return (
     <View style={{backgroundColor: Colors.primary, height: 60}}>

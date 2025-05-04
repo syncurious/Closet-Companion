@@ -2,7 +2,8 @@ import Button from '@/components/button';
 import Container from '@/components/container';
 import Heading from '@/components/heading';
 import Input from '@/components/input';
-import {Colors} from '@/utitlity/colors';
+import {resetPassword} from '@/service/firebaseAuth';
+import {showNotification} from '@/utitlity/toast';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
 import {
@@ -11,18 +12,35 @@ import {
   KeyboardAvoidingView,
   ScrollView,
   Platform,
+  Alert,
 } from 'react-native';
 
 const Forgot = () => {
   const navigation = useNavigation<NavigationProp<any>>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [payload, setPayload] = useState({
     email: '',
   });
   const handleValueChange = (name: string, value: string) => {
     setPayload((prev: any) => ({...prev, [name]: value}));
   };
-  const handleForgot = () => {
-    console.log('Click to forgot');
+  const handleForgot = async () => {
+    setIsLoading(true);
+    try {
+      const response = await resetPassword(payload?.email);
+      if (response.success) {
+        console.log('✅ Email sent:', response.message);
+        showNotification('success', `${response.message}`);
+        navigation.navigate('login');
+      } else {
+        showNotification('error', `${response?.message}`);
+        console.warn('❌ Failed to send reset email:', response.message);
+      }
+    } catch (error) {
+      console.error('⚠️ Unexpected error during password reset:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   return (
     <KeyboardAvoidingView
@@ -57,6 +75,7 @@ const Forgot = () => {
 
             <View style={{flex: 1, justifyContent: 'space-around'}}>
               <Button
+                isLoading={isLoading}
                 variant="contained"
                 children={'Forgot Password'}
                 onPress={handleForgot}
