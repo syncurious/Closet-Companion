@@ -49,7 +49,7 @@ const Home = ({route}: any) => {
           children={'Recent Dress'}
         />
         {dressData?.map((item: any, index: number) => {
-          return <RecentCard key={index} data={item} />;
+          if (index < 3) return <RecentCard key={index} data={item} />;
         })}
       </Container>
     </React.Fragment>
