@@ -4,7 +4,7 @@ import Container from '@/components/container';
 import Header from '@/components/header';
 import Heading from '@/components/heading';
 import Input from '@/components/input';
-import {getDataByKey, updateDataByKey} from '@/service/firestoreHelper';
+import {getData, updateDataByKey} from '@/service/firestoreHelper';
 import {S3Helper} from '@/service/aws';
 import {Colors} from '@/utitlity/colors';
 import {pickImageFromGallery} from '@/utitlity/imagePicker';
@@ -95,7 +95,7 @@ const Profile = ({route}: any) => {
 
   const handleGetProfile = async () => {
     if (userId) {
-      const userDoc = await getDataByKey('users', userId);
+      const userDoc = await getData('users', userId);
       if (!userDoc?.success) {
         console.log({
           success: false,

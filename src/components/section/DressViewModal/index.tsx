@@ -9,7 +9,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   data?: {
-    image: string;
+    dressImage: string;
     name: string;
     category: string;
   };
@@ -34,7 +34,7 @@ function DressViewModal(props: Props) {
         <View style={styles.modal}>
           <View style={{position: 'relative'}}>
             <Image
-              source={dressOne}
+              source={data?.dressImage ? {uri: data?.dressImage} : dressOne}
               style={{
                 width: Dimension.width,
                 height: '100%',
@@ -63,9 +63,9 @@ function DressViewModal(props: Props) {
                   gap: 5,
                   marginBottom: 10,
                 }}>
-                <Heading level={3}>{data?.name || 'Moal - Chake'}</Heading>
+                <Heading level={3}>{data?.name || ''}</Heading>
                 <Heading level={6} style={styles.categoryText}>
-                  Category - {data?.category || 'Easten'}
+                  Category - {data?.category || ''}
                 </Heading>
               </View>
             </View>
