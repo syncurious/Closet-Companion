@@ -92,6 +92,7 @@ const Input = (props: Props) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity
+        activeOpacity={1}
         onPress={onPress}
         style={[styles.container, inputVariants[variant](color, ''), style]}>
         {iconElement && (!iconPosition || iconPosition == 'left')
