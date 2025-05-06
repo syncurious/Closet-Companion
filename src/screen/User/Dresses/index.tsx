@@ -1,14 +1,20 @@
 import React, {useState} from 'react';
-import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
-import Header from '../../../components/header';
-import Container from '../../../components/container';
-import {Colors} from '../../../utitlity/colors';
-import {checkIcon, SearchIcon} from '../../../assets';
-import Heading from '../../../components/heading';
-import DressCard from '../../../components/card/dressCard';
-import Input from '../../../components/input';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import AddDressModal from '@/components/section/addDressModal';
 import DressViewModal from '@/components/section/DressViewModal';
+import Header from '@/components/header';
+import Container from '@/components/container';
+import Input from '@/components/input';
+import { checkIcon, SearchIcon } from '@/assets';
+import Heading from '@/components/heading';
+import DressCard from '@/components/card/dressCard';
+import { Colors } from '@/utitlity/colors';
 
 const chipsData = [
   'All',
@@ -23,21 +29,11 @@ const chipsData = [
 export function Chip({label, isActive}: {label: string; isActive: boolean}) {
   return (
     <View
-      style={{
-        padding: 8,
-        backgroundColor: isActive ? Colors.primary : Colors.white + '20',
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 3,
-        borderRadius: 8,
-        borderColor: '#fff',
-      }}>
-      {isActive ? (
-        <Image
-          source={checkIcon}
-          style={{tintColor: Colors.white, width: 10, height: 10}}
-        />
-      ) : null}
+      style={[
+        styles.chipContainer,
+        {backgroundColor: isActive ? Colors.primary : Colors.white + '20'},
+      ]}>
+      {isActive ? <Image source={checkIcon} style={styles.checkIcon} /> : null}
       <Heading level={6}> {label} </Heading>
     </View>
   );
@@ -51,20 +47,19 @@ const Dresses = ({route}: any) => {
   return (
     <React.Fragment>
       <Header route={route} />
-      <Container fullScreen style={{backgroundColor: Colors.black}}>
+      <Container fullScreen style={styles.container}>
         {/* Search and Filter */}
-
-        <View style={{marginVertical: 10}}>
-          <View style={{marginVertical: 10}}>
+        <View style={styles.searchFilterContainer}>
+          <View style={styles.searchInputContainer}>
             <Input
               label="Search Dresses"
-              iconStyle={{tintColor: Colors.white}}
+              iconStyle={styles.searchIcon}
               prefixIcon={SearchIcon}
-              style={{borderRadius: 100}}
+              style={styles.searchInput}
             />
           </View>
           <ScrollView
-            contentContainerStyle={{flexDirection: 'row', gap: 10}}
+            contentContainerStyle={styles.chipsScrollContainer}
             horizontal
             showsHorizontalScrollIndicator={false}>
             {chipsData.map((item: string, index) => (
@@ -77,17 +72,8 @@ const Dresses = ({route}: any) => {
             onPress={() => {
               setDressModal(true);
             }}
-            style={{
-              marginTop: 30,
-              padding: 20,
-              borderWidth: 2,
-              borderColor: Colors.white + '40',
-              borderStyle: 'dashed',
-              borderRadius: 10,
-            }}>
-            <Heading
-              level={4}
-              style={{textAlign: 'center', color: Colors.white + '90'}}>
+            style={styles.addDressButton}>
+            <Heading level={4} style={styles.addDressButtonText}>
               Add New Dress
             </Heading>
           </TouchableOpacity>
@@ -95,18 +81,8 @@ const Dresses = ({route}: any) => {
 
         {/* Dresses Cards renders */}
         <ScrollView
-          style={{
-            flex: 1,
-          }}
-          contentContainerStyle={{
-            height: 1200,
-            gap: 5,
-            rowGap: 15,
-            marginVertical: 10,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-          }}>
+          style={styles.dressCardsScroll}
+          contentContainerStyle={styles.dressCardsContainer}>
           {[1, 2, 3, 4, 5, 6, 7, 8].map((item, index) => (
             <DressCard
               key={index}
@@ -138,5 +114,64 @@ const Dresses = ({route}: any) => {
     </React.Fragment>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: Colors.black,
+  },
+  searchFilterContainer: {
+    marginVertical: 10,
+  },
+  searchInputContainer: {
+    marginVertical: 10,
+  },
+  searchIcon: {
+    tintColor: Colors.white,
+  },
+  searchInput: {
+    borderRadius: 100,
+  },
+  chipsScrollContainer: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  chipContainer: {
+    padding: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    borderRadius: 8,
+    borderColor: '#fff',
+  },
+  checkIcon: {
+    tintColor: Colors.white,
+    width: 10,
+    height: 10,
+  },
+  addDressButton: {
+    marginTop: 30,
+    padding: 20,
+    borderWidth: 2,
+    borderColor: Colors.white + '40',
+    borderStyle: 'dashed',
+    borderRadius: 10,
+  },
+  addDressButtonText: {
+    textAlign: 'center',
+    color: Colors.white + '90',
+  },
+  dressCardsScroll: {
+    flex: 1,
+  },
+  dressCardsContainer: {
+    height: 1200,
+    gap: 5,
+    rowGap: 15,
+    marginVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+  },
+});
 
 export default Dresses;
