@@ -1,21 +1,15 @@
 import {dress} from '@/assets';
 import Heading from '@/components/heading';
-import { Colors } from '@/utitlity/colors';
+import {Colors} from '@/utitlity/colors';
 import React from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 
-const data = {
-  name: 'New Day',
-  uri: dress,
-  categories: 'Western',
-};
 interface Props {
-  name: string;
-  uri: any;
-  categories: string;
+  data: {name: string; dressImage: any; category: string};
 }
 
-function RecentCard() {
+function RecentCard(props: Props) {
+  const {data} = props;
   return (
     <View
       style={{
@@ -27,22 +21,22 @@ function RecentCard() {
         borderWidth: 2,
         borderColor: Colors.border,
         padding: 8,
-        width: '100%', 
+        width: '100%',
       }}>
       <View style={{width: '20%'}}>
         <Image
-          source={dress}
+          source={data?.dressImage ? {uri: data?.dressImage} : dress}
           resizeMode="cover"
           style={{height: 60, width: 60, borderRadius: 10}}
         />
       </View>
       <View style={{width: '80%'}}>
         <Heading level={6} style={styles.Heading}>
-          name
+          {data?.name}
         </Heading>
         <View style={{flexDirection: 'row', columnGap: 10}}>
           <Heading level={6} style={styles.Heading}>
-            {`Categories : ${data.categories}`}
+            {`Categories : ${data?.category}`}
           </Heading>
         </View>
       </View>
