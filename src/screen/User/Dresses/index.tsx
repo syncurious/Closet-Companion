@@ -47,11 +47,13 @@ const Dresses = ({route}: any) => {
   const [dressPayload, setDressPayload] = useState<addDress>(initialPayload);
   const [userId, setUserId] = useState<string>('');
   const [dressData, setDressData] = useState<any>([]);
+  const [filterDressData, setFilterDressData] = useState<any>();
 
   const handleGet = async () => {
     const id = await AsyncStorage.getItem('userId');
     if (id) setUserId(id);
   };
+
   const handlePayloadChange = (key: string, value: any) => {
     console.log('Key', key, 'value', value);
     setDressPayload(prev => ({...prev, [key]: value}));
@@ -102,6 +104,18 @@ const Dresses = ({route}: any) => {
     }
   };
 
+  const handleFilter = (item: any) => {
+    setActiveChip(item);
+    if (item === 'All') {
+      setFilterDressData(null);
+      console.log('all');
+    } else {
+      const data = dressData?.filter((val: any) => val?.category === item);
+      console.log('item', item, data);
+      setFilterDressData(data);
+    }
+  };
+
   useEffect(() => {
     handleGet();
     handleGetDresses();
@@ -126,7 +140,7 @@ const Dresses = ({route}: any) => {
             horizontal
             showsHorizontalScrollIndicator={false}>
             {chipsData.map((item: string, index) => (
-              <TouchableOpacity key={index} onPress={() => setActiveChip(item)}>
+              <TouchableOpacity key={index} onPress={() => handleFilter(item)}>
                 <Chip label={item} isActive={activeChip == item} key={index} />
               </TouchableOpacity>
             ))}
@@ -146,7 +160,7 @@ const Dresses = ({route}: any) => {
         <ScrollView
           style={styles.dressCardsScroll}
           contentContainerStyle={styles.dressCardsContainer}>
-          {dressData?.map((item: any, index: number) => (
+          {(filterDressData || dressData)?.map((item: any, index: number) => (
             <DressCard
               key={index}
               onPress={() => {
