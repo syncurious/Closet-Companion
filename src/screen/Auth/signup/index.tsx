@@ -130,7 +130,7 @@ const Signup = () => {
 
 const styles = StyleSheet.create({
   Container: {
-    flex: 1,
+    height : "100%"
   },
   HeadingBox: {
     flex: 0.25,
