@@ -16,7 +16,6 @@ const SelfOutfitPlaning = ({route}: any) => {
       <Header route={{name: 'Outfit Planing'}} />
       <Container
         fullScreen
-        scrollEnabled
         style={{backgroundColor: Colors.black}}>
         <View style={{marginVertical: 20}}>
           <View
