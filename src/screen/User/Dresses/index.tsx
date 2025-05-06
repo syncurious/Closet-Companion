@@ -10,7 +10,16 @@ import Input from '../../../components/input';
 import AddDressModal from '@/components/section/addDressModal';
 import DressViewModal from '@/components/section/DressViewModal';
 
-const chipsData = ['All', 'westen', 'Eesten', 'Nothern', 'Asian', 'Southern'];
+const chipsData = [
+  'All',
+  'western',
+  'eastern',
+  'traditional',
+  'casual',
+  'formal',
+  'scarf',
+  'abaya',
+];
 export function Chip({label, isActive}: {label: string; isActive: boolean}) {
   return (
     <View
