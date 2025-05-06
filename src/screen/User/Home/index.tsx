@@ -1,11 +1,10 @@
-import {Image, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Header from '@/components/header';
 import Container from '@/components/container';
 import {Colors} from '@/utitlity/colors';
 import Heading from '@/components/heading';
 import HomeCard from '@/components/card';
-import {dress} from '@/assets';
 import RecentCard from '@/components/card/recentCard';
 import {getData} from '@/service/firestoreHelper';
 
