@@ -40,7 +40,7 @@ const Login = () => {
       const response = await loginWithEmail(payload);
       if (response.success) {
         showNotification('success', 'Login success');
-        const data = response?.userData;
+        const data:any = response?.userData;
         console.log('✅ Login success:', response.user);
         console.log('👤 User profile data:', data);
         await AsyncStorage.setItem('userId', data?.id);
@@ -102,7 +102,7 @@ const Login = () => {
                   onChangeText={e => {
                     handleValueChange('password', e);
                   }}
-                  type={isPassword ? 'password' : 'default'}
+                  type={!isPassword ? 'password' : 'default'}
                   iconPosition="right"
                   prefixIcon={isPassword ? eyeIcon : eyeFilledIcon}
                   iconClick={() => {
