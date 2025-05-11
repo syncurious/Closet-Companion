@@ -1,37 +1,25 @@
-import {AiFilledIcon, crossIcon, selfIcon} from '@/assets';
+import React from 'react';
 import Heading from '@/components/heading';
 import Input from '@/components/input';
-import AIOutfitPlanaing from '@/screen/User/Ai';
 import {Colors} from '@/utitlity/colors';
 import Dimension from '@/utitlity/Dimension';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import React from 'react';
-import {
-  Image,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {pickImageFromGallery} from '@/utitlity/imagePicker';
+import {Image, Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  // onSubmit: () => void;
+  onSubmit: () => void;
+  payload: any;
+  setPayload: any;
 }
+
 function AddDressModal(props: Props) {
-  const {isOpen, onClose} = props;
-  const navigation = useNavigation<NavigationProp<any>>();
+  const {isOpen, onClose, onSubmit, setPayload, payload} = props;
 
-  const handleSelfCreate = () => {
-    onClose();
-    navigation.navigate('/Plan/Outfit/Self');
-  };
-
-  const handleAICreate = () => {
-    onClose();
-    navigation.navigate('/Plan/Outfit/Ai');
+  const handleImagePicker = async () => {
+    const response = await pickImageFromGallery();
+    setPayload('dressImage', response);
   };
 
   return (
@@ -58,12 +46,23 @@ function AddDressModal(props: Props) {
             </Heading>
           </View>
           <View>
-            <TouchableOpacity activeOpacity={0.8} style={styles.cardContainer}>
-              <View style={styles.imageContainer}>
-                <Heading level={6} style={styles.categoryText}>
-                  Select a dress Image
-                </Heading>
-              </View>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.cardContainer}
+              onPress={handleImagePicker}>
+              {payload?.dressImage ? (
+                <Image
+                  source={{uri: payload?.dressImage?.path}}
+                  style={{height: 200}}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View style={styles.imageContainer}>
+                  <Heading level={6} style={styles.categoryText}>
+                    Select a dress Image
+                  </Heading>
+                </View>
+              )}
             </TouchableOpacity>
           </View>
           <View style={{width: '100%', gap: 20}}>
@@ -77,10 +76,17 @@ function AddDressModal(props: Props) {
                   height: 20,
                   top: 3,
                 }}
+                value={payload?.name}
+                onChangeText={e => {
+                  setPayload('name', e); // Updated to use the new handler
+                }}
               />
             </View>
             <View style={{gap: 10}}>
-              <Heading level={6} children={'What category does this outfit belong to?'} />
+              <Heading
+                level={6}
+                children={'What category does this outfit belong to?'}
+              />
               <Input
                 label="e.g. Eesten, Westen"
                 iconStyle={{
@@ -89,10 +95,18 @@ function AddDressModal(props: Props) {
                   height: 20,
                   top: 3,
                 }}
+                value={payload?.category}
+                onChangeText={e => {
+                  setPayload('category', e); // Updated to use the new handler
+                }}
               />
             </View>
           </View>
-          <View style={styles.closeButtonContainer}><Heading level={3}>Create</Heading></View>
+          <TouchableOpacity
+            style={styles.closeButtonContainer}
+            onPress={onSubmit}>
+            <Heading level={3}>Create</Heading>
+          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     </Modal>
@@ -145,9 +159,9 @@ const styles = StyleSheet.create({
   },
   closeButtonContainer: {
     padding: 12,
-    borderRadius : 10,
+    borderRadius: 10,
     backgroundColor: Colors.primary,
-    borderWidth : 1,
+    borderWidth: 1,
     width: '100%',
     alignItems: 'center',
   },
@@ -167,10 +181,10 @@ const styles = StyleSheet.create({
 
   cardContainer: {
     overflow: 'hidden',
-    width: (Dimension.width -72),
+    width: Dimension.width - 72,
     borderWidth: 2,
     borderStyle: 'dashed',
-    backgroundColor: Colors.border + '15',
+    // backgroundColor: Colors.border + '15',
     borderColor: Colors.white + '20',
     borderRadius: 10,
   },

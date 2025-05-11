@@ -1,20 +1,13 @@
 import Container from '@/components/container';
 import Header from '@/components/header';
+import {getData} from '@/service/firestoreHelper';
 import {Colors} from '@/utitlity/colors';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, Dimensions, StyleSheet} from 'react-native';
 import {BarChart} from 'react-native-chart-kit';
+import moment from 'moment';
 
 const screenWidth = Dimensions.get('window').width;
-
-const chartData = {
-  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  datasets: [
-    {
-      data: [2, 4, 1, 3, 2, 5, 3],
-    },
-  ],
-};
 
 const chartConfig = {
   backgroundGradientFrom: Colors.darkBackground,
@@ -29,6 +22,64 @@ const chartConfig = {
 };
 
 const Analytics: React.FC = () => {
+  const [dressData, setDressData] = useState<any>([]);
+  const [chartData, setChartData] = useState({
+    labels: Array.from({ length: 7 }, (_, i) =>
+      moment().subtract(6 - i, 'days').format('ddd')
+    ),
+    datasets: [{ data: [0, 0, 0, 0, 0, 0, 0] }],
+  });
+  const [thisWeekCount, setThisWeekCount] = useState(0);
+  const [thisMonthCount, setThisMonthCount] = useState(0);
+
+  const handleGetDresses = async () => {
+    const response = await getData('dress');
+    if (response?.success) {
+      setDressData(response?.data);
+      console.log('Get Dress', response);
+    } else {
+      console.log('Error Dress', response);
+    }
+  };
+
+  const processChartData = () => {
+    const weekData = [0, 0, 0, 0, 0, 0, 0];
+    const labels = Array.from({ length: 7 }, (_, i) =>
+      moment().subtract(6 - i, 'days').format('ddd')
+    );
+    let weekCount = 0;
+    let monthCount = 0;
+
+    dressData.forEach((item: any) => {
+      const createdAt = moment(item.createdAt);
+      const dayIndex = 6 - moment().diff(createdAt, 'days');
+      if (dayIndex >= 0 && dayIndex < 7) {
+        weekData[dayIndex]++;
+        weekCount++;
+      }
+      if (createdAt.isSame(moment(), 'month')) {
+        monthCount++;
+      }
+    });
+
+    setChartData({
+      labels,
+      datasets: [{ data: weekData }],
+    });
+    setThisWeekCount(weekCount);
+    setThisMonthCount(monthCount);
+  };
+
+  useEffect(() => {
+    handleGetDresses();
+  }, []);
+
+  useEffect(() => {
+    if (dressData.length > 0) {
+      processChartData();
+    }
+  }, [dressData]);
+
   return (
     <>
       <Header route={{name: 'Analytics'}} />
@@ -40,12 +91,14 @@ const Analytics: React.FC = () => {
         <View style={styles.row}>
           <View style={styles.card}>
             <Text style={styles.cardLabel}>Total Dresses</Text>
-            <Text style={[styles.cardValue, {color: Colors.primary}]}>56</Text>
+            <Text style={[styles.cardValue, {color: Colors.primary}]}>
+              {dressData?.length}
+            </Text>
           </View>
           <View style={styles.card}>
             <Text style={styles.cardLabel}>Virtual Styles</Text>
             <Text style={[styles.cardValue, {color: Colors.primary}]}>
-              8 Looks
+              0 Looks
             </Text>
           </View>
         </View>
@@ -69,13 +122,13 @@ const Analytics: React.FC = () => {
           <View style={styles.summaryCard}>
             <Text style={styles.cardLabel}>This Week</Text>
             <Text style={[styles.cardValue, {color: Colors.primary}]}>
-              12 Outfits Planned
+              {thisWeekCount} Outfits Planned
             </Text>
           </View>
           <View style={styles.summaryCard}>
             <Text style={styles.cardLabel}>This Month</Text>
             <Text style={[styles.cardValue, {color: Colors.primary}]}>
-              45 Outfits Planned
+              {thisMonthCount} Outfits Planned
             </Text>
           </View>
         </View>

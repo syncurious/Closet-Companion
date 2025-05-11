@@ -1,14 +1,28 @@
-import {Image, StyleSheet, View} from 'react-native';
-import React from 'react';
+import {StyleSheet, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import Header from '@/components/header';
 import Container from '@/components/container';
 import {Colors} from '@/utitlity/colors';
 import Heading from '@/components/heading';
 import HomeCard from '@/components/card';
-import {dress} from '@/assets';
 import RecentCard from '@/components/card/recentCard';
+import {getData} from '@/service/firestoreHelper';
 
 const Home = ({route}: any) => {
+  const [dressData, setDressData] = useState<any>([]);
+  const handleGetDresses = async () => {
+    const response = await getData('dress');
+    if (response?.success) {
+      setDressData(response?.data);
+      console.log('Get Dress', response);
+    } else {
+      console.log('Error Dress', response);
+    }
+  };
+
+  useEffect(() => {
+    handleGetDresses();
+  }, []);
   return (
     <React.Fragment>
       <Header route={route} isLogout />
@@ -34,9 +48,9 @@ const Home = ({route}: any) => {
           style={{...styles.Heading, marginTop: 15, marginBottom: 8}}
           children={'Recent Dress'}
         />
-        <RecentCard />
-        <RecentCard />
-        <RecentCard />
+        {dressData?.map((item: any, index: number) => {
+          if (index < 3) return <RecentCard key={index} data={item} />;
+        })}
       </Container>
     </React.Fragment>
   );

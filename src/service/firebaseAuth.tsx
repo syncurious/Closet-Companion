@@ -5,7 +5,7 @@ import {
   sendPasswordResetEmail,
   signOut,
 } from '@react-native-firebase/auth';
-import {createDataByKey, getDataByKey} from './firestoreHelper';
+import {createData, getData} from './firestoreHelper';
 
 const auth = getAuth();
 
@@ -54,11 +54,15 @@ export const signUpWithEmail = async (body: {
       password,
     );
     const user = userCredential.user;
-    await createDataByKey('users', user.uid, {
-      ...{id: user.uid},
-      name,
-      email,
-    });
+    await createData(
+      'users',
+      {
+        ...{id: user.uid},
+        name,
+        email,
+      },
+      user.uid,
+    );
     return {
       success: true,
       user,
@@ -88,7 +92,7 @@ export const loginWithEmail = async (body: {
     );
     const user = userCredential.user;
 
-    const userDoc = await getDataByKey('users', user.uid);
+    const userDoc = await getData('users', user.uid);
 
     if (!userDoc?.success) {
       return {
