@@ -4,7 +4,7 @@ import Header from '../../../components/header';
 import Container from '../../../components/container';
 import {Colors} from '../../../utitlity/colors';
 import Heading from '@/components/heading';
-import {homeFilledIcon, SendFilledIcon} from '@/assets';
+import {SendFilledIcon} from '@/assets';
 
 let myId = '7879451212213';
 let data = [
@@ -48,12 +48,13 @@ const ChatBot = ({route}: any) => {
         <View style={{}}>
           {data.map((item, index) => (
             <View
+              key={index}
               style={{
                 marginVertical: 10,
                 flexDirection: 'row',
                 justifyContent: item.sender == myId ? 'flex-end' : 'flex-start',
               }}>
-              <View style={{gap: 5,}}>
+              <View style={{gap: 5}}>
                 <Heading
                   level={6}
                   style={{
@@ -71,8 +72,7 @@ const ChatBot = ({route}: any) => {
                     color: Colors.white + '50',
                     fontSize: 10,
                     paddingHorizontal: 5,
-                    textAlign : item?.sender == myId ? "right" : "left"
-                    
+                    textAlign: item?.sender == myId ? 'right' : 'left',
                   }}>
                   {item.created_at}
                 </Text>
@@ -91,9 +91,9 @@ const ChatBot = ({route}: any) => {
             borderColor: Colors.white + '20',
           }}>
           <TextInput
-          placeholder='Message'
+            placeholder="Message"
             style={{
-              color :Colors.white,
+              color: Colors.white,
               padding: 20,
               height: 40,
               backgroundColor: Colors.white + '20',
