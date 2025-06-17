@@ -5,7 +5,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 
-export const baseURL = 'https://backend.afrimeets.com/';
+export const baseURL = 'http://18.218.215.125:8000';
 
 interface ApiHandlerConfig {
   isMultipart?: boolean;
@@ -72,11 +72,11 @@ const apiCaller = async <T,>(
 ): Promise<T> => {
   try {
     const apiInstance = ApiHandler({isMultipart});
+    let p = params ?? {}
     const response = await apiInstance.request({
       method,
       url: endpoint,
       data: body,
-      params,
     });
     console.log(
       `API Call Success [${method.toUpperCase()} ${endpoint}]`,
