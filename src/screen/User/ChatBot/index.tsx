@@ -16,9 +16,8 @@ import Heading from '@/components/heading';
 import {SendFilledIcon} from '@/assets';
 import {endpoints, SendMessagetoChatBot} from '@/api/handlers';
 import axios from 'axios';
-import {baseURL} from '@/api';
+import {baseURL, user_id} from '@/api';
 
-let myId = 'user123';
 interface Message {
   thread_id?: string;
   message: string;
@@ -61,12 +60,12 @@ const ChatBot = ({route}: any) => {
     setInputValue('');
     setMessages(p => [
       ...p,
-      {message: InputValue, time: new Date(), user_id: myId},
+      {message: InputValue, time: new Date(), user_id: user_id},
     ]);
     axios
       .post(baseURL + endpoints.SEND_MSG_TO_CHAT_BOT, {
         message: InputValue,
-        user_id: myId,
+        user_id: user_id,
       })
       .then(response => {
         setMessages(p => [

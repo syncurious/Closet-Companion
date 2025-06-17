@@ -3,6 +3,7 @@ import apiCaller from './index';
 export const endpoints = {
   UPLOADS_IMAGE: '/api/user/upload',
   SEND_MSG_TO_CHAT_BOT: '/chat',
+  DRESS_UPLOAD: '/wardrobe/upload',
 };
 
 

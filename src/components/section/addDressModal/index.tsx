@@ -4,21 +4,37 @@ import Input from '@/components/input';
 import {Colors} from '@/utitlity/colors';
 import Dimension from '@/utitlity/Dimension';
 import {pickImageFromGallery} from '@/utitlity/imagePicker';
-import {Image, Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  Modal,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: () => void;
   payload: any;
+  isLoading?: boolean;
   setPayload: any;
 }
 
 function AddDressModal(props: Props) {
-  const {isOpen, onClose, onSubmit, setPayload, payload} = props;
+  const {
+    isOpen,
+    onClose,
+    onSubmit,
+    setPayload,
+    payload,
+    isLoading = false,
+  } = props;
 
   const handleImagePicker = async () => {
     const response = await pickImageFromGallery();
+    console.log(response);
     setPayload('dressImage', response);
   };
 
@@ -103,9 +119,17 @@ function AddDressModal(props: Props) {
             </View>
           </View>
           <TouchableOpacity
+            disabled={isLoading}
+            activeOpacity={0.8}
             style={styles.closeButtonContainer}
             onPress={onSubmit}>
-            <Heading level={3}>Create</Heading>
+            <Heading level={3}>
+              {isLoading ? (
+                <ActivityIndicator color={Colors.white} />
+              ) : (
+                'Create'
+              )}
+            </Heading>
           </TouchableOpacity>
         </View>
       </TouchableOpacity>

@@ -6,6 +6,7 @@ import axios, {
 } from 'axios';
 
 export const baseURL = 'http://18.218.215.125:8000';
+export const user_id  = 'user123'
 
 interface ApiHandlerConfig {
   isMultipart?: boolean;

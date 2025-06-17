@@ -15,7 +15,7 @@ import {createData, getData} from '@/service/firestoreHelper';
 import {S3Helper} from '@/service/aws';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-interface addDress {
+export interface addDress {
   name: string;
   category: string;
   dressImage: string | any;
