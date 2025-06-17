@@ -1,0 +1,95 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios, {
+  AxiosInstance,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios';
+
+export const baseURL = 'https://backend.afrimeets.com/';
+
+interface ApiHandlerConfig {
+  isMultipart?: boolean;
+}
+
+const ApiHandler = ({isMultipart = false}: ApiHandlerConfig): AxiosInstance => {
+  const instance = axios.create({
+    baseURL,
+    headers: {
+      'Content-Type': isMultipart ? 'multipart/form-data' : 'application/json',
+    },
+  });
+
+  // Request interceptor
+  instance.interceptors.request.use(
+    async (config: InternalAxiosRequestConfig) => {
+      try {
+        const token = await AsyncStorage.getItem('accessToken');
+        if (token) {
+          // Ensure headers are properly typed
+          config.headers = config.headers || {};
+          (config.headers as Record<string, string>)[
+            'Authorization'
+          ] = `Bearer ${token}`;
+        }
+        console.log('Request Config:', config);
+        return config;
+      } catch (error) {
+        console.error('Error in request interceptor:', error);
+        return Promise.reject(error);
+      }
+    },
+    error => {
+      console.error('Request error:', error);
+      return Promise.reject(error);
+    },
+  );
+
+  // Response interceptor
+  instance.interceptors.response.use(
+    (response: AxiosResponse) => {
+      console.log('Response:', response);
+      return response;
+    },
+    error => {
+      if (error.response?.status === 401) {
+        console.warn('Unauthorized - 401:', error.response);
+        // Handle token expiration or unauthorized access here
+      }
+      console.error('Response error:', error);
+      return Promise.reject(error.response || error);
+    },
+  );
+
+  return instance;
+};
+
+const apiCaller = async <T,>(
+  method: 'get' | 'post' | 'put' | 'delete' | 'patch',
+  endpoint: string,
+  body?: any,
+  params?: any,
+  isMultipart: boolean = false,
+): Promise<T> => {
+  try {
+    const apiInstance = ApiHandler({isMultipart});
+    const response = await apiInstance.request({
+      method,
+      url: endpoint,
+      data: body,
+      params,
+    });
+    console.log(
+      `API Call Success [${method.toUpperCase()} ${endpoint}]`,
+      response.data,
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      `API Call Error [${method.toUpperCase()} ${endpoint}]`,
+      error,
+    );
+    throw error;
+  }
+};
+
+export default apiCaller;
