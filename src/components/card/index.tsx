@@ -18,6 +18,7 @@ import axios from 'axios';
 import {endpoints} from '@/api/handlers';
 import {baseURL, user_id} from '@/api';
 import {getFileObjectFromName} from '@/utitlity';
+import {showNotification} from '@/utitlity/toast';
 
 const data = [
   {name: 'Outfit Planning', uri: planningIcon, route: 'Outfit'},
@@ -48,6 +49,13 @@ const HomeCard = () => {
   const addDressHandler = async () => {
     setIsLoading(true);
     console.log('dress payload  ', dressPayload);
+    if (
+      !dressPayload?.name ||
+      !dressPayload?.category ||
+      !dressPayload?.dressImage?.path
+    ) {
+      showNotification('error', 'Please Fill All Fields');
+    }
     let form = new FormData();
     form.append(
       'file',
@@ -68,10 +76,12 @@ const HomeCard = () => {
       .then(response => {
         console.log('Dress uplaod response:', response);
         setDressPayload(initialPayload);
-        setDressModal(false)
+        setDressModal(false);
+        showNotification('success', 'Your dress has been added to your list.');
       })
       .catch(error => {
         console.error('Error Dress Uplaod:', error);
+        showNotification('error', 'Something went wrong. Please try again.');
       })
       .finally(() => {
         setIsLoading(false);

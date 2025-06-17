@@ -14,6 +14,10 @@ import {showNotification} from '@/utitlity/toast';
 import {createData, getData} from '@/service/firestoreHelper';
 import {S3Helper} from '@/service/aws';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getFileObjectFromName} from '@/utitlity';
+import {baseURL, user_id} from '@/api';
+import {endpoints} from '@/api/handlers';
+import axios from 'axios';
 
 export interface addDress {
   name: string;
@@ -47,6 +51,7 @@ const Dresses = ({route}: any) => {
   const [dressPayload, setDressPayload] = useState<addDress>(initialPayload);
   const [userId, setUserId] = useState<string>('');
   const [dressData, setDressData] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [filterDressData, setFilterDressData] = useState<any>();
 
   const handleGet = async () => {
@@ -92,6 +97,48 @@ const Dresses = ({route}: any) => {
     } catch (error) {
       console.log('Error', error);
     }
+  };
+
+  const addDressHandler = async () => {
+    setIsLoading(true);
+    console.log('dress payload  ', dressPayload);
+    if (
+      !dressPayload?.name ||
+      !dressPayload?.category ||
+      !dressPayload?.dressImage?.path
+    ) {
+      showNotification('error', 'Please Fill All Fields');
+    }
+    let form = new FormData();
+    form.append(
+      'file',
+      getFileObjectFromName(
+        dressPayload.dressImage.filename,
+        dressPayload.dressImage.path,
+      ),
+    );
+    form.append('user_id', user_id);
+    form.append('name', dressPayload.name);
+    form.append('category', dressPayload.category);
+    axios
+      .post(baseURL + endpoints.DRESS_UPLOAD, form, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((response: any) => {
+        console.log('Dress uplaod response:', response);
+        setDressPayload(initialPayload);
+        setDressModal(false);
+        showNotification('success', 'Your dress has been added to your list.');
+      })
+      .catch((error: any) => {
+        console.error('Error Dress Uplaod:', error);
+        showNotification('error', 'Something went wrong. Please try again.');
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   const handleGetDresses = async () => {
@@ -172,13 +219,14 @@ const Dresses = ({route}: any) => {
         </ScrollView>
       </Container>
       <AddDressModal
+        isLoading={isLoading}
         setPayload={handlePayloadChange}
         payload={dressPayload}
         isOpen={DressModal}
         onClose={() => {
           setDressModal(false);
         }}
-        onSubmit={handleAddDress}
+        onSubmit={addDressHandler}
       />
       <DressViewModal
         isOpen={isDressViewModal?.isOpen}
