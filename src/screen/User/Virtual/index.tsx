@@ -11,23 +11,36 @@ import {
 import {Colors} from '@/utitlity/colors';
 import Container from '@/components/container';
 import Header from '@/components/header';
+import {pickImageFromGallery} from '@/utitlity/imagePicker';
 
+interface IamgesType {
+  modelImage: any;
+  topImage: any;
+  bottomImage: any;
+}
 const Virtual: React.FC = () => {
-  const [modelImage, setModelImage] = useState<string | null>(null);
-  const [topImage, setTopImage] = useState<string | null>(null);
-  const [bottomImage, setBottomImage] = useState<string | null>(null);
+  const [InputImages, setInputImages] = useState<IamgesType>({
+    modelImage: null,
+    topImage: null,
+    bottomImage: null,
+  });
   const [generatedOutfit, setGeneratedOutfit] = useState<string | null>(null);
 
-  const pickImage = async () => {
-    // Implement image selection logic using ImagePicker or similar
-    // Here we're using a placeholder just for the design
+  const pickImage = async (key: string) => {
+    const response = await pickImageFromGallery();
+    console.log(response);
+    setInputImages(p => ({...p, [key]: response}));
   };
 
   const handleGenerateOutfit = () => {
     // Placeholder logic — replace with actual API call or image merge
-    if (modelImage && topImage && bottomImage) {
+    if (
+      InputImages?.modelImage &&
+      InputImages?.topImage &&
+      InputImages?.bottomImage
+    ) {
       // Temporary logic to simulate generated outfit with just the model image
-      setGeneratedOutfit(modelImage); // Replace with merged image logic
+      // setGeneratedOutfit(modelImage); // Replace with merged image logic
     }
   };
 
@@ -44,9 +57,16 @@ const Virtual: React.FC = () => {
             <Text style={styles.label}>Select Model Image</Text>
             <TouchableOpacity
               style={styles.imageBox}
-              onPress={() => pickImage()}>
-              {modelImage ? (
-                <Image source={{uri: modelImage}} style={styles.image} />
+              onPress={() => pickImage('modelImage')}>
+              {InputImages.modelImage ? (
+                <Image
+                  source={
+                    InputImages.modelImage
+                      ? {uri: InputImages?.modelImage.path}
+                      : undefined
+                  }
+                  style={styles.image}
+                />
               ) : (
                 <Text style={styles.placeholder}>+ Model Image</Text>
               )}
@@ -58,9 +78,16 @@ const Virtual: React.FC = () => {
                 <Text style={styles.label}>Select Top (Shirt)</Text>
                 <TouchableOpacity
                   style={styles.imageBox}
-                  onPress={() => pickImage()}>
-                  {topImage ? (
-                    <Image source={{uri: topImage}} style={styles.image} />
+                  onPress={() => pickImage('topImage')}>
+                  {InputImages.topImage ? (
+                    <Image
+                      source={
+                        InputImages.topImage
+                          ? {uri: InputImages.topImage.path}
+                          : undefined
+                      }
+                      style={styles.image}
+                    />
                   ) : (
                     <Text style={styles.placeholder}>+ Top Image</Text>
                   )}
@@ -71,9 +98,16 @@ const Virtual: React.FC = () => {
                 <Text style={styles.label}>Select Bottom (Trouser)</Text>
                 <TouchableOpacity
                   style={styles.imageBox}
-                  onPress={() => pickImage()}>
-                  {bottomImage ? (
-                    <Image source={{uri: bottomImage}} style={styles.image} />
+                  onPress={() => pickImage('bottomImage')}>
+                  {InputImages.bottomImage ? (
+                    <Image
+                      source={
+                        InputImages.bottomImage
+                          ? {uri: InputImages.bottomImage?.path}
+                          : undefined
+                      }
+                      style={styles.image}
+                    />
                   ) : (
                     <Text style={styles.placeholder}>+ Bottom Image</Text>
                   )}
