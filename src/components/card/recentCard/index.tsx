@@ -5,7 +5,7 @@ import React from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 
 interface Props {
-  data: {name: string; dressImage: any; category: string};
+  data: {name: string; image_url: any; category: string};
 }
 
 function RecentCard(props: Props) {
@@ -25,7 +25,7 @@ function RecentCard(props: Props) {
       }}>
       <View style={{width: '20%'}}>
         <Image
-          source={data?.dressImage ? {uri: data?.dressImage} : dress}
+          source={data?.image_url ? {uri: data?.image_url} : dress}
           resizeMode="cover"
           style={{height: 60, width: 60, borderRadius: 10}}
         />

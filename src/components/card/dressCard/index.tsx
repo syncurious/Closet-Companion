@@ -8,7 +8,7 @@ import {Colors} from '../../../utitlity/colors';
 interface Props {
   onPress?: () => void;
   data?: {
-    dressImage: string;
+    image_url: string;
     name: string;
     category: string;
   };
@@ -16,6 +16,7 @@ interface Props {
 
 function DressCard(props: Props) {
   const {data, onPress} = props;
+    console.log('check Image Url ', data)
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -24,7 +25,7 @@ function DressCard(props: Props) {
       <View style={styles.imageContainer}>
         <Image
           style={styles.image}
-          source={data?.dressImage ? {uri: data?.dressImage} : dress}
+          source={data?.image_url ? {uri: data?.image_url} : dress}
           resizeMode="cover"
         />
       </View>

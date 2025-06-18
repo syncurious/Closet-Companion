@@ -18,15 +18,14 @@ import {getFileObjectFromName} from '@/utitlity';
 import {baseURL, user_id} from '@/api';
 import {endpoints} from '@/api/handlers';
 import axios from 'axios';
-
 export interface addDress {
   name: string;
   category: string;
-  dressImage: string | any;
+  image_url: string | any;
 }
 
 const initialPayload = {
-  dressImage: '',
+  image_url: '',
   name: '',
   category: '',
 };
@@ -64,48 +63,13 @@ const Dresses = ({route}: any) => {
     setDressPayload(prev => ({...prev, [key]: value}));
   };
 
-  const handleAddDress = async () => {
-    if (
-      !dressPayload?.name ||
-      !dressPayload?.category ||
-      !dressPayload?.dressImage?.path
-    ) {
-      showNotification('error', 'Please Fill All Fields');
-    }
-    const body = {...dressPayload, userId: userId};
-    if (dressPayload?.dressImage?.path) {
-      try {
-        const uploadedUrl = await S3Helper.uploadFileToS3(
-          dressPayload?.dressImage?.path,
-          dressPayload?.dressImage?.filename,
-        );
-        console.log('Uploaded file URL:', uploadedUrl);
-        body.dressImage = uploadedUrl;
-      } catch (err) {
-        console.error('Upload failed:', err);
-      }
-    }
-    try {
-      const response = await createData('dress', body);
-      if (response?.success) {
-        showNotification('success', response?.message);
-        setDressModal(false);
-        handleGet();
-      } else {
-        showNotification('error', 'Failed');
-      }
-    } catch (error) {
-      console.log('Error', error);
-    }
-  };
-
   const addDressHandler = async () => {
     setIsLoading(true);
     console.log('dress payload  ', dressPayload);
     if (
       !dressPayload?.name ||
       !dressPayload?.category ||
-      !dressPayload?.dressImage?.path
+      !dressPayload?.image_url?.path
     ) {
       showNotification('error', 'Please Fill All Fields');
     }
@@ -113,8 +77,8 @@ const Dresses = ({route}: any) => {
     form.append(
       'file',
       getFileObjectFromName(
-        dressPayload.dressImage.filename,
-        dressPayload.dressImage.path,
+        dressPayload.image_url.filename,
+        dressPayload.image_url.path,
       ),
     );
     form.append('user_id', user_id);
@@ -141,6 +105,28 @@ const Dresses = ({route}: any) => {
       });
   };
 
+  const GetDressesHandler = async () => {
+    setIsLoading(true);
+    console.log('dress payload  ', dressPayload);
+
+    axios
+      .get(baseURL + endpoints.GET_DRESSES + user_id)
+      .then((response: any) => {
+        console.log('Dress uplaod response:', response);
+        setDressData(response?.data?.items);
+      })
+      .catch((error: any) => {
+        console.error('Error Dress Uplaod:', error);
+        showNotification(
+          'error',
+          'Something went wrong, while getting Dresses',
+        );
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   const handleGetDresses = async () => {
     const response = await getData('dress');
     if (response?.success) {
@@ -154,7 +140,7 @@ const Dresses = ({route}: any) => {
   const handleFilter = (item: any) => {
     setActiveChip(item);
     if (item === 'All') {
-      setFilterDressData(null);
+      setFilterDressData(dressData);
       console.log('all');
     } else {
       const data = dressData?.filter((val: any) => val?.category === item);
@@ -165,7 +151,7 @@ const Dresses = ({route}: any) => {
 
   useEffect(() => {
     handleGet();
-    handleGetDresses();
+    GetDressesHandler();
   }, []);
 
   return (

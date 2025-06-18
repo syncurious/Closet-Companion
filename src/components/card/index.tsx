@@ -27,7 +27,7 @@ const data = [
 ];
 
 const initialPayload = {
-  dressImage: null,
+  image_url: null,
   name: '',
   category: '',
 };
@@ -52,7 +52,7 @@ const HomeCard = () => {
     if (
       !dressPayload?.name ||
       !dressPayload?.category ||
-      !dressPayload?.dressImage?.path
+      !dressPayload?.image_url?.path
     ) {
       showNotification('error', 'Please Fill All Fields');
     }
@@ -60,8 +60,8 @@ const HomeCard = () => {
     form.append(
       'file',
       getFileObjectFromName(
-        dressPayload.dressImage.filename,
-        dressPayload.dressImage.path,
+        dressPayload.image_url.filename,
+        dressPayload.image_url.path,
       ),
     );
     form.append('user_id', user_id);

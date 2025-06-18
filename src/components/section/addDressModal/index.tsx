@@ -35,7 +35,7 @@ function AddDressModal(props: Props) {
   const handleImagePicker = async () => {
     const response = await pickImageFromGallery();
     console.log(response);
-    setPayload('dressImage', response);
+    setPayload('image_url', response);
   };
 
   return (
@@ -66,9 +66,9 @@ function AddDressModal(props: Props) {
               activeOpacity={0.8}
               style={styles.cardContainer}
               onPress={handleImagePicker}>
-              {payload?.dressImage ? (
+              {payload?.image_url ? (
                 <Image
-                  source={{uri: payload?.dressImage?.path}}
+                  source={{uri: payload?.image_url?.path}}
                   style={{height: 200}}
                   resizeMode="cover"
                 />
