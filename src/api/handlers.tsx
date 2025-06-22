@@ -5,6 +5,7 @@ export const User = {
   SEND_MSG_TO_CHAT_BOT: '/chat',
   DRESS_UPLOAD: '/dresses/upload',
   GET_DRESSES: '/dresses/',
+  CREATE_OUTFIT_PLAN_BY_AI: "/recommendations/ai"
 };
 
 
@@ -24,4 +25,8 @@ const GetDresses = async (userId: string) => {
   return await apiCaller('get', User.GET_DRESSES + userId);
 };
 
-export { UploadImage, SendMessagetoChatBot, DressUpload, GetDresses };
+const CreateOutfitPlanByAi = async (body: any) => {
+  return await apiCaller('post', User.CREATE_OUTFIT_PLAN_BY_AI, body);
+};
+
+export { UploadImage, SendMessagetoChatBot, DressUpload, GetDresses, CreateOutfitPlanByAi };
