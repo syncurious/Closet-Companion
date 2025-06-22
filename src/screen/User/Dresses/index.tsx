@@ -172,19 +172,27 @@ const Dresses = ({ route }: any) => {
         </View>
 
         {/* Dresses Cards renders */}
-        <ScrollView
-          style={styles.dressCardsScroll}
-          contentContainerStyle={styles.dressCardsContainer}>
-          {(filterDressData || dressData)?.map((item: any, index: number) => (
-            <DressCard
-              key={index}
-              onPress={() => {
-                setIsDressViewModal({ isOpen: true, data: item });
-              }}
-              data={item}
-            />
-          ))}
-        </ScrollView>
+        {(filterDressData || dressData)?.length > 0 ? (
+          <ScrollView
+            style={styles.dressCardsScroll}
+            contentContainerStyle={styles.dressCardsContainer}>
+            {(filterDressData || dressData)?.map((item: any, index: number) => (
+              <DressCard
+                key={index}
+                onPress={() => {
+                  setIsDressViewModal({isOpen: true, data: item});
+                }}
+                data={item}
+              />
+            ))}
+          </ScrollView>
+        ) : (
+          <View style={styles.noDressContainer}>
+            <Heading level={2} style={styles.noDressText}>
+              No Dresses Available
+            </Heading>
+          </View>
+        )}
       </Container>
       <AddDressModal
         isLoading={isLoading}
@@ -250,6 +258,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
+  },
+  noDressContainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingTop: '50%',
+  },
+  noDressText: {
+    color: Colors.white,
   },
 });
 
