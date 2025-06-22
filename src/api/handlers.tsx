@@ -5,7 +5,8 @@ export const User = {
   SEND_MSG_TO_CHAT_BOT: '/chat',
   DRESS_UPLOAD: '/dresses/upload',
   GET_DRESSES: '/dresses/',
-  CREATE_OUTFIT_PLAN_BY_AI: "/recommendations/ai"
+  CREATE_OUTFIT_PLAN_BY_AI: "/recommendations/ai",
+  Virtual_TryOn: "/tryon"
 };
 
 
@@ -29,4 +30,8 @@ const CreateOutfitPlanByAi = async (body: any) => {
   return await apiCaller('post', User.CREATE_OUTFIT_PLAN_BY_AI, body);
 };
 
-export { UploadImage, SendMessagetoChatBot, DressUpload, GetDresses, CreateOutfitPlanByAi };
+const VirtualTryOn = async (body: any) => {
+  return await apiCaller('post', User.Virtual_TryOn, body, undefined, true);
+};
+
+export { UploadImage, SendMessagetoChatBot, DressUpload, GetDresses, CreateOutfitPlanByAi, VirtualTryOn };
