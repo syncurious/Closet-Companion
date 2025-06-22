@@ -1,11 +1,12 @@
 import Container from '@/components/container';
 import Header from '@/components/header';
-import {getData} from '@/service/firestoreHelper';
-import {Colors} from '@/utitlity/colors';
-import React, {useEffect, useState} from 'react';
-import {View, Text, Dimensions, StyleSheet} from 'react-native';
-import {BarChart} from 'react-native-chart-kit';
+import { Colors } from '@/utitlity/colors';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Dimensions, StyleSheet } from 'react-native';
+import { BarChart } from 'react-native-chart-kit';
 import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GetAnalytics } from '@/api/handlers';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -22,83 +23,78 @@ const chartConfig = {
 };
 
 const Analytics: React.FC = () => {
-  const [dressData, setDressData] = useState<any>([]);
-  const [chartData, setChartData] = useState({
+  const [analytics, setAnalytics] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      setLoading(true);
+      const userId = await AsyncStorage.getItem('userId');
+      if (!userId) {
+        setLoading(false);
+        return;
+      }
+      try {
+        const response = await GetAnalytics(userId);
+        setAnalytics(response);
+      } catch (error) {
+        console.error('Error fetching analytics:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAnalytics();
+  }, []);
+
+  if (loading) {
+    return (
+      <Container fullScreen style={{ backgroundColor: Colors.darkBackground }}>
+        <Header route={{ name: 'Analytics' }} />
+        <Text style={{ color: Colors.white, textAlign: 'center', marginTop: 40 }}>Loading...</Text>
+      </Container>
+    );
+  }
+
+  if (!analytics) {
+    return (
+      <Container fullScreen style={{ backgroundColor: Colors.darkBackground }}>
+        <Header route={{ name: 'Analytics' }} />
+        <Text style={{ color: Colors.white, textAlign: 'center', marginTop: 40 }}>No analytics data found.</Text>
+      </Container>
+    );
+  }
+
+  // Prepare chart data for outfit planning (last 7 days)
+  const chartData = {
     labels: Array.from({ length: 7 }, (_, i) =>
       moment().subtract(6 - i, 'days').format('ddd')
     ),
-    datasets: [{ data: [0, 0, 0, 0, 0, 0, 0] }],
-  });
-  const [thisWeekCount, setThisWeekCount] = useState(0);
-  const [thisMonthCount, setThisMonthCount] = useState(0);
-
-  const handleGetDresses = async () => {
-    const response = await getData('dress');
-    if (response?.success) {
-      setDressData(response?.data);
-      console.log('Get Dress', response);
-    } else {
-      console.log('Error Dress', response);
-    }
+    datasets: [{
+      data: [
+        ...(analytics.outfit_planning?.plans_last_7_days || [0, 0, 0, 0, 0, 0, 0])
+      ]
+    }],
   };
-
-  const processChartData = () => {
-    const weekData = [0, 0, 0, 0, 0, 0, 0];
-    const labels = Array.from({ length: 7 }, (_, i) =>
-      moment().subtract(6 - i, 'days').format('ddd')
-    );
-    let weekCount = 0;
-    let monthCount = 0;
-
-    dressData.forEach((item: any) => {
-      const createdAt = moment(item.createdAt);
-      const dayIndex = 6 - moment().diff(createdAt, 'days');
-      if (dayIndex >= 0 && dayIndex < 7) {
-        weekData[dayIndex]++;
-        weekCount++;
-      }
-      if (createdAt.isSame(moment(), 'month')) {
-        monthCount++;
-      }
-    });
-
-    setChartData({
-      labels,
-      datasets: [{ data: weekData }],
-    });
-    setThisWeekCount(weekCount);
-    setThisMonthCount(monthCount);
-  };
-
-  useEffect(() => {
-    handleGetDresses();
-  }, []);
-
-  useEffect(() => {
-    if (dressData.length > 0) {
-      processChartData();
-    }
-  }, [dressData]);
 
   return (
     <>
-      <Header route={{name: 'Analytics'}} />
+      <Header route={{ name: 'Analytics' }} />
       <Container
         fullScreen
         scrollEnabled
-        style={{backgroundColor: Colors.darkBackground}}>
+        style={{ backgroundColor: Colors.darkBackground }}>
         {/* Summary Cards */}
         <View style={styles.row}>
           <View style={styles.card}>
             <Text style={styles.cardLabel}>Total Dresses</Text>
-            <Text style={[styles.cardValue, {color: Colors.primary}]}>
-              {dressData?.length}
+            <Text style={[styles.cardValue, { color: Colors.primary }]}>
+              {analytics.wardrobe_summary?.total_items ?? 0}
             </Text>
           </View>
           <View style={styles.card}>
             <Text style={styles.cardLabel}>Virtual Styles</Text>
-            <Text style={[styles.cardValue, {color: Colors.primary}]}>
-              0 Looks
+            <Text style={[styles.cardValue, { color: Colors.primary }]}>
+              {analytics.virtual_styling?.total_tryons ?? 0} Looks
             </Text>
           </View>
         </View>
@@ -121,14 +117,14 @@ const Analytics: React.FC = () => {
         <View style={styles.columnSummary}>
           <View style={styles.summaryCard}>
             <Text style={styles.cardLabel}>This Week</Text>
-            <Text style={[styles.cardValue, {color: Colors.primary}]}>
-              {thisWeekCount} Outfits Planned
+            <Text style={[styles.cardValue, { color: Colors.primary }]}>
+              {analytics.outfit_planning?.plans_this_week ?? 0} Outfits Planned
             </Text>
           </View>
           <View style={styles.summaryCard}>
             <Text style={styles.cardLabel}>This Month</Text>
-            <Text style={[styles.cardValue, {color: Colors.primary}]}>
-              {thisMonthCount} Outfits Planned
+            <Text style={[styles.cardValue, { color: Colors.primary }]}>
+              {analytics.outfit_planning?.plans_this_month ?? 0} Outfits Planned
             </Text>
           </View>
         </View>
@@ -158,7 +154,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: Colors.lightCard,
     shadowColor: Colors.black,
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 4,
@@ -191,7 +187,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: Colors.lightCard,
     shadowColor: Colors.black,
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 4,
