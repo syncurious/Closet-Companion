@@ -1,19 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import AddDressModal from '@/components/section/addDressModal';
 import DressViewModal from '@/components/section/DressViewModal';
 import Header from '@/components/header';
 import Container from '@/components/container';
 import Input from '@/components/input';
-import {SearchIcon} from '@/assets';
+import { SearchIcon } from '@/assets';
 import Heading from '@/components/heading';
 import DressCard from '@/components/card/dressCard';
-import {Colors} from '@/utitlity/colors';
-import {Chip} from '@/components/chip';
-import {showNotification} from '@/utitlity/toast';
+import { Colors } from '@/utitlity/colors';
+import { Chip } from '@/components/chip';
+import { showNotification } from '@/utitlity/toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getFileObjectFromName} from '@/utitlity';
-import {DressUpload, GetDresses} from '@/api/handlers';
+import { getFileObjectFromName } from '@/utitlity';
+import { DressUpload, GetDresses } from '@/api/handlers';
 
 export interface addDress {
   name: string;
@@ -37,7 +37,7 @@ const chipsData = [
   'abaya',
 ];
 
-const Dresses = ({route}: any) => {
+const Dresses = ({ route }: any) => {
   const [activeChip, setActiveChip] = useState('All');
   const [DressModal, setDressModal] = useState(false);
   const [isDressViewModal, setIsDressViewModal] = useState<any>({
@@ -50,7 +50,7 @@ const Dresses = ({route}: any) => {
   const [filterDressData, setFilterDressData] = useState<any>();
 
   const handlePayloadChange = (key: string, value: any) => {
-    setDressPayload(prev => ({...prev, [key]: value}));
+    setDressPayload(prev => ({ ...prev, [key]: value }));
   };
 
   const addDressHandler = async () => {
@@ -80,10 +80,9 @@ const Dresses = ({route}: any) => {
     );
     form.append('user_id', userId);
     form.append('name', dressPayload.name);
-    form.append('category', dressPayload.category);
+    form.append('category', dressPayload.category.trim().toLowerCase());
     try {
-      const response: any = await DressUpload(form);
-      console.log('Dress upload response:', response);
+      await DressUpload(form);
       setDressPayload(initialPayload);
       setDressModal(false);
       showNotification('success', 'Your dress has been added to your list.');
@@ -106,7 +105,6 @@ const Dresses = ({route}: any) => {
     }
     try {
       const response: any = await GetDresses(userId);
-      console.log('Get dresses response:', response);
       if (response?.items) {
         setDressData(response.items);
         setFilterDressData(response.items);
@@ -126,10 +124,10 @@ const Dresses = ({route}: any) => {
     setActiveChip(item);
     if (item === 'All') {
       setFilterDressData(dressData);
-      console.log('all');
     } else {
-      const data = dressData?.filter((val: any) => val?.category === item);
-      console.log('item', item, data);
+      const data = dressData?.filter(
+        (val: any) => val?.category?.trim().toLowerCase() == item,
+      );
       setFilterDressData(data);
     }
   };
@@ -181,7 +179,7 @@ const Dresses = ({route}: any) => {
             <DressCard
               key={index}
               onPress={() => {
-                setIsDressViewModal({isOpen: true, data: item});
+                setIsDressViewModal({ isOpen: true, data: item });
               }}
               data={item}
             />
@@ -201,7 +199,7 @@ const Dresses = ({route}: any) => {
       <DressViewModal
         isOpen={isDressViewModal?.isOpen}
         onClose={() => {
-          setIsDressViewModal({isOpen: false});
+          setIsDressViewModal({ isOpen: false });
         }}
         data={isDressViewModal?.data}
       />
