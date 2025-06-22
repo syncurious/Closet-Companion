@@ -7,18 +7,19 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
-import {useState} from 'react';
-import {setIsLogin} from '@/config/redux/reducer';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { useState } from 'react';
+import { setIsLogin } from '@/config/redux/reducer';
 import Container from '@/components/container';
 import Heading from '@/components/heading';
-import {eyeFilledIcon, eyeIcon} from '@/assets';
+import { eyeFilledIcon, eyeIcon } from '@/assets';
 import Input from '@/components/input';
 import Button from '@/components/button';
-import {Colors} from '@/utitlity/colors';
-import {signUpWithEmail} from '@/service/firebaseAuth';
-import {showNotification} from '@/utitlity/toast';
+import { Colors } from '@/utitlity/colors';
+import { signUpWithEmail } from '@/service/firebaseAuth';
+import { showNotification } from '@/utitlity/toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const inititalPayload = {
   name: '',
@@ -33,7 +34,7 @@ const Signup = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [payload, setPayload] = useState(inititalPayload);
   const handleValueChange = (name: string, value: string) => {
-    setPayload((prev: any) => ({...prev, [name]: value}));
+    setPayload((prev: any) => ({ ...prev, [name]: value }));
   };
   const handleSignup = async () => {
     setIsLoading(true);
@@ -41,6 +42,7 @@ const Signup = () => {
       const response = await signUpWithEmail(payload);
       if (response.success) {
         showNotification('success', 'Signup success');
+        await AsyncStorage.setItem('userId', response.user?.uid || '');
         dispatch(setIsLogin(true)), setPayload(inititalPayload);
         console.log('✅ Signup success:', response.user);
       } else {
@@ -58,10 +60,10 @@ const Signup = () => {
   };
   return (
     <KeyboardAvoidingView
-      style={{flex: 1}}
+      style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <ScrollView
-        contentContainerStyle={{flexGrow: 1}}
+        contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}>
@@ -115,13 +117,13 @@ const Signup = () => {
               </View>
             </View>
 
-            <View style={{flex: 1, justifyContent: 'space-around'}}>
-              <View style={{flexDirection: 'row'}}>
+            <View style={{ flex: 1, justifyContent: 'space-around' }}>
+              <View style={{ flexDirection: 'row' }}>
                 <Heading level={6} children={'Agree with '} />
                 <Heading
                   level={6}
                   children={'Terms & Condition'}
-                  style={{...styles.higlightText}}
+                  style={{ ...styles.higlightText }}
                 />
               </View>
               <Button
@@ -133,7 +135,7 @@ const Signup = () => {
             </View>
           </View>
           <View style={styles.ParagraphBox}>
-            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
               <Heading level={6} children={'Already have an account? '} />
               <TouchableOpacity onPress={handleLogin}>
                 <Heading
