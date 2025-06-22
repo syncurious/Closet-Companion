@@ -11,13 +11,10 @@ import DressCard from '@/components/card/dressCard';
 import {Colors} from '@/utitlity/colors';
 import {Chip} from '@/components/chip';
 import {showNotification} from '@/utitlity/toast';
-import {createData, getData} from '@/service/firestoreHelper';
-import {S3Helper} from '@/service/aws';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getFileObjectFromName} from '@/utitlity';
-import {baseURL, user_id} from '@/api';
-import {endpoints} from '@/api/handlers';
-import axios from 'axios';
+import {DressUpload, GetDresses} from '@/api/handlers';
+
 export interface addDress {
   name: string;
   category: string;
@@ -48,30 +45,30 @@ const Dresses = ({route}: any) => {
     data: {},
   });
   const [dressPayload, setDressPayload] = useState<addDress>(initialPayload);
-  const [userId, setUserId] = useState<string>('');
   const [dressData, setDressData] = useState<any>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [filterDressData, setFilterDressData] = useState<any>();
 
-  const handleGet = async () => {
-    const id = await AsyncStorage.getItem('userId');
-    if (id) setUserId(id);
-  };
-
   const handlePayloadChange = (key: string, value: any) => {
-    console.log('Key', key, 'value', value);
     setDressPayload(prev => ({...prev, [key]: value}));
   };
 
   const addDressHandler = async () => {
     setIsLoading(true);
-    console.log('dress payload  ', dressPayload);
     if (
       !dressPayload?.name ||
       !dressPayload?.category ||
       !dressPayload?.image_url?.path
     ) {
       showNotification('error', 'Please Fill All Fields');
+      setIsLoading(false);
+      return;
+    }
+    const userId = await AsyncStorage.getItem('userId');
+    if (!userId) {
+      showNotification('error', 'User not found, please login again.');
+      setIsLoading(false);
+      return;
     }
     let form = new FormData();
     form.append(
@@ -81,59 +78,47 @@ const Dresses = ({route}: any) => {
         dressPayload.image_url.path,
       ),
     );
-    form.append('user_id', user_id);
+    form.append('user_id', userId);
     form.append('name', dressPayload.name);
     form.append('category', dressPayload.category);
-    axios
-      .post(baseURL + endpoints.DRESS_UPLOAD, form, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
-      .then((response: any) => {
-        console.log('Dress uplaod response:', response);
-        setDressPayload(initialPayload);
-        setDressModal(false);
-        showNotification('success', 'Your dress has been added to your list.');
-      })
-      .catch((error: any) => {
-        console.error('Error Dress Uplaod:', error);
-        showNotification('error', 'Something went wrong. Please try again.');
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    try {
+      const response: any = await DressUpload(form);
+      console.log('Dress upload response:', response);
+      setDressPayload(initialPayload);
+      setDressModal(false);
+      showNotification('success', 'Your dress has been added to your list.');
+      GetDressesHandler();
+    } catch (error) {
+      console.error('Error Dress Upload:', error);
+      showNotification('error', 'Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const GetDressesHandler = async () => {
     setIsLoading(true);
-    console.log('dress payload  ', dressPayload);
-
-    axios
-      .get(baseURL + endpoints.GET_DRESSES + user_id)
-      .then((response: any) => {
-        console.log('Dress uplaod response:', response);
-        setDressData(response?.data?.items);
-      })
-      .catch((error: any) => {
-        console.error('Error Dress Uplaod:', error);
-        showNotification(
-          'error',
-          'Something went wrong, while getting Dresses',
-        );
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
-
-  const handleGetDresses = async () => {
-    const response = await getData('dress');
-    if (response?.success) {
-      setDressData(response?.data);
-      console.log('Get Dress', response);
-    } else {
-      console.log('Error Dress', response);
+    const userId = await AsyncStorage.getItem('userId');
+    if (!userId) {
+      showNotification('error', 'User not found, please login again.');
+      setIsLoading(false);
+      return;
+    }
+    try {
+      const response: any = await GetDresses(userId);
+      console.log('Get dresses response:', response);
+      if (response?.items) {
+        setDressData(response.items);
+        setFilterDressData(response.items);
+      }
+    } catch (error) {
+      console.error('Error getting dresses:', error);
+      showNotification(
+        'error',
+        'Something went wrong, while getting Dresses',
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -150,7 +135,6 @@ const Dresses = ({route}: any) => {
   };
 
   useEffect(() => {
-    handleGet();
     GetDressesHandler();
   }, []);
 

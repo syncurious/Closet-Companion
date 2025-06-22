@@ -1,15 +1,17 @@
-import {crossIcon, dressOne} from '@/assets';
+import { crossIcon, dressOne } from '@/assets';
 import Heading from '@/components/heading';
-import {Colors} from '@/utitlity/colors';
+import { Colors } from '@/utitlity/colors';
 import Dimension from '@/utitlity/Dimension';
+import { getBase64Url } from '@/utitlity/image';
 import React from 'react';
-import {Image, Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
+import { Image, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   data?: {
-    image_url: string;
+    image_data: string;
+    content_type: string;
     name: string;
     description: string;
     category: string;
@@ -17,7 +19,8 @@ interface Props {
   onSubmit?: () => void;
 }
 function DressViewModal(props: Props) {
-  const {isOpen, onClose, data} = props;
+  const { isOpen, onClose, data } = props;
+  const uri = getBase64Url(data?.image_data || '', data?.content_type);
 
   return (
     <Modal
@@ -33,9 +36,9 @@ function DressViewModal(props: Props) {
           justifyContent: 'flex-end',
         }}>
         <View style={styles.modal}>
-          <View style={{position: 'relative'}}>
+          <View style={{ position: 'relative' }}>
             <Image
-              source={data?.image_url ? {uri: data?.image_url} : dressOne}
+              source={data?.image_data ? { uri: uri } : dressOne}
               style={{
                 width: Dimension.width,
                 height: '100%',
@@ -52,10 +55,10 @@ function DressViewModal(props: Props) {
               }}>
               <TouchableOpacity
                 onPress={onClose}
-                style={{position: 'absolute', top: 20, right: 20, zIndex: 2}}>
+                style={{ position: 'absolute', top: 20, right: 20, zIndex: 2 }}>
                 <Image
                   source={crossIcon}
-                  style={{height: 20, width: 20, tintColor: Colors.white}}
+                  style={{ height: 20, width: 20, tintColor: Colors.white }}
                 />
               </TouchableOpacity>
               <View
