@@ -1,6 +1,6 @@
 import apiCaller from './index';
 
-export const endpoints = {
+export const User = {
   UPLOADS_IMAGE: '/api/user/upload',
   SEND_MSG_TO_CHAT_BOT: '/chat',
   DRESS_UPLOAD: '/wardrobe/upload',
@@ -8,11 +8,20 @@ export const endpoints = {
 };
 
 
-export const UploadImage = async (body: any) => {
-  return await apiCaller('post', endpoints.UPLOADS_IMAGE, body, undefined, true);
+const UploadImage = async () => {
+  return await apiCaller('get', User.UPLOADS_IMAGE);
 };
 
-export const SendMessagetoChatBot = async (body: any) => {
-  console.log(body)
-  return await apiCaller('post', endpoints.SEND_MSG_TO_CHAT_BOT, body, undefined, true);
+const SendMessagetoChatBot = async (body: any) => {
+  return await apiCaller('post', User.SEND_MSG_TO_CHAT_BOT, body, undefined, true);
 };
+
+const DressUpload = async (body: any) => {
+  return await apiCaller('post', User.DRESS_UPLOAD, body, undefined, true);
+};
+
+const GetDresses = async () => {
+  return await apiCaller('get', User.GET_DRESSES);
+};
+
+export { UploadImage, SendMessagetoChatBot, DressUpload, GetDresses };

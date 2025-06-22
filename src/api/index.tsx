@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, {
   AxiosInstance,
   AxiosResponse,
@@ -6,7 +5,6 @@ import axios, {
 } from 'axios';
 
 export const baseURL = 'http://18.218.215.125:8000';
-export const user_id  = 'user123'
 
 interface ApiHandlerConfig {
   isMultipart?: boolean;
@@ -23,21 +21,8 @@ const ApiHandler = ({isMultipart = false}: ApiHandlerConfig): AxiosInstance => {
   // Request interceptor
   instance.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
-      try {
-        const token = await AsyncStorage.getItem('accessToken');
-        if (token) {
-          // Ensure headers are properly typed
-          config.headers = config.headers || {};
-          (config.headers as Record<string, string>)[
-            'Authorization'
-          ] = `Bearer ${token}`;
-        }
-        console.log('Request Config:', config);
-        return config;
-      } catch (error) {
-        console.error('Error in request interceptor:', error);
-        return Promise.reject(error);
-      }
+      console.log('Request Config:', config);
+      return config;
     },
     error => {
       console.error('Request error:', error);
@@ -73,11 +58,11 @@ const apiCaller = async <T,>(
 ): Promise<T> => {
   try {
     const apiInstance = ApiHandler({isMultipart});
-    let p = params ?? {}
     const response = await apiInstance.request({
       method,
       url: endpoint,
       data: body,
+      params,
     });
     console.log(
       `API Call Success [${method.toUpperCase()} ${endpoint}]`,
