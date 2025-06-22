@@ -1,9 +1,10 @@
-import React, {useState, useTransition} from 'react';
+import React, { useState, useTransition } from 'react';
 import {
   ActivityIndicator,
   ActivityIndicatorBase,
   Image,
   ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -11,12 +12,12 @@ import {
 } from 'react-native';
 import Header from '../../../components/header';
 import Container from '../../../components/container';
-import {Colors} from '../../../utitlity/colors';
+import { Colors } from '../../../utitlity/colors';
 import Heading from '@/components/heading';
-import {SendFilledIcon} from '@/assets';
-import {endpoints, SendMessagetoChatBot} from '@/api/handlers';
-import axios from 'axios';
-import {baseURL, user_id} from '@/api';
+import { SendFilledIcon } from '@/assets';
+import { User, SendMessagetoChatBot } from '@/api/handlers';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
 
 interface Message {
   thread_id?: string;
@@ -24,149 +25,122 @@ interface Message {
   user_id?: string;
   time: Date;
 }
-const data: Message[] = [
-  {
-    thread_id: '114848351681',
-    message: "Hey Bot, I'm Joch",
-    user_id: '123',
-    time: new Date('2025-12-12T10:10:00'),
-  },
-  {
-    thread_id: '114848351681',
-    message: "Hey Joch, I'm Bot 😂",
-    time: new Date('2025-12-12T10:10:00'),
-  },
-  {
-    thread_id: '114848351681',
-    message: 'Okay, Okay',
-    user_id: '123',
-    time: new Date('2025-12-12T10:11:00'),
-  },
-];
 
-const ChatBot = ({route}: any) => {
+interface ChatBotResponse {
+  response: string;
+  timestamp: string;
+}
+
+const ChatBot = ({ route }: any) => {
   const [InputValue, setInputValue] = useState(
     'What should I wear for a business meeting tomorrow?',
   );
-  const [messages, setMessages] = useState<Message[]>(data);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const scrollViewRef = React.useRef<ScrollView>(null);
+
+  React.useEffect(() => {
+    const getUserId = async () => {
+      const id = await AsyncStorage.getItem('userId');
+      setUserId(id);
+    };
+    getUserId();
+  }, []);
+
   const getMessageHandler = (e: any) => {
-    console.log(e);
     setInputValue(e);
   };
   const sendMessageHandler = async () => {
+    if (!userId) {
+      console.error('User ID not found');
+      return;
+    }
     setIsLoading(true);
+    const userMessage = InputValue;
     setInputValue('');
     setMessages(p => [
       ...p,
-      {message: InputValue, time: new Date(), user_id: user_id},
+      { message: userMessage, time: new Date(), user_id: userId },
     ]);
-    axios
-      .post(baseURL + endpoints.SEND_MSG_TO_CHAT_BOT, {
-        message: InputValue,
-        user_id: user_id,
-      })
-      .then(response => {
-        setMessages(p => [
-          ...p,
-          {
-            message: response?.data.response,
-            time: new Date(response?.data.timestamp),
-          },
-        ]);
-        console.log('Bot response:');
-      })
-      .catch(error => {
-        console.error('Error sending message:', error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    console.log("Message", {
+      message: userMessage,
+      user_id: userId,
+    });
+
+    try {
+      const response = (await SendMessagetoChatBot({
+        message: userMessage,
+        user_id: userId,
+      })) as ChatBotResponse;
+      setMessages(p => [
+        ...p,
+        {
+          message: response?.response,
+          time: new Date(response?.timestamp),
+        },
+      ]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   React.useEffect(() => {
-    scrollViewRef.current?.scrollToEnd({animated: true});
+    scrollViewRef.current?.scrollToEnd({ animated: true });
   }, [messages]);
-  console.log(messages);
   return (
     <React.Fragment>
       <Header route={route} />
-      <Container
-        style={{
-          flex: 1,
-          backgroundColor: Colors.black,
-          justifyContent: 'space-between',
-          paddingVertical: 15,
-        }}>
+      <Container style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false} ref={scrollViewRef}>
           {messages.map((item, index) => (
             <View
               key={index}
-              style={{
-                marginVertical: 10,
-                flexDirection: 'row',
-                justifyContent: item.user_id ? 'flex-end' : 'flex-start',
-              }}>
-              <View style={{gap: 5}}>
+              style={[
+                styles.messageContainer,
+                {
+                  justifyContent: item.user_id ? 'flex-end' : 'flex-start',
+                },
+              ]}>
+              <View style={styles.messageWrapper}>
                 <Heading
                   level={6}
                   style={{
+                    ...styles.message,
                     backgroundColor: item?.user_id
                       ? Colors.primary
                       : Colors.white + '20',
-                    borderRadius: 10,
-                    padding: 8,
                   }}>
                   {item?.message}
                 </Heading>
                 <Text
-                  style={{
-                    color: Colors.white + '50',
-                    fontSize: 10,
-                    paddingHorizontal: 5,
-                    textAlign: item?.user_id ? 'right' : 'left',
-                  }}>
-                  {item.time.toLocaleString()}
+                  style={[
+                    styles.timeText,
+                    {
+                      textAlign: item?.user_id ? 'right' : 'left',
+                    },
+                  ]}>
+                  {moment(item.time).fromNow()}
                 </Text>
               </View>
             </View>
           ))}
         </ScrollView>
-        <View
-          style={{
-            flexDirection: 'row',
-            gap: 5,
-            alignItems: 'center',
-            paddingTop: 20,
-            borderTopWidth: 1,
-            // marginBottom : 30,
-            borderColor: Colors.white + '20',
-          }}>
+        <View style={styles.inputContainer}>
           <TextInput
             placeholder="Message"
             value={InputValue}
             placeholderTextColor={Colors.white + '60'}
-            style={{
-              color: Colors.white,
-              padding: 20,
-              height: 40,
-              backgroundColor: Colors.white + '20',
-              flex: 10,
-              borderWidth: 1,
-              borderRadius: 20,
-              // borderColor: Colors.white,
-            }}
+            style={styles.input}
             onChangeText={getMessageHandler}
           />
           {isLoading ? (
             <ActivityIndicator color={Colors.primary} />
           ) : (
             <TouchableOpacity activeOpacity={0.9} onPress={sendMessageHandler}>
-              <Image
-                source={SendFilledIcon}
-                style={{tintColor: Colors.primary, height: 30, width: 30}}
-              />
+              <Image source={SendFilledIcon} style={styles.sendIcon} />
             </TouchableOpacity>
           )}
         </View>
@@ -174,5 +148,52 @@ const ChatBot = ({route}: any) => {
     </React.Fragment>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.black,
+    justifyContent: 'space-between',
+    paddingVertical: 15,
+  },
+  messageContainer: {
+    marginVertical: 10,
+    flexDirection: 'row',
+  },
+  messageWrapper: {
+    gap: 5,
+  },
+  message: {
+    borderRadius: 10,
+    padding: 8,
+  },
+  timeText: {
+    color: Colors.white + '50',
+    fontSize: 10,
+    paddingHorizontal: 5,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    gap: 5,
+    alignItems: 'center',
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderColor: Colors.white + '20',
+  },
+  input: {
+    color: Colors.white,
+    padding: 20,
+    height: 40,
+    backgroundColor: Colors.white + '20',
+    flex: 10,
+    borderWidth: 1,
+    borderRadius: 20,
+  },
+  sendIcon: {
+    tintColor: Colors.primary,
+    height: 30,
+    width: 30,
+  },
+});
 
 export default ChatBot;

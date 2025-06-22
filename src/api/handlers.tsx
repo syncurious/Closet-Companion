@@ -13,7 +13,7 @@ const UploadImage = async () => {
 };
 
 const SendMessagetoChatBot = async (body: any) => {
-  return await apiCaller('post', User.SEND_MSG_TO_CHAT_BOT, body, undefined, true);
+  return await apiCaller('post', User.SEND_MSG_TO_CHAT_BOT, body, undefined, false);
 };
 
 const DressUpload = async (body: any) => {
