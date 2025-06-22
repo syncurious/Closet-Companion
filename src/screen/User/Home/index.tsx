@@ -7,21 +7,40 @@ import Heading from '@/components/heading';
 import HomeCard from '@/components/card';
 import RecentCard from '@/components/card/recentCard';
 import {getData} from '@/service/firestoreHelper';
+import { showNotification } from '@/utitlity/toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GetDresses } from '@/api/handlers';
 
 const Home = ({route}: any) => {
   const [dressData, setDressData] = useState<any>([]);
-  const handleGetDresses = async () => {
-    const response = await getData('dress');
-    if (response?.success) {
-      setDressData(response?.data);
-      console.log('Get Dress', response);
-    } else {
-      console.log('Error Dress', response);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const GetDressesHandler = async () => {
+    setIsLoading(true);
+    const userId = await AsyncStorage.getItem('userId');
+    if (!userId) {
+      showNotification('error', 'User not found, please login again.');
+      setIsLoading(false);
+      return;
     }
-  };
+    try {
+      const response: any = await GetDresses(userId);
+      if (response?.items) {
+        setDressData(response.items);
+      }
+    } catch (error) {
+      console.error('Error getting dresses:', error);
+      showNotification(
+        'error',
+        'Something went wrong, while getting Dresses',
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };    
 
   useEffect(() => {
-    handleGetDresses();
+    GetDressesHandler();
   }, []);
   return (
     <React.Fragment>

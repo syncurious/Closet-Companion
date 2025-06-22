@@ -47,17 +47,10 @@ function AddDressModal(props: Props) {
       <TouchableOpacity
         activeOpacity={1}
         onPress={onClose}
-        style={{
-          flex: 1,
-          backgroundColor: '#00000099',
-          justifyContent: 'center',
-          padding: 20,
-        }}>
+        style={styles.modalBackdrop}>
         <View style={styles.modal}>
           <View style={styles.modalHeading}>
-            <Heading
-              style={{textAlign: 'center', color: Colors.white}}
-              level={2}>
+            <Heading style={styles.modalHeadingText} level={2}>
               Create a New Dress
             </Heading>
           </View>
@@ -69,7 +62,7 @@ function AddDressModal(props: Props) {
               {payload?.image_url ? (
                 <Image
                   source={{uri: payload?.image_url?.path}}
-                  style={{height: 200}}
+                  style={styles.dressImage}
                   resizeMode="cover"
                 />
               ) : (
@@ -81,36 +74,26 @@ function AddDressModal(props: Props) {
               )}
             </TouchableOpacity>
           </View>
-          <View style={{width: '100%', gap: 20}}>
-            <View style={{gap: 10}}>
+          <View style={styles.inputsContainer}>
+            <View style={styles.inputGroup}>
               <Heading level={6} children={'Name your new look'} />
               <Input
                 label="e.g. Casual Sky"
-                iconStyle={{
-                  tintColor: Colors.white,
-                  width: 20,
-                  height: 20,
-                  top: 3,
-                }}
+                iconStyle={styles.inputIcon}
                 value={payload?.name}
                 onChangeText={e => {
                   setPayload('name', e); // Updated to use the new handler
                 }}
               />
             </View>
-            <View style={{gap: 10}}>
+            <View style={styles.inputGroup}>
               <Heading
                 level={6}
                 children={'What category does this outfit belong to?'}
               />
               <Input
                 label="e.g. Eesten, Westen"
-                iconStyle={{
-                  tintColor: Colors.white,
-                  width: 20,
-                  height: 20,
-                  top: 3,
-                }}
+                iconStyle={styles.inputIcon}
                 value={payload?.category}
                 onChangeText={e => {
                   setPayload('category', e); // Updated to use the new handler
@@ -146,6 +129,12 @@ const styles = StyleSheet.create({
     gap: 15,
     height: '60%',
   },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: '#00000099',
+    justifyContent: 'center',
+    padding: 20,
+  },
   modal: {
     // height: 550,
     borderRadius: 20,
@@ -161,6 +150,26 @@ const styles = StyleSheet.create({
     width: '80%',
     alignItems: 'center',
     marginTop: 20,
+  },
+  modalHeadingText: {
+    textAlign: 'center',
+    color: Colors.white,
+  },
+  dressImage: {
+    height: 200,
+  },
+  inputsContainer: {
+    width: '100%',
+    gap: 20,
+  },
+  inputGroup: {
+    gap: 10,
+  },
+  inputIcon: {
+    tintColor: Colors.white,
+    width: 20,
+    height: 20,
+    top: 3,
   },
   ul: {
     width: '100%',
