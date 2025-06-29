@@ -7,7 +7,9 @@ export const User = {
   GET_DRESSES: '/dresses/',
   CREATE_OUTFIT_PLAN_BY_AI: "/recommendations/ai",
   Virtual_TryOn: "/tryon",
-  ANALYTICS: "/analytics/"
+  ANALYTICS: "/analytics/",
+  GET_CHATBOT: "/chat/history/"
+
 };
 
 
@@ -39,4 +41,8 @@ const GetAnalytics = async (userId: string) => {
   return await apiCaller('get', User.ANALYTICS + userId);
 };
 
-export { UploadImage, SendMessagetoChatBot, DressUpload, GetDresses, CreateOutfitPlanByAi, VirtualTryOn, GetAnalytics };
+const GetChatBot = async (userId: string) => {
+  return await apiCaller('get', User.GET_CHATBOT + userId);
+};
+
+export { UploadImage, SendMessagetoChatBot, DressUpload, GetDresses, CreateOutfitPlanByAi, VirtualTryOn, GetAnalytics, GetChatBot };

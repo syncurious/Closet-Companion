@@ -15,7 +15,7 @@ import Container from '../../../components/container';
 import { Colors } from '../../../utitlity/colors';
 import Heading from '@/components/heading';
 import { SendFilledIcon } from '@/assets';
-import { User, SendMessagetoChatBot } from '@/api/handlers';
+import { User, SendMessagetoChatBot, GetChatBot } from '@/api/handlers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 
@@ -31,12 +31,25 @@ interface ChatBotResponse {
   timestamp: string;
 }
 
+interface ChatHistoryResponse {
+  chats: Array<{
+    chat_id: string;
+    message: string;
+    response: string;
+    timestamp: string;
+    thread_id: string;
+  }>;
+  total_count: number;
+  thread_id: string | null;
+}
+
 const ChatBot = ({ route }: any) => {
   const [InputValue, setInputValue] = useState(
     'What should I wear for a business meeting tomorrow?',
   );
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoadingHistory, setIsLoadingHistory] = useState<boolean>(true);
   const [userId, setUserId] = useState<string | null>(null);
   const scrollViewRef = React.useRef<ScrollView>(null);
 
@@ -47,6 +60,53 @@ const ChatBot = ({ route }: any) => {
     };
     getUserId();
   }, []);
+
+  // Fetch chat history when userId is available
+  React.useEffect(() => {
+    const fetchChatHistory = async () => {
+      if (!userId) return;
+      
+      try {
+        setIsLoadingHistory(true);
+        const response = await GetChatBot(userId) as ChatHistoryResponse;
+        
+        if (response?.chats && response.chats.length > 0) {
+          const formattedMessages: Message[] = [];
+          
+          response.chats.forEach((chat) => {
+            // Add user message
+            if (chat.message) {
+              formattedMessages.push({
+                message: chat.message,
+                time: new Date(chat.timestamp),
+                user_id: userId,
+                thread_id: chat.thread_id,
+              });
+            }
+            
+            // Add bot response
+            if (chat.response) {
+              formattedMessages.push({
+                message: chat.response,
+                time: new Date(chat.timestamp),
+                thread_id: chat.thread_id,
+              });
+            }
+          });
+          
+          // Sort messages by timestamp (oldest first)
+          formattedMessages.sort((a, b) => a.time.getTime() - b.time.getTime());
+          setMessages(formattedMessages);
+        }
+      } catch (error) {
+        console.error('Error fetching chat history:', error);
+      } finally {
+        setIsLoadingHistory(false);
+      }
+    };
+
+    fetchChatHistory();
+  }, [userId]);
 
   const getMessageHandler = (e: any) => {
     setInputValue(e);
@@ -95,38 +155,50 @@ const ChatBot = ({ route }: any) => {
       <Header route={route} />
       <Container style={styles.container}>
         <ScrollView showsVerticalScrollIndicator={false} ref={scrollViewRef}>
-          {messages.map((item, index) => (
-            <View
-              key={index}
-              style={[
-                styles.messageContainer,
-                {
-                  justifyContent: item.user_id ? 'flex-end' : 'flex-start',
-                },
-              ]}>
-              <View style={styles.messageWrapper}>
-                <Heading
-                  level={6}
-                  style={{
-                    ...styles.message,
-                    backgroundColor: item?.user_id
-                      ? Colors.primary
-                      : Colors.white + '20',
-                  }}>
-                  {item?.message}
-                </Heading>
-                <Text
-                  style={[
-                    styles.timeText,
-                    {
-                      textAlign: item?.user_id ? 'right' : 'left',
-                    },
-                  ]}>
-                  {moment(item.time).fromNow()}
-                </Text>
-              </View>
+          {isLoadingHistory ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color={Colors.primary} />
+              <Text style={styles.loadingText}>Loading chat history...</Text>
             </View>
-          ))}
+          ) : messages.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No chat history found</Text>
+              <Text style={styles.emptySubText}>Start a conversation with your AI fashion assistant!</Text>
+            </View>
+          ) : (
+            messages.map((item, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.messageContainer,
+                  {
+                    justifyContent: item.user_id ? 'flex-end' : 'flex-start',
+                  },
+                ]}>
+                <View style={styles.messageWrapper}>
+                  <Heading
+                    level={6}
+                    style={{
+                      ...styles.message,
+                      backgroundColor: item?.user_id
+                        ? Colors.primary
+                        : Colors.white + '20',
+                    }}>
+                    {item?.message}
+                  </Heading>
+                  <Text
+                    style={[
+                      styles.timeText,
+                      {
+                        textAlign: item?.user_id ? 'right' : 'left',
+                      },
+                    ]}>
+                    {moment(item.time).fromNow()}
+                  </Text>
+                </View>
+              </View>
+            ))
+          )}
         </ScrollView>
         <View style={styles.inputContainer}>
           <TextInput
@@ -193,6 +265,32 @@ const styles = StyleSheet.create({
     tintColor: Colors.primary,
     height: 30,
     width: 30,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 50,
+  },
+  loadingText: {
+    color: Colors.white,
+    fontSize: 16,
+    marginTop: 10,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 50,
+  },
+  emptyText: {
+    color: Colors.white,
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  emptySubText: {
+    color: Colors.white + '50',
+    fontSize: 12,
   },
 });
 
