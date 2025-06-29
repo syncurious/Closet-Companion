@@ -49,19 +49,23 @@ const Analytics: React.FC = () => {
 
   if (loading) {
     return (
-      <Container fullScreen style={{ backgroundColor: Colors.darkBackground }}>
+      <>
         <Header route={{ name: 'Analytics' }} />
-        <Loader />
-      </Container>
+        <Container fullScreen style={{ backgroundColor: Colors.darkBackground }}>
+          <Loader />
+        </Container>
+      </>
     );
   }
 
   if (!analytics) {
     return (
-      <Container fullScreen style={{ backgroundColor: Colors.darkBackground }}>
+      <>
         <Header route={{ name: 'Analytics' }} />
-        <Text style={{ color: Colors.white, textAlign: 'center', marginTop: 40 }}>No analytics data found.</Text>
-      </Container>
+        <Container fullScreen style={{ backgroundColor: Colors.darkBackground }}>
+          <Text style={{ color: Colors.white, textAlign: 'center', marginTop: 40 }}>No analytics data found.</Text>
+        </Container>
+      </>
     );
   }
 
