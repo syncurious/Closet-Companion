@@ -9,7 +9,8 @@ export const User = {
   Virtual_TryOn: "/tryon",
   ANALYTICS: "/analytics/",
   GET_CHATBOT: "/chat/history/",
-  CREATE_OUTFIT_PLAN_BY_SELF: "/recommendations/user-plan"
+  CREATE_OUTFIT_PLAN_BY_SELF: "/recommendations/user-plan",
+  GET_OUFIT_PLANS: "/outfit/plan"
 };
 
 
@@ -49,4 +50,8 @@ const CreateOutfitPlanBySelf = async (body: any) => {
   return await apiCaller('post', User.CREATE_OUTFIT_PLAN_BY_SELF, body, undefined, true);
 };
 
-export { UploadImage, SendMessagetoChatBot, DressUpload, GetDresses, CreateOutfitPlanByAi, VirtualTryOn, GetAnalytics, GetChatBot, CreateOutfitPlanBySelf };
+const GetOutfitPlan = async (userId: string) => {
+  return await apiCaller('get', User.GET_OUFIT_PLANS, undefined, { user_id: userId });
+};
+
+export { UploadImage, SendMessagetoChatBot, DressUpload, GetDresses, CreateOutfitPlanByAi, VirtualTryOn, GetAnalytics, GetChatBot, CreateOutfitPlanBySelf, GetOutfitPlan };
