@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import Header from '../../../components/header';
 import Container from '../../../components/container';
 import { Colors } from '../../../utitlity/colors';
@@ -12,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { showNotification } from '@/utitlity/toast';
 
 const SelfOutfitPlaning = ({ route }: any) => {
+  const navigation = useNavigation<NavigationProp<any>>();
   const [planName, setPlanName] = useState('');
   const [occasion, setOccasion] = useState('');
   const [weatherCondition, setWeatherCondition] = useState('clear');
@@ -109,6 +111,7 @@ const SelfOutfitPlaning = ({ route }: any) => {
         setOccasion('');
         setWeatherCondition('clear');
         setSelectedDressIds([]);
+        navigation.navigate('Outfit');
       } else {
         showNotification('error', 'Failed to create outfit plan.');
       }
