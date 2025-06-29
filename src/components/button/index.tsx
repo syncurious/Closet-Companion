@@ -22,6 +22,7 @@ interface propsType {
   prefixIcon?: ImageSourcePropType;
   iconPosition?: 'left' | 'right';
   isLoading?: boolean;
+  disabled?: boolean;
   variant: 'outline' | 'contained';
   color?: ColorTypes;
   icon?: JSX.Element;
@@ -37,17 +38,19 @@ export default function Button(props: propsType) {
     prefixIcon,
     iconPosition,
     isLoading,
+    disabled,
     color = 'primary',
     icon,
   } = props;
   return (
     <TouchableOpacity
-      disabled={isLoading}
+      disabled={isLoading || disabled}
       style={[
         styles.button,
         variant == 'outline'
           ? {...styles.outline, borderColor: Colors[color] as ColorTypes}
           : {...styles.contained, backgroundColor: Colors[color] as ColorTypes},
+        (isLoading || disabled) && styles.disabled,
         style,
       ]}
       onPress={t => onPress && onPress(t)}>
@@ -110,5 +113,8 @@ const styles = StyleSheet.create({
   },
   textContained: {
     color: Colors.white,
+  },
+  disabled: {
+    opacity: 0.5,
   },
 });
