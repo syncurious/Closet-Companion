@@ -7,6 +7,7 @@ import { BarChart } from 'react-native-chart-kit';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GetAnalytics } from '@/api/handlers';
+import Loader from '@/components/loader';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -50,7 +51,7 @@ const Analytics: React.FC = () => {
     return (
       <Container fullScreen style={{ backgroundColor: Colors.darkBackground }}>
         <Header route={{ name: 'Analytics' }} />
-        <Text style={{ color: Colors.white, textAlign: 'center', marginTop: 40 }}>Loading...</Text>
+        <Loader />
       </Container>
     );
   }

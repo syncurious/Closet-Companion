@@ -18,6 +18,7 @@ import { SendFilledIcon } from '@/assets';
 import { User, SendMessagetoChatBot, GetChatBot } from '@/api/handlers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
+import Loader from '@/components/loader';
 
 interface Message {
   thread_id?: string;
@@ -157,7 +158,7 @@ const ChatBot = ({ route }: any) => {
         <ScrollView showsVerticalScrollIndicator={false} ref={scrollViewRef}>
           {isLoadingHistory ? (
             <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color={Colors.primary} />
+              <Loader />
               <Text style={styles.loadingText}>Loading chat history...</Text>
             </View>
           ) : messages.length === 0 ? (
@@ -209,7 +210,7 @@ const ChatBot = ({ route }: any) => {
             onChangeText={getMessageHandler}
           />
           {isLoading ? (
-            <ActivityIndicator color={Colors.primary} />
+            <Loader />
           ) : (
             <TouchableOpacity activeOpacity={0.9} onPress={sendMessageHandler}>
               <Image source={SendFilledIcon} style={styles.sendIcon} />

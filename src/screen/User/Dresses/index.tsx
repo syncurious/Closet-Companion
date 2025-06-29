@@ -14,6 +14,7 @@ import { showNotification } from '@/utitlity/toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getFileObjectFromName } from '@/utitlity';
 import { DressUpload, GetDresses } from '@/api/handlers';
+import Loader from '@/components/loader';
 
 export interface addDress {
   name: string;
@@ -172,7 +173,11 @@ const Dresses = ({ route }: any) => {
         </View>
 
         {/* Dresses Cards renders */}
-        {(filterDressData || dressData)?.length > 0 ? (
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <Loader />
+          </View>
+        ) : (filterDressData || dressData)?.length > 0 ? (
           <ScrollView
             style={styles.dressCardsScroll}
             contentContainerStyle={styles.dressCardsContainer}>
@@ -267,6 +272,11 @@ const styles = StyleSheet.create({
   },
   noDressText: {
     color: Colors.white,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

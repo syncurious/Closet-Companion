@@ -10,6 +10,7 @@ import {getData} from '@/service/firestoreHelper';
 import { showNotification } from '@/utitlity/toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GetDresses } from '@/api/handlers';
+import Loader from '@/components/loader';
 
 const Home = ({route}: any) => {
   const [dressData, setDressData] = useState<any>([]);
@@ -67,9 +68,15 @@ const Home = ({route}: any) => {
           style={{...styles.Heading, marginTop: 15, marginBottom: 8}}
           children={'Recent Dress'}
         />
-        {dressData?.map((item: any, index: number) => {
-          if (index < 3) return <RecentCard key={index} data={item} />;
-        })}
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <Loader />
+          </View>
+        ) : (
+          dressData?.map((item: any, index: number) => {
+            if (index < 3) return <RecentCard key={index} data={item} />;
+          })
+        )}
       </Container>
     </React.Fragment>
   );
@@ -78,6 +85,11 @@ const Home = ({route}: any) => {
 const styles = StyleSheet.create({
   Heading: {color: Colors.subHeading, fontWeight: 600},
   HeadingRow: {marginVertical: 20, rowGap: 2},
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default Home;

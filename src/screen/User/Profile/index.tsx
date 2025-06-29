@@ -50,6 +50,7 @@ const Profile = ({ route }: any) => {
   const [payload, setPayload] = useState(initialPayload);
   const [userId, setUserId] = useState<string>();
   const [profileImage, setProfileImage] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleFieldChange = (key: string, value: string) => {
     setPayload(prev => ({ ...prev, [key]: value }));
@@ -71,6 +72,7 @@ const Profile = ({ route }: any) => {
   };
 
   const handleUpdateProfile = async () => {
+    setIsLoading(true);
     const body = { ...payload };
     if (profileImage) {
       try {
@@ -90,6 +92,8 @@ const Profile = ({ route }: any) => {
       console.log('Update Profile Response', response);
     } catch (error) {
       console.log('Error', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -207,6 +211,8 @@ const Profile = ({ route }: any) => {
               variant="contained"
               children={isEdit ? 'Save Profile' : 'Edit Profile'}
               onPress={isEdit ? handleUpdateProfile : handleUpdate}
+              isLoading={isLoading}
+              disabled={isLoading}
             />
           </View>
         </View>
