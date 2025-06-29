@@ -5,6 +5,7 @@ import {dress} from '../../../assets';
 import Dimension from '../../../utitlity/Dimension';
 import {Colors} from '../../../utitlity/colors';
 import moment from 'moment';
+import { getBase64Url } from '@/utitlity/image';
 
 interface Props {
   onPress?: () => void;
@@ -18,6 +19,10 @@ interface Props {
     user_id: string;
     item_details: any[];
     image?: string;
+    dressImages?: Array<{
+      image_data: string;
+      content_type: string;
+    }>;
   };
 }
 
@@ -49,13 +54,21 @@ function PlansCard(props: Props) {
     }
   };
 
+  const hasDressImages = data?.dressImages && data.dressImages.length > 0;
+
   return (
     <TouchableOpacity activeOpacity={0.8} style={styles.cardContainer}>
       <View style={[{flexDirection: 'row'}, styles.imageWrapper]}>
         <View style={styles.imageContainer}>
           <Image
             style={styles.image}
-            source={data?.image ? {uri: data?.image} : dress}
+            source={
+              data?.dressImages && data.dressImages.length > 0 
+                ? {uri: getBase64Url(data.dressImages[0].image_data, data.dressImages[0].content_type)} 
+                : data?.image 
+                  ? {uri: data?.image} 
+                  : dress
+            }
             resizeMode="cover"
           />
         </View>
@@ -71,7 +84,13 @@ function PlansCard(props: Props) {
         <View style={styles.imageContainer}>
           <Image
             style={styles.image}
-            source={data?.image ? {uri: data?.image} : dress}
+            source={
+              data?.dressImages && data.dressImages.length > 1 
+                ? {uri: getBase64Url(data.dressImages[1].image_data, data.dressImages[1].content_type)} 
+                : data?.image 
+                  ? {uri: data?.image} 
+                  : dress
+            }
             resizeMode="cover"
           />
         </View>
@@ -101,6 +120,7 @@ function PlansCard(props: Props) {
           {data?.items && (
             <Text style={styles.itemCountText}>
               {getItemCount(data.items)} items
+              {hasDressImages && ' • Images available'}
             </Text>
           )}
         </View>

@@ -6,9 +6,20 @@ import { Colors } from '../../../utitlity/colors';
 import PlansCard from '@/components/card/PlanCard';
 import Input from '@/components/input';
 import { SearchIcon } from '@/assets';
-import { GetOutfitPlan } from '@/api/handlers';
+import { GetOutfitPlan, GetDresses } from '@/api/handlers';
 import Loader from '@/components/loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+interface Dress {
+  id: string;
+  name: string;
+  category: string;
+  image_url: string;
+  user_id: string;
+  created_at: string;
+  image_data?: string;
+  content_type?: string;
+}
 
 interface OutfitPlan {
   plan_id: string;
@@ -29,6 +40,7 @@ interface OutfitPlansResponse {
 
 const Outfit = ({ route }: any) => {
   const [plans, setPlans] = useState<OutfitPlan[]>([]);
+  const [dresses, setDresses] = useState<Dress[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -38,6 +50,19 @@ const Outfit = ({ route }: any) => {
   const getUserId = async () => {
     const id = await AsyncStorage.getItem('userId');
     setUserId(id);
+  };
+
+  const fetchDresses = async () => {
+    if (!userId) return;
+
+    try {
+      const response: any = await GetDresses(userId);
+      if (response?.items) {
+        setDresses(response.items);
+      }
+    } catch (error) {
+      console.error('Error fetching dresses:', error);
+    }
   };
 
   const fetchOutfitPlans = async () => {
@@ -56,9 +81,30 @@ const Outfit = ({ route }: any) => {
     }
   };
 
+  const getPlanDressImages = (plan: OutfitPlan): Array<{ image_data: string; content_type: string }> => {
+    if (!plan.items || plan.items.length === 0) return [];
+
+    try {
+      // Parse the items array if it's stored as a string
+      const itemIds = typeof plan.items[0] === 'string' ? JSON.parse(plan.items[0]) : plan.items;
+
+      // Find dresses that match the item IDs
+      const planDresses = dresses.filter((dress: any) => itemIds.includes(dress.item_id));
+
+      // Return dress objects with image data, limit to 2 for the card display
+      return planDresses.slice(0, 2).map(dress => ({
+        image_data: dress.image_data || '',
+        content_type: dress.content_type || 'image/jpeg'
+      }));
+    } catch (error) {
+      console.error('Error parsing plan items:', error);
+      return [];
+    }
+  };
+
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchOutfitPlans();
+    await Promise.all([fetchOutfitPlans(), fetchDresses()]);
     setRefreshing(false);
   };
 
@@ -69,6 +115,7 @@ const Outfit = ({ route }: any) => {
   useEffect(() => {
     if (userId) {
       fetchOutfitPlans();
+      fetchDresses();
     }
   }, [userId]);
 
@@ -123,12 +170,18 @@ const Outfit = ({ route }: any) => {
 
     return (
       <View style={{ gap: 15, paddingVertical: 10 }}>
-        {filteredPlans.map((plan, index) => (
-          <PlansCard
-            key={plan.plan_id}
-            data={plan}
-          />
-        ))}
+        {filteredPlans.map((plan, index) => {
+          const dressImages = getPlanDressImages(plan);
+          return (
+            <PlansCard
+              key={plan.plan_id}
+              data={{
+                ...plan,
+                dressImages: dressImages,
+              }}
+            />
+          );
+        })}
       </View>
     );
   };
