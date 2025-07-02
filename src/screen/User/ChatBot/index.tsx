@@ -19,6 +19,7 @@ import { User, SendMessagetoChatBot, GetChatBot } from '@/api/handlers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import Loader from '@/components/loader';
+import LinkifyText from '@/components/linkify';
 
 interface Message {
   thread_id?: string;
@@ -185,7 +186,8 @@ const ChatBot = ({ route }: any) => {
                         ? Colors.primary
                         : Colors.white + '20',
                     }}>
-                    {item?.message}
+                      {/* {item.message} */}
+                    <LinkifyText text={item.message}/>
                   </Heading>
                   <Text
                     style={[
