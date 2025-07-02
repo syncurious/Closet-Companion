@@ -1,15 +1,15 @@
-import {EditProfileIcon, userFilledIcon} from '@/assets';
+import { EditProfileIcon, userFilledIcon } from '@/assets';
 import Button from '@/components/button';
 import Container from '@/components/container';
 import Header from '@/components/header';
 import Heading from '@/components/heading';
 import Input from '@/components/input';
-import {getData, updateDataByKey} from '@/service/firestoreHelper';
-import {S3Helper} from '@/service/aws';
-import {Colors} from '@/utitlity/colors';
-import {pickImageFromGallery} from '@/utitlity/imagePicker';
-import React, {useEffect, useState} from 'react';
-import {Image, TouchableOpacity, View, StyleSheet} from 'react-native';
+import { getData, updateDataByKey } from '@/service/firestoreHelper';
+import { S3Helper } from '@/service/aws';
+import { Colors } from '@/utitlity/colors';
+import { pickImageFromGallery } from '@/utitlity/imagePicker';
+import React, { useEffect, useState } from 'react';
+import { Image, TouchableOpacity, View, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const initialPayload = {
@@ -45,14 +45,15 @@ const ProfileField = ({
   </View>
 );
 
-const Profile = ({route}: any) => {
+const Profile = ({ route }: any) => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [payload, setPayload] = useState(initialPayload);
   const [userId, setUserId] = useState<string>();
   const [profileImage, setProfileImage] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleFieldChange = (key: string, value: string) => {
-    setPayload(prev => ({...prev, [key]: value}));
+    setPayload(prev => ({ ...prev, [key]: value }));
   };
 
   const handleUpdate = async () => {
@@ -71,7 +72,8 @@ const Profile = ({route}: any) => {
   };
 
   const handleUpdateProfile = async () => {
-    const body = {...payload};
+    setIsLoading(true);
+    const body = { ...payload };
     if (profileImage) {
       try {
         const uploadedUrl = await S3Helper.uploadFileToS3(
@@ -90,6 +92,8 @@ const Profile = ({route}: any) => {
       console.log('Update Profile Response', response);
     } catch (error) {
       console.log('Error', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -104,7 +108,7 @@ const Profile = ({route}: any) => {
         });
       }
       if (userDoc?.success) {
-        setPayload((prev: any) => ({...prev, ...userDoc?.data}));
+        setPayload((prev: any) => ({ ...prev, ...userDoc?.data }));
       }
     }
   };
@@ -126,7 +130,7 @@ const Profile = ({route}: any) => {
               <View style={styles.imageWrapper}>
                 {profileImage || payload?.profileImage ? (
                   <Image
-                    source={{uri: profileImage?.path || payload?.profileImage}}
+                    source={{ uri: profileImage?.path || payload?.profileImage }}
                     style={styles.profileImage}
                     resizeMode="cover"
                   />
@@ -141,7 +145,7 @@ const Profile = ({route}: any) => {
               </View>
               <TouchableOpacity
                 style={styles.editIcon}
-                onPress={isEdit ? selectPhoto : () => {}}>
+                onPress={isEdit ? selectPhoto : () => { }}>
                 <Image
                   source={EditProfileIcon}
                   style={styles.editIconImage}
@@ -207,6 +211,8 @@ const Profile = ({route}: any) => {
               variant="contained"
               children={isEdit ? 'Save Profile' : 'Edit Profile'}
               onPress={isEdit ? handleUpdateProfile : handleUpdate}
+              isLoading={isLoading}
+              disabled={isLoading}
             />
           </View>
         </View>

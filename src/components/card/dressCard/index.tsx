@@ -1,30 +1,37 @@
 import React from 'react';
 import Heading from '../../heading';
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {dress} from '../../../assets';
+import {Image, StyleSheet, TouchableOpacity, View, ViewStyle} from 'react-native';
+import {dressOne} from '../../../assets';
 import Dimension from '../../../utitlity/Dimension';
 import {Colors} from '../../../utitlity/colors';
+import { getBase64Url } from '@/utitlity/image';
 
 interface Props {
   onPress?: () => void;
+  style?: ViewStyle;
   data?: {
-    dressImage: string;
+    image_data: string;
+    content_type: string;
     name: string;
     category: string;
+    occasion: string;
+    material: string;
+    id?: string;
   };
 }
 
 function DressCard(props: Props) {
-  const {data, onPress} = props;
+  const {data, onPress, style} = props;
+  const uri = getBase64Url(data?.image_data || '', data?.content_type);
   return (
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.8}
-      style={styles.cardContainer}>
+      style={[styles.cardContainer, style]}>
       <View style={styles.imageContainer}>
         <Image
           style={styles.image}
-          source={data?.dressImage ? {uri: data?.dressImage} : dress}
+          source={uri ? {uri} : dressOne}
           resizeMode="cover"
         />
       </View>

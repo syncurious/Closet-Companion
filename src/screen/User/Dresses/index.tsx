@@ -1,28 +1,29 @@
-import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import AddDressModal from '@/components/section/addDressModal';
 import DressViewModal from '@/components/section/DressViewModal';
 import Header from '@/components/header';
 import Container from '@/components/container';
 import Input from '@/components/input';
-import {SearchIcon} from '@/assets';
+import { SearchIcon } from '@/assets';
 import Heading from '@/components/heading';
 import DressCard from '@/components/card/dressCard';
-import {Colors} from '@/utitlity/colors';
-import {Chip} from '@/components/chip';
-import {showNotification} from '@/utitlity/toast';
-import {createData, getData} from '@/service/firestoreHelper';
-import {S3Helper} from '@/service/aws';
+import { Colors } from '@/utitlity/colors';
+import { Chip } from '@/components/chip';
+import { showNotification } from '@/utitlity/toast';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getFileObjectFromName } from '@/utitlity';
+import { DressUpload, GetDresses } from '@/api/handlers';
+import Loader from '@/components/loader';
 
-interface addDress {
+export interface addDress {
   name: string;
   category: string;
-  dressImage: string | any;
+  image_url: string | any;
 }
 
 const initialPayload = {
-  dressImage: '',
+  image_url: '',
   name: '',
   category: '',
 };
@@ -37,7 +38,7 @@ const chipsData = [
   'abaya',
 ];
 
-const Dresses = ({route}: any) => {
+const Dresses = ({ route }: any) => {
   const [activeChip, setActiveChip] = useState('All');
   const [DressModal, setDressModal] = useState(false);
   const [isDressViewModal, setIsDressViewModal] = useState<any>({
@@ -45,80 +46,95 @@ const Dresses = ({route}: any) => {
     data: {},
   });
   const [dressPayload, setDressPayload] = useState<addDress>(initialPayload);
-  const [userId, setUserId] = useState<string>('');
   const [dressData, setDressData] = useState<any>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [filterDressData, setFilterDressData] = useState<any>();
 
-  const handleGet = async () => {
-    const id = await AsyncStorage.getItem('userId');
-    if (id) setUserId(id);
-  };
-
   const handlePayloadChange = (key: string, value: any) => {
-    console.log('Key', key, 'value', value);
-    setDressPayload(prev => ({...prev, [key]: value}));
+    setDressPayload(prev => ({ ...prev, [key]: value }));
   };
 
-  const handleAddDress = async () => {
+  const addDressHandler = async () => {
+    setIsLoading(true);
     if (
       !dressPayload?.name ||
       !dressPayload?.category ||
-      !dressPayload?.dressImage?.path
+      !dressPayload?.image_url?.path
     ) {
       showNotification('error', 'Please Fill All Fields');
+      setIsLoading(false);
+      return;
     }
-    const body = {...dressPayload, userId: userId};
-    if (dressPayload?.dressImage?.path) {
-      try {
-        const uploadedUrl = await S3Helper.uploadFileToS3(
-          dressPayload?.dressImage?.path,
-          dressPayload?.dressImage?.filename,
-        );
-        console.log('Uploaded file URL:', uploadedUrl);
-        body.dressImage = uploadedUrl;
-      } catch (err) {
-        console.error('Upload failed:', err);
-      }
+    const userId = await AsyncStorage.getItem('userId');
+    if (!userId) {
+      showNotification('error', 'User not found, please login again.');
+      setIsLoading(false);
+      return;
     }
+    let form = new FormData();
+    form.append(
+      'file',
+      getFileObjectFromName(
+        dressPayload.image_url.filename,
+        dressPayload.image_url.path,
+      ),
+    );
+    form.append('user_id', userId);
+    form.append('name', dressPayload.name);
+    form.append('category', dressPayload.category.trim().toLowerCase());
     try {
-      const response = await createData('dress', body);
-      if (response?.success) {
-        showNotification('success', response?.message);
-        setDressModal(false);
-        handleGet();
-      } else {
-        showNotification('error', 'Failed');
-      }
+      await DressUpload(form);
+      setDressPayload(initialPayload);
+      setDressModal(false);
+      showNotification('success', 'Your dress has been added to your list.');
+      GetDressesHandler();
     } catch (error) {
-      console.log('Error', error);
+      console.error('Error Dress Upload:', error);
+      showNotification('error', 'Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleGetDresses = async () => {
-    const response = await getData('dress');
-    if (response?.success) {
-      setDressData(response?.data);
-      console.log('Get Dress', response);
-    } else {
-      console.log('Error Dress', response);
+  const GetDressesHandler = async () => {
+    setIsLoading(true);
+    const userId = await AsyncStorage.getItem('userId');
+    if (!userId) {
+      showNotification('error', 'User not found, please login again.');
+      setIsLoading(false);
+      return;
+    }
+    try {
+      const response: any = await GetDresses(userId);
+      if (response?.items) {
+        setDressData(response.items);
+        setFilterDressData(response.items);
+      }
+    } catch (error) {
+      console.error('Error getting dresses:', error);
+      showNotification(
+        'error',
+        'Something went wrong, while getting Dresses',
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleFilter = (item: any) => {
     setActiveChip(item);
     if (item === 'All') {
-      setFilterDressData(null);
-      console.log('all');
+      setFilterDressData(dressData);
     } else {
-      const data = dressData?.filter((val: any) => val?.category === item);
-      console.log('item', item, data);
+      const data = dressData?.filter(
+        (val: any) => val?.category?.trim().toLowerCase() == item,
+      );
       setFilterDressData(data);
     }
   };
 
   useEffect(() => {
-    handleGet();
-    handleGetDresses();
+    GetDressesHandler();
   }, []);
 
   return (
@@ -157,33 +173,46 @@ const Dresses = ({route}: any) => {
         </View>
 
         {/* Dresses Cards renders */}
-        <ScrollView
-          style={styles.dressCardsScroll}
-          contentContainerStyle={styles.dressCardsContainer}>
-          {(filterDressData || dressData)?.map((item: any, index: number) => (
-            <DressCard
-              key={index}
-              onPress={() => {
-                setIsDressViewModal({isOpen: true, data: item});
-              }}
-              data={item}
-            />
-          ))}
-        </ScrollView>
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <Loader />
+          </View>
+        ) : (filterDressData || dressData)?.length > 0 ? (
+          <ScrollView
+            style={styles.dressCardsScroll}
+            contentContainerStyle={styles.dressCardsContainer}>
+            {(filterDressData || dressData)?.map((item: any, index: number) => (
+              <DressCard
+                key={index}
+                onPress={() => {
+                  setIsDressViewModal({isOpen: true, data: item});
+                }}
+                data={item}
+              />
+            ))}
+          </ScrollView>
+        ) : (
+          <View style={styles.noDressContainer}>
+            <Heading level={2} style={styles.noDressText}>
+              No Dresses Available
+            </Heading>
+          </View>
+        )}
       </Container>
       <AddDressModal
+        isLoading={isLoading}
         setPayload={handlePayloadChange}
         payload={dressPayload}
         isOpen={DressModal}
         onClose={() => {
           setDressModal(false);
         }}
-        onSubmit={handleAddDress}
+        onSubmit={addDressHandler}
       />
       <DressViewModal
         isOpen={isDressViewModal?.isOpen}
         onClose={() => {
-          setIsDressViewModal({isOpen: false});
+          setIsDressViewModal({ isOpen: false });
         }}
         data={isDressViewModal?.data}
       />
@@ -234,6 +263,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     flexWrap: 'wrap',
+  },
+  noDressContainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingTop: '50%',
+  },
+  noDressText: {
+    color: Colors.white,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

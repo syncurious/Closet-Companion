@@ -129,6 +129,7 @@ const Input = (props: Props) => {
               ? styles.inputWithRightIcon
               : null,
             errorMessage ? styles.inputError : null,
+            multiline && {textAlignVertical: 'top', height: 120, paddingTop: 15},
             inputStyle,
           ]}
           placeholderTextColor={Colors.subHeading + '60'}

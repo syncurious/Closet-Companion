@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,98 +6,197 @@ import {
   Image,
   StyleSheet,
   ScrollView,
+  PermissionsAndroid,
+  Platform,
+  Alert,
 } from 'react-native';
-// import ImagePicker from 'react-native-image-crop-picker';
-import {Colors} from '@/utitlity/colors';
+import { Colors } from '@/utitlity/colors';
 import Container from '@/components/container';
 import Header from '@/components/header';
+import { pickImageFromGallery } from '@/utitlity/imagePicker';
+import Button from '@/components/button';
+import { VirtualTryOn } from '@/api/handlers';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+interface IamgesType {
+  modelImage: any;
+  topImage: any;
+  bottomImage: any;
+}
+
+interface VirtualTryOnResponse {
+  user_id: string;
+  timestamp: string;
+  top_filename: string;
+  bottom_filename: string;
+  suggestion: string;
+  result_path: string;
+  result_base64: string;
+}
 
 const Virtual: React.FC = () => {
-  const [modelImage, setModelImage] = useState<string | null>(null);
-  const [topImage, setTopImage] = useState<string | null>(null);
-  const [bottomImage, setBottomImage] = useState<string | null>(null);
+  const [InputImages, setInputImages] = useState<IamgesType>({
+    modelImage: null,
+    topImage: null,
+    bottomImage: null,
+  });
   const [generatedOutfit, setGeneratedOutfit] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const pickImage = async () => {
-    // Implement image selection logic using ImagePicker or similar
-    // Here we're using a placeholder just for the design
+  const pickImage = async (key: string) => {
+    const response = await pickImageFromGallery();
+    console.log(response);
+    setInputImages(p => ({ ...p, [key]: response }));
   };
 
-  const handleGenerateOutfit = () => {
-    // Placeholder logic — replace with actual API call or image merge
-    if (modelImage && topImage && bottomImage) {
-      // Temporary logic to simulate generated outfit with just the model image
-      setGeneratedOutfit(modelImage); // Replace with merged image logic
+  const handleGenerateOutfit = async () => {
+    if (
+      InputImages?.modelImage &&
+      InputImages?.topImage &&
+      InputImages?.bottomImage
+    ) {
+      setLoading(true);
+      try {
+        const userId = await AsyncStorage.getItem('userId');
+        const formData = new FormData();
+        formData.append('user_id', userId);
+        formData.append('person_image', {
+          uri: InputImages.modelImage.path,
+          type: InputImages.modelImage.mime,
+          name: InputImages.modelImage.path.split('/').pop(),
+        });
+        formData.append('top_image', {
+          uri: InputImages.topImage.path,
+          type: InputImages.topImage.mime,
+          name: InputImages.topImage.path.split('/').pop(),
+        });
+        formData.append('bottom_image', {
+          uri: InputImages.bottomImage.path,
+          type: InputImages.bottomImage.mime,
+          name: InputImages.bottomImage.path.split('/').pop(),
+        });
+        const response = await VirtualTryOn(formData) as VirtualTryOnResponse;
+        if (response?.result_base64) {
+          setGeneratedOutfit(`data:image/png;base64,${response.result_base64}`);
+        }
+      } catch (error) {
+        console.error('Error generating outfit:', error);
+      } finally {
+        setLoading(false);
+      }
     }
+  };
+
+  const handleCreateNew = () => {
+    setGeneratedOutfit(null);
+    setInputImages({
+      modelImage: null,
+      topImage: null,
+      bottomImage: null,
+    });
   };
 
   return (
     <React.Fragment>
-      <Header route={{name: 'Virtual Style'}} />
+      <Header route={{ name: 'Virtual Style' }} />
       <Container
         fullScreen
         scrollEnabled
-        style={{backgroundColor: Colors.black}}>
+        style={{ backgroundColor: Colors.black }}>
         <ScrollView contentContainerStyle={styles.wrapper}>
-          {/* Image Pickers */}
-          <View style={styles.pickerSection}>
-            <Text style={styles.label}>Select Model Image</Text>
-            <TouchableOpacity
-              style={styles.imageBox}
-              onPress={() => pickImage()}>
-              {modelImage ? (
-                <Image source={{uri: modelImage}} style={styles.image} />
-              ) : (
-                <Text style={styles.placeholder}>+ Model Image</Text>
-              )}
-            </TouchableOpacity>
-
-            {/* Row for Top and Bottom Images */}
-            <View style={styles.row}>
-              <View style={styles.imageContainer}>
-                <Text style={styles.label}>Select Top (Shirt)</Text>
-                <TouchableOpacity
-                  style={styles.imageBox}
-                  onPress={() => pickImage()}>
-                  {topImage ? (
-                    <Image source={{uri: topImage}} style={styles.image} />
-                  ) : (
-                    <Text style={styles.placeholder}>+ Top Image</Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.imageContainer}>
-                <Text style={styles.label}>Select Bottom (Trouser)</Text>
-                <TouchableOpacity
-                  style={styles.imageBox}
-                  onPress={() => pickImage()}>
-                  {bottomImage ? (
-                    <Image source={{uri: bottomImage}} style={styles.image} />
-                  ) : (
-                    <Text style={styles.placeholder}>+ Bottom Image</Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-
-          {/* Generate Button */}
-          <TouchableOpacity
-            style={styles.button}
-            onPress={handleGenerateOutfit}>
-            <Text style={styles.buttonText}>Generate Outfit</Text>
-          </TouchableOpacity>
-
-          {/* Generated Result */}
-          {generatedOutfit && (
+          {generatedOutfit ? (
             <View style={styles.resultBox}>
-              <Text style={styles.label}>Generated Outfit</Text>
-              <Image
-                source={{uri: generatedOutfit}}
-                style={styles.resultImage}
-              />
+              <View>
+                <Text style={styles.label}>Generated Outfit</Text>
+                <Image
+                  source={{ uri: generatedOutfit }}
+                  style={styles.resultImage}
+                  resizeMode="contain"
+                />
+              </View>
+              <View style={{ marginTop: 24 }}>
+                <Button
+                  variant="outline"
+                  onPress={handleCreateNew}
+                  style={{ marginTop: 10 }}>
+                  Create New Outfit
+                </Button>
+              </View>
             </View>
+          ) : (
+            <>
+              {/* Image Pickers */}
+              <View style={styles.pickerSection}>
+                <Text style={styles.label}>Select Model Image</Text>
+                <TouchableOpacity
+                  style={styles.imageBox}
+                  onPress={() => pickImage('modelImage')}>
+                  {InputImages.modelImage ? (
+                    <Image
+                      source={
+                        InputImages.modelImage
+                          ? { uri: InputImages?.modelImage.path }
+                          : undefined
+                      }
+                      style={styles.image}
+                    />
+                  ) : (
+                    <Text style={styles.placeholder}>Select here</Text>
+                  )}
+                </TouchableOpacity>
+
+                {/* Row for Top and Bottom Images */}
+                <View style={styles.row}>
+                  <View style={styles.imageContainer}>
+                    <Text style={styles.label}>Select Top (Shirt)</Text>
+                    <TouchableOpacity
+                      style={styles.imageBox}
+                      onPress={() => pickImage('topImage')}>
+                      {InputImages.topImage ? (
+                        <Image
+                          source={
+                            InputImages.topImage
+                              ? { uri: InputImages.topImage.path }
+                              : undefined
+                          }
+                          style={styles.image}
+                        />
+                      ) : (
+                        <Text style={styles.placeholder}>Select here</Text>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.imageContainer}>
+                    <Text style={styles.label}>Select Bottom (Trouser)</Text>
+                    <TouchableOpacity
+                      style={styles.imageBox}
+                      onPress={() => pickImage('bottomImage')}>
+                      {InputImages.bottomImage ? (
+                        <Image
+                          source={
+                            InputImages.bottomImage
+                              ? { uri: InputImages.bottomImage?.path }
+                              : undefined
+                          }
+                          style={styles.image}
+                        />
+                      ) : (
+                        <Text style={styles.placeholder}>Select here</Text>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+
+              {/* Generate Button */}
+              <Button
+                variant="contained"
+                onPress={handleGenerateOutfit}
+                isLoading={loading}>
+                Generate Outfit
+              </Button>
+            </>
           )}
         </ScrollView>
       </Container>
@@ -129,10 +228,15 @@ const styles = StyleSheet.create({
   imageBox: {
     height: 160,
     borderRadius: 12,
-    backgroundColor: Colors.lightCard,
+    backgroundColor: Colors.lightCard + '80',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderColor: Colors.white + '20',
+
   },
   image: {
     width: '100%',

@@ -7,21 +7,41 @@ import Heading from '@/components/heading';
 import HomeCard from '@/components/card';
 import RecentCard from '@/components/card/recentCard';
 import {getData} from '@/service/firestoreHelper';
+import { showNotification } from '@/utitlity/toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GetDresses } from '@/api/handlers';
+import Loader from '@/components/loader';
 
 const Home = ({route}: any) => {
   const [dressData, setDressData] = useState<any>([]);
-  const handleGetDresses = async () => {
-    const response = await getData('dress');
-    if (response?.success) {
-      setDressData(response?.data);
-      console.log('Get Dress', response);
-    } else {
-      console.log('Error Dress', response);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const GetDressesHandler = async () => {
+    setIsLoading(true);
+    const userId = await AsyncStorage.getItem('userId');
+    if (!userId) {
+      showNotification('error', 'User not found, please login again.');
+      setIsLoading(false);
+      return;
     }
-  };
+    try {
+      const response: any = await GetDresses(userId);
+      if (response?.items) {
+        setDressData(response.items);
+      }
+    } catch (error) {
+      console.error('Error getting dresses:', error);
+      showNotification(
+        'error',
+        'Something went wrong, while getting Dresses',
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };    
 
   useEffect(() => {
-    handleGetDresses();
+    GetDressesHandler();
   }, []);
   return (
     <React.Fragment>
@@ -48,9 +68,15 @@ const Home = ({route}: any) => {
           style={{...styles.Heading, marginTop: 15, marginBottom: 8}}
           children={'Recent Dress'}
         />
-        {dressData?.map((item: any, index: number) => {
-          if (index < 3) return <RecentCard key={index} data={item} />;
-        })}
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <Loader />
+          </View>
+        ) : (
+          dressData?.map((item: any, index: number) => {
+            if (index < 3) return <RecentCard key={index} data={item} />;
+          })
+        )}
       </Container>
     </React.Fragment>
   );
@@ -59,6 +85,11 @@ const Home = ({route}: any) => {
 const styles = StyleSheet.create({
   Heading: {color: Colors.subHeading, fontWeight: 600},
   HeadingRow: {marginVertical: 20, rowGap: 2},
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
 
 export default Home;

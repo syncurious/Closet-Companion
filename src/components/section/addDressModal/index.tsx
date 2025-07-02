@@ -4,22 +4,38 @@ import Input from '@/components/input';
 import {Colors} from '@/utitlity/colors';
 import Dimension from '@/utitlity/Dimension';
 import {pickImageFromGallery} from '@/utitlity/imagePicker';
-import {Image, Modal, StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  Modal,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: () => void;
   payload: any;
+  isLoading?: boolean;
   setPayload: any;
 }
 
 function AddDressModal(props: Props) {
-  const {isOpen, onClose, onSubmit, setPayload, payload} = props;
+  const {
+    isOpen,
+    onClose,
+    onSubmit,
+    setPayload,
+    payload,
+    isLoading = false,
+  } = props;
 
   const handleImagePicker = async () => {
     const response = await pickImageFromGallery();
-    setPayload('dressImage', response);
+    console.log(response);
+    setPayload('image_url', response);
   };
 
   return (
@@ -31,17 +47,10 @@ function AddDressModal(props: Props) {
       <TouchableOpacity
         activeOpacity={1}
         onPress={onClose}
-        style={{
-          flex: 1,
-          backgroundColor: '#00000099',
-          justifyContent: 'center',
-          padding: 20,
-        }}>
+        style={styles.modalBackdrop}>
         <View style={styles.modal}>
           <View style={styles.modalHeading}>
-            <Heading
-              style={{textAlign: 'center', color: Colors.white}}
-              level={2}>
+            <Heading style={styles.modalHeadingText} level={2}>
               Create a New Dress
             </Heading>
           </View>
@@ -50,10 +59,10 @@ function AddDressModal(props: Props) {
               activeOpacity={0.8}
               style={styles.cardContainer}
               onPress={handleImagePicker}>
-              {payload?.dressImage ? (
+              {payload?.image_url ? (
                 <Image
-                  source={{uri: payload?.dressImage?.path}}
-                  style={{height: 200}}
+                  source={{uri: payload?.image_url?.path}}
+                  style={styles.dressImage}
                   resizeMode="cover"
                 />
               ) : (
@@ -65,36 +74,26 @@ function AddDressModal(props: Props) {
               )}
             </TouchableOpacity>
           </View>
-          <View style={{width: '100%', gap: 20}}>
-            <View style={{gap: 10}}>
+          <View style={styles.inputsContainer}>
+            <View style={styles.inputGroup}>
               <Heading level={6} children={'Name your new look'} />
               <Input
                 label="e.g. Casual Sky"
-                iconStyle={{
-                  tintColor: Colors.white,
-                  width: 20,
-                  height: 20,
-                  top: 3,
-                }}
+                iconStyle={styles.inputIcon}
                 value={payload?.name}
                 onChangeText={e => {
                   setPayload('name', e); // Updated to use the new handler
                 }}
               />
             </View>
-            <View style={{gap: 10}}>
+            <View style={styles.inputGroup}>
               <Heading
                 level={6}
                 children={'What category does this outfit belong to?'}
               />
               <Input
                 label="e.g. Eesten, Westen"
-                iconStyle={{
-                  tintColor: Colors.white,
-                  width: 20,
-                  height: 20,
-                  top: 3,
-                }}
+                iconStyle={styles.inputIcon}
                 value={payload?.category}
                 onChangeText={e => {
                   setPayload('category', e); // Updated to use the new handler
@@ -103,9 +102,17 @@ function AddDressModal(props: Props) {
             </View>
           </View>
           <TouchableOpacity
+            disabled={isLoading}
+            activeOpacity={0.8}
             style={styles.closeButtonContainer}
             onPress={onSubmit}>
-            <Heading level={3}>Create</Heading>
+            <Heading level={3}>
+              {isLoading ? (
+                <ActivityIndicator color={Colors.white} />
+              ) : (
+                'Create'
+              )}
+            </Heading>
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
@@ -122,6 +129,12 @@ const styles = StyleSheet.create({
     gap: 15,
     height: '60%',
   },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: '#00000099',
+    justifyContent: 'center',
+    padding: 20,
+  },
   modal: {
     // height: 550,
     borderRadius: 20,
@@ -137,6 +150,26 @@ const styles = StyleSheet.create({
     width: '80%',
     alignItems: 'center',
     marginTop: 20,
+  },
+  modalHeadingText: {
+    textAlign: 'center',
+    color: Colors.white,
+  },
+  dressImage: {
+    height: 200,
+  },
+  inputsContainer: {
+    width: '100%',
+    gap: 20,
+  },
+  inputGroup: {
+    gap: 10,
+  },
+  inputIcon: {
+    tintColor: Colors.white,
+    width: 20,
+    height: 20,
+    top: 3,
   },
   ul: {
     width: '100%',
