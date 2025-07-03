@@ -1,4 +1,4 @@
-import React, { useState, useTransition } from 'react';
+import React, {useState, useTransition} from 'react';
 import {
   ActivityIndicator,
   ActivityIndicatorBase,
@@ -12,14 +12,15 @@ import {
 } from 'react-native';
 import Header from '../../../components/header';
 import Container from '../../../components/container';
-import { Colors } from '../../../utitlity/colors';
+import {Colors} from '../../../utitlity/colors';
 import Heading from '@/components/heading';
-import { SendFilledIcon } from '@/assets';
-import { User, SendMessagetoChatBot, GetChatBot } from '@/api/handlers';
+import {SendFilledIcon} from '@/assets';
+import {User, SendMessagetoChatBot, GetChatBot} from '@/api/handlers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import Loader from '@/components/loader';
 import LinkifyText from '@/components/linkify';
+import Input from '@/components/input';
 
 interface Message {
   thread_id?: string;
@@ -45,10 +46,8 @@ interface ChatHistoryResponse {
   thread_id: string | null;
 }
 
-const ChatBot = ({ route }: any) => {
-  const [InputValue, setInputValue] = useState(
-    'What should I wear for a business meeting tomorrow?',
-  );
+const ChatBot = ({route}: any) => {
+  const [InputValue, setInputValue] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState<boolean>(true);
@@ -67,15 +66,15 @@ const ChatBot = ({ route }: any) => {
   React.useEffect(() => {
     const fetchChatHistory = async () => {
       if (!userId) return;
-      
+
       try {
         setIsLoadingHistory(true);
-        const response = await GetChatBot(userId) as ChatHistoryResponse;
-        
+        const response = (await GetChatBot(userId)) as ChatHistoryResponse;
+
         if (response?.chats && response.chats.length > 0) {
           const formattedMessages: Message[] = [];
-          
-          response.chats.forEach((chat) => {
+
+          response.chats.forEach(chat => {
             // Add user message
             if (chat.message) {
               formattedMessages.push({
@@ -85,7 +84,7 @@ const ChatBot = ({ route }: any) => {
                 thread_id: chat.thread_id,
               });
             }
-            
+
             // Add bot response
             if (chat.response) {
               formattedMessages.push({
@@ -95,7 +94,7 @@ const ChatBot = ({ route }: any) => {
               });
             }
           });
-          
+
           // Sort messages by timestamp (oldest first)
           formattedMessages.sort((a, b) => a.time.getTime() - b.time.getTime());
           setMessages(formattedMessages);
@@ -123,9 +122,9 @@ const ChatBot = ({ route }: any) => {
     setInputValue('');
     setMessages(p => [
       ...p,
-      { message: userMessage, time: new Date(), user_id: userId },
+      {message: userMessage, time: new Date(), user_id: userId},
     ]);
-    console.log("Message", {
+    console.log('Message', {
       message: userMessage,
       user_id: userId,
     });
@@ -150,7 +149,7 @@ const ChatBot = ({ route }: any) => {
   };
 
   React.useEffect(() => {
-    scrollViewRef.current?.scrollToEnd({ animated: true });
+    scrollViewRef.current?.scrollToEnd({animated: true});
   }, [messages]);
   return (
     <React.Fragment>
@@ -165,7 +164,9 @@ const ChatBot = ({ route }: any) => {
           ) : messages.length === 0 ? (
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>No chat history found</Text>
-              <Text style={styles.emptySubText}>Start a conversation with your AI fashion assistant!</Text>
+              <Text style={styles.emptySubText}>
+                Start a conversation with your AI fashion assistant!
+              </Text>
             </View>
           ) : (
             messages.map((item, index) => (
@@ -179,6 +180,7 @@ const ChatBot = ({ route }: any) => {
                 ]}>
                 <View style={styles.messageWrapper}>
                   <Heading
+                    selectable
                     level={6}
                     style={{
                       ...styles.message,
@@ -186,8 +188,8 @@ const ChatBot = ({ route }: any) => {
                         ? Colors.primary
                         : Colors.white + '20',
                     }}>
-                      {/* {item.message} */}
-                    <LinkifyText text={item.message}/>
+                    {/* {item.message} */}
+                    <LinkifyText text={item.message} />
                   </Heading>
                   <Text
                     style={[
@@ -204,13 +206,15 @@ const ChatBot = ({ route }: any) => {
           )}
         </ScrollView>
         <View style={styles.inputContainer}>
-          <TextInput
-            placeholder="Message"
-            value={InputValue}
-            placeholderTextColor={Colors.white + '60'}
-            style={styles.input}
-            onChangeText={getMessageHandler}
-          />
+          <View style={{flex: 10}}>
+            <Input
+              label="Message"
+              style={{borderRadius: 30}}
+              inputStyle={{borderRadius: 30}}
+              value={InputValue}
+              onChangeText={getMessageHandler}
+            />
+          </View>
           {isLoading ? (
             <Loader />
           ) : (
@@ -256,13 +260,14 @@ const styles = StyleSheet.create({
     borderColor: Colors.white + '20',
   },
   input: {
-    color: Colors.white,
+    // color: '#00ffff',
     padding: 20,
     height: 40,
-    backgroundColor: Colors.white + '20',
+    // backgroundColor: "#ffffff20",
     flex: 10,
-    borderWidth: 1,
-    borderRadius: 20,
+    zIndex: 12,
+    // borderWidth: 1,
+    // borderRadius: 20,
   },
   sendIcon: {
     tintColor: Colors.primary,

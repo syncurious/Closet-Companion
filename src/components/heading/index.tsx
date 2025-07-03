@@ -1,14 +1,14 @@
 import React, {JSX} from 'react';
-import {Text, StyleSheet, ViewStyle, TextStyle} from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
+import {Text, StyleSheet, ViewStyle, TextStyle, TextProps} from 'react-native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 // const ColorsTyped: Record<ColorTypes, string> = Colors;
 
-interface PropsType {
+interface PropsType extends TextProps {
   level: 1 | 2 | 3 | 4 | 5 | 6;
+  selectable?: boolean;
   style?: ViewStyle | TextStyle;
   children: React.ReactNode;
-  //   color?: ColorTypes;
   numberOfLines?: number;
 }
 
@@ -33,21 +33,21 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function Heading({
-  level,
-  style,
-  children,
-  numberOfLines,
-}: PropsType) {
+export default function Heading(props: PropsType) {
+  const {level, style, selectable, children, numberOfLines} = props;
   const headingStyle = [
-    {color : Colors.white},
+    {color: Colors.white},
     styles[`h${level}` as keyof typeof styles],
     // color && {color: Colors[color as ColorTypes]},
     style,
   ];
 
   return (
-    <Text style={headingStyle} numberOfLines={numberOfLines}>
+    <Text
+      style={headingStyle}
+      numberOfLines={numberOfLines}
+      selectable
+      >
       {children}
     </Text>
   );
