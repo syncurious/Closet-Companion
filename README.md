@@ -1,97 +1,143 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Closet Companion - React Native Project
 
-# Getting Started
+This is a [**React Native**](https://reactnative.dev) project bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli). This guide will help you set up and run the app on **Android** devices.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+---
 
-## Step 1: Start Metro
+## Minimum System Requirements
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+| Component          | Requirement                                   |
+|--------------------|-----------------------------------------------|
+| OS                 | Windows 10/11 (64-bit) or macOS 12+           |
+| RAM                | At least **8 GB** (16 GB recommended)         |
+| Storage            | Minimum **10 GB** free disk space             |
+| Processor          | Intel i5 / Ryzen 5 or higher                  |
+| Node.js            | v18.x or later                                |
+| JDK                | JDK 11 or newer                               |
+| Android Studio     | Dolphin (2021.3.1) or newer                   |
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+---
+
+##  Step-by-Step Setup (Android Only)
+
+### 1. Install Prerequisites
+
+- **Node.js**: [Download and install Node.js v18+](https://nodejs.org)
+- **Java Development Kit (JDK)**: [Install JDK 11+](https://adoptopenjdk.net/)
+- **Android Studio**:
+  - Download from [here](https://developer.android.com/studio)
+  - During installation, ensure the following components are selected:
+    - Android SDK
+    - Android SDK Platform Tools
+    - Android Emulator
+    - Intel x86 Emulator Accelerator (HAXM) (for Intel CPUs)
+  - After installation:
+    - Open Android Studio → **Settings > Appearance & Behavior > System Settings > Android SDK**
+    - Make sure the following are installed:
+      - SDK Platforms: **Android 13 (API level 33)** or similar
+      - SDK Tools: **Android SDK Build-Tools**, **NDK**, **CMake**
+
+### 2. Set Environment Variables
+
+Add the following to your system’s environment variables:
+
+#### For Windows (PowerShell or `.bashrc` / `.zshrc` on macOS):
 
 ```sh
-# Using npm
-npm start
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+```
 
-# OR using Yarn
+On Windows, `ANDROID_HOME` is usually:  
+`C:\Users\<YourUsername>\AppData\Local\Android\Sdk`
+
+---
+
+## Getting Started
+
+### 1. Clone the Repository
+
+```sh
+git clone https://github.com/your-username/closetcompanion.git
+cd closetcompanion
+```
+
+### 2. Install Dependencies
+
+```sh
+npm install
+# OR
+yarn install
+```
+
+### 3. Start Metro (React Native bundler)
+
+```sh
+npm start
+# OR
 yarn start
 ```
 
-## Step 2: Build and run your app
+### 4. Run Android App
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
+Make sure an emulator is running **OR** a device is connected via USB with debugging enabled.
 
 ```sh
-# Using npm
 npm run android
-
-# OR using Yarn
+# OR
 yarn android
 ```
 
-### iOS
+If everything is set up correctly, your app will launch in the emulator or connected device.
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+---
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+## Modify & Test the App
 
-```sh
-bundle install
+Edit the `App.tsx` file to begin customization. Changes will automatically reflect thanks to **Fast Refresh**.
+
+To reload manually:
+
+- **Android**: Press `R` twice or use the developer menu (`Cmd+M` on macOS / `Ctrl+M` on Windows/Linux).
+
+---
+
+## Troubleshooting
+
+- Ensure Android Studio SDK is properly installed.
+- Run `adb devices` to confirm your device is connected.
+- Check [React Native Troubleshooting](https://reactnative.dev/docs/troubleshooting) for more issues.
+
+---
+
+## Project Scripts
+
+```json
+"scripts": {
+  "android": "react-native run-android",
+  "ios": "react-native run-ios",
+  "lint": "eslint .",
+  "start": "react-native start",
+  "test": "jest"
+}
 ```
 
-Then, and every time you update your native dependencies, run:
+---
+
+##  Tech Stack
+
+- **React Native** `0.79.0`
+- **Redux Toolkit**, **Firebase**, **React Navigation**
+- UI: **react-native-chart-kit**, **toast-message**, **image-crop-picker**
+
+
+## Install React Native CLI
+
+Before running the app, make sure the **React Native CLI** is installed globally.
 
 ```sh
-bundle exec pod install
+npm install -g react-native-cli
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+> Note: Do **not** confuse this with `npx react-native`, which uses the CLI locally from the project. Installing it globally ensures you can use commands like `react-native run-android` directly.
