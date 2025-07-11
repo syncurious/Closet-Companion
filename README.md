@@ -131,13 +131,3 @@ To reload manually:
 - **Redux Toolkit**, **Firebase**, **React Navigation**
 - UI: **react-native-chart-kit**, **toast-message**, **image-crop-picker**
 
-
-## Install React Native CLI
-
-Before running the app, make sure the **React Native CLI** is installed globally.
-
-```sh
-npm install -g react-native-cli
-```
-
-> Note: Do **not** confuse this with `npx react-native`, which uses the CLI locally from the project. Installing it globally ensures you can use commands like `react-native run-android` directly.
