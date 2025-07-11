@@ -1,12 +1,20 @@
-import {NavigationContainer} from '@react-navigation/native';
-import AuthNavigation from './Auth';
+import { NavigationContainer } from '@react-navigation/native';
 import UserNavigation from './User';
+import { useAuthListener } from '@/service/AuthListner';
+import { AuthNavigation, SplashNavigation } from './Auth';
 
 const Navigation = () => {
-  const isAuth = false;
+  const { initializing, user } = useAuthListener();
+
   return (
     <NavigationContainer>
-      {isAuth ? <AuthNavigation /> : <UserNavigation />}
+      {initializing ? (
+        <SplashNavigation />
+      ) : !user ? (
+        <AuthNavigation />
+      ) : (
+        <UserNavigation />
+      )}
     </NavigationContainer>
   );
 };

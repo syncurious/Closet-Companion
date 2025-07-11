@@ -1,11 +1,179 @@
-import {Text, View} from 'react-native';
+import {eyeFilledIcon, eyeIcon} from '@/assets';
+import Button from '@/components/button';
+import Container from '@/components/container';
+import Heading from '@/components/heading';
+import Input from '@/components/input';
+import {setIsLogin, setUserData} from '@/config/redux/reducer';
+import {loginWithEmail} from '@/service/firebaseAuth';
+import {Colors} from '@/utitlity/colors';
+import {showNotification} from '@/utitlity/toast';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {useState} from 'react';
+import {
+  StyleSheet,
+  View,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  TouchableOpacity,
+} from 'react-native';
+import {useDispatch} from 'react-redux';
+
+const initialPayload = {
+  email: '',
+  password: '',
+};
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigation = useNavigation<NavigationProp<any>>();
+  const [isPassword, setIsPassword] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [payload, setPayload] = useState(initialPayload);
+  const handleValueChange = (name: string, value: string) => {
+    setPayload((prev: any) => ({...prev, [name]: value}));
+  };
+  const handleLogin = async () => {
+    setIsLoading(true);
+    try {
+      const response = await loginWithEmail(payload);
+      if (response.success) {
+        showNotification('success', 'Login success');
+        const data:any = response?.userData;
+        console.log('✅ Login success:', response.user);
+        console.log('👤 User profile data:', data);
+        await AsyncStorage.setItem('userId', data?.id);
+        dispatch(setIsLogin(true));
+        dispatch(setUserData({id: data?.id}));
+        setPayload(initialPayload);
+      } else {
+        showNotification('error', `${response?.message}`);
+        console.warn('❌ Login failed:', response.message);
+      }
+    } catch (error) {
+      console.error('⚠️ Unexpected error during login:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleSignup = () => {
+    navigation.navigate('signup');
+  };
+  const handleForgot = () => {
+    navigation.navigate('forgot');
+  };
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Login</Text>
-    </View>
+    <KeyboardAvoidingView
+      style={{flex: 1}}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView
+        contentContainerStyle={{flexGrow: 1}}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}>
+        <Container scrollEnabled={false} fullScreen style={styles.Container}>
+          <View style={styles.HeadingBox}>
+            <Heading children={'Welcome Back'} level={2} />
+            <Heading children={'Find your best matching clothes'} level={6} />
+          </View>
+          <View style={styles.InputBox}>
+            <View style={styles.RowGap}>
+              <View style={styles.RowGap}>
+                <Heading level={6} children={'Email'} />
+                <Input
+                  type="email-address"
+                  value={payload?.email}
+                  onChangeText={e => {
+                    handleValueChange('email', e);
+                  }}
+                />
+              </View>
+              <View style={styles.RowGap}>
+                <Heading level={6} children={'Password'} />
+                <Input
+                  value={payload?.password}
+                  iconStyle={{
+                    tintColor: Colors.white,
+                    width: 20,
+                    height: 20,
+                    top: 3,
+                  }}
+                  onChangeText={e => {
+                    handleValueChange('password', e);
+                  }}
+                  type={!isPassword ? 'password' : 'default'}
+                  iconPosition="right"
+                  prefixIcon={isPassword ? eyeIcon : eyeFilledIcon}
+                  iconClick={() => {
+                    setIsPassword(!isPassword);
+                  }}
+                />
+              </View>
+            </View>
+
+            <View style={{flex: 1, justifyContent: 'space-around'}}>
+              <TouchableOpacity onPress={handleForgot}>
+                <Heading
+                  level={6}
+                  children={'Forget Password'}
+                  style={{...styles.higlightText, textAlign: 'right'}}
+                />
+              </TouchableOpacity>
+              <Button
+                isLoading={isLoading}
+                variant="contained"
+                children={'Login'}
+                onPress={handleLogin}
+              />
+            </View>
+          </View>
+          <View style={styles.ParagraphBox}>
+            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <Heading
+                level={6}
+                children={"Don't have an account? "}
+                style={{}}
+              />
+              <TouchableOpacity onPress={handleSignup}>
+                <Heading
+                  level={6}
+                  children={'Sign Up'}
+                  style={styles.higlightText}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Container>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
+
+const styles = StyleSheet.create({
+  Container: {
+    flex: 1,
+  },
+  HeadingBox: {
+    flex: 0.25,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingBottom: 50,
+  },
+  InputBox: {
+    flex: 0.35,
+    justifyContent: 'space-between',
+  },
+  ParagraphBox: {
+    flex: 0.2,
+  },
+  RowGap: {
+    rowGap: 5,
+  },
+  higlightText: {
+    color: Colors.primary,
+    textDecorationLine: 'underline',
+  },
+});
 
 export default Login;
