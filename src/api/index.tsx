@@ -4,7 +4,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 
-export const baseURL = 'http://51.20.75.196:8000';
+export const baseURL = 'http://13.51.156.54:8000';
 
 interface ApiHandlerConfig {
   isMultipart?: boolean;
